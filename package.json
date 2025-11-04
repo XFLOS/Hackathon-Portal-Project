@@ -1,0 +1,19 @@
+{
+  "name": "hackathon-portal-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "install:all": "npm install --workspaces",
+    "start:frontend": "npm --workspace frontend start",
+    "build:frontend": "npm --workspace frontend run build",
+    "test:frontend": "npm --workspace frontend test",
+    "start:backend": "npm --workspace backend start",
+    "dev:backend": "npm --workspace backend run dev",
+    "smoke": "powershell -ExecutionPolicy Bypass -File ./scripts/run_stack_and_smoke.ps1",
+    "collect-network-diagnostics": "powershell -ExecutionPolicy Bypass -File ./scripts/collect_network_diagnostics.ps1"
+  }
+}

@@ -1,0 +1,150 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: var(--nav-h);
+  padding: 0 20px;
+  background: linear-gradient(180deg, #05080f 0%, #0b0f17 100%);
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(101, 197, 232, 0.25);
+  box-shadow: 0 2px 18px rgba(8, 148, 197, 0.08);
+}
+
+.nav-logo {
+  width: 200px;
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.nav-brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-title { color: #aee9ff; font-weight: 800; letter-spacing: 0.6px; }
+
+.nav-logo:hover {
+  transform: scale(1.05);
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+}
+
+/* Hamburger trigger styled to scheme */
+.hamburger-btn {
+  width: 44px;
+  height: 36px;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  background: rgba(8, 14, 24, 0.35);
+  border: 1px solid rgba(101, 197, 232, 0.55);
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(101, 197, 232, 0.12);
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.hamburger-btn:hover,
+.hamburger-btn:focus {
+  transform: translateY(-1px);
+  background: rgba(8, 14, 24, 0.5);
+  box-shadow: 0 0 14px rgba(101, 197, 232, 0.28);
+  outline: none;
+}
+
+.hamburger-btn .bar {
+  width: 22px;
+  height: 3px;
+  border-radius: 3px;
+  background: #aee9ff; /* soft cyan matching scheme */
+  box-shadow: 0 0 6px rgba(101, 197, 232, 0.25);
+}
+
+.nav-btn {
+  color: #65c5e8;
+  text-decoration: none;
+  margin-left: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: 'OpenSans', sans-serif;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+  color: white;
+}
+
+.signup-highlight {
+  background-color: rgba(101, 197, 232, 0.2);
+  border: 1px solid #65c5e8;
+  color: #65c5e8;
+  box-shadow: 0px 2px 6px rgba(101, 197, 232, 0.3);
+}
+
+.signup-highlight:hover {
+  background-color: #65c5e8;
+  color: white;
+}
+
+.hamburger {
+  font-size: 26px;
+  cursor: pointer;
+  color: #65c5e8;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 78px;
+  right: 20px;
+  background: radial-gradient(120% 120% at 0% 0%, rgba(5, 10, 20, 0.98) 0%, rgba(10, 18, 32, 0.96) 100%);
+  border: 1px solid rgba(101, 197, 232, 0.5);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45), 0 0 18px rgba(101, 197, 232, 0.12);
+  backdrop-filter: blur(8px);
+}
+
+.dropdown-menu a,
+.dropdown-menu button {
+  margin: 5px 0;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  color: #aee9ff;
+  font-family: 'OpenSans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu button:hover {
+  background: linear-gradient(90deg, rgba(101, 197, 232, 0.16), rgba(101, 197, 232, 0.05));
+  color: #e8f8ff;
+  transform: translateX(4px);
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(101, 197, 232, 0), rgba(101, 197, 232, 0.45), rgba(101, 197, 232, 0));
+  margin: 6px 0;
+}
+
+/* Hide the old text trigger on wide screens */
+.menu-trigger { display: none; }
