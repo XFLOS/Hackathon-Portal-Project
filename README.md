@@ -1,4 +1,4 @@
-Hackathon Portal Monorepo
+Hackathon Portal
 =========================
 
 Project layout
