@@ -6,6 +6,8 @@
 [build.environment]
   REACT_APP_USE_MOCK_API = "false"
   REACT_APP_API_URL = "https://hackathon-portal-project-8737.onrender.com"
+  EXTEND_ESLINT = "true"
+  DISABLE_ESLINT_PLUGIN = "true"
 
 [[redirects]]
   from = "/*"
