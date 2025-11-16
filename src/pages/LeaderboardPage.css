@@ -1,0 +1,99 @@
+.leaderboard-container {
+    max-width: 800px;
+    margin: 60px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    font-family: 'OpenSans', sans-serif;
+    text-align: center;
+}
+
+.leaderboard-title {
+    font-family: 'BebasNeue', sans-serif;
+    color: #65c5e8;
+    font-size: 3em;
+    margin-bottom: 5px;
+    letter-spacing: 1.5px;
+}
+
+.leaderboard-subtitle {
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.leaderboard-loading {
+    text-align: center;
+    padding: 50px;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.leaderboard-table th, .leaderboard-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.leaderboard-table th {
+    background-color: #f8f9fa;
+    color: #65c5e8;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.leaderboard-table tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.top-team {
+    background-color: #e6f3fb; 
+    font-weight: bold;
+}
+
+.team-score {
+    font-weight: 700;
+    color: #333;
+}
+
+.leaderboard-footer {
+    font-size: 0.85em;
+    color: #333;
+}
+
+.access-denied-container {
+    max-width: 600px;
+    margin: 100px auto;
+    padding: 40px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.access-denied-title {
+    font-family: 'BebasNeue', sans-serif;
+    color: #65c5e8;
+    font-size: 3em;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.access-denied-message {
+    color: #333;
+    font-size: 1.1em;
+    line-height: 1.6;
+}

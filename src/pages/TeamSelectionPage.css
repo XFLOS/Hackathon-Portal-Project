@@ -1,0 +1,221 @@
+.formation-container {
+    max-width: 650px;
+    margin: 60px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    font-family: 'OpenSans', sans-serif;
+    text-align: center;
+}
+
+.formation-title, .creation-title, .join-title {
+    font-family: 'BebasNeue', sans-serif;
+    color: #65c5e8;
+    font-size: 40px;
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+.formation-subtitle, .creation-subtitle, .join-subtitle {
+    color: #495057;
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+
+.select-options {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.select-options button {
+    flex: 1;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(17, 0, 255, 0.15);
+    transition: background-color 0.2s;
+    font-size: 1.1em;
+}
+
+.create-button {
+    background-color: #65c5e8;
+    color: white;
+}
+
+.create-button:hover {
+    background-color: #4aa3c9;
+}
+
+.join-button {
+    background-color: #65c5e8;
+    color: white;
+}
+
+.join-button:hover {
+    background-color: #4aa3c9;
+}
+
+.invite-alert {
+    background-color: #fffbe6;
+    border: 1px solid #ffc107;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 8px;
+    color: #333;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.invite-alert .join-button {
+    padding: 8px 15px;
+    font-size: 0.9em;
+    box-shadow: none;
+}
+
+.creation-card, .join-card {
+    padding: 20px 0;
+}
+
+.form-group {
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.creation-input, .joining-input, textarea {
+    padding: 10px;
+    width: 100%;
+    margin: 4px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-family: 'OpenSans', sans-serif;
+}
+
+.members-title {
+    font-family: 'BebasNeue', sans-serif;
+    color: #333;
+    font-size: 24px;
+    margin: 20px 0 10px 0;
+    text-align: left;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+.creation-card .create-button, .join-card .join-button {
+    width: 100%;
+    margin-top: 25px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    font-weight: bold;
+}
+
+.creation-card .create-button {
+    background-color: #65c5e8;
+}
+
+.creation-card .create-button:hover:not(:disabled) {
+    background-color: #4aa3c9;
+}
+
+.creation-card .create-button[disabled] {
+    background-color: #ced4da;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.join-card .join-button {
+    background-color: #65c5e8;
+}
+
+.join-card .join-button:hover:not(:disabled) {
+    background-color: #4aa3c9;
+}
+
+.creation-message, .message {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.creation-message.success, .message.success-message {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.creation-message.error, .message.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.invite-card {
+    border: 2px solid #ffc107;
+    background-color: #fffbe6;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.invite-card h3 {
+    font-size: 1.3em;
+    color: #856404;
+    margin-bottom: 10px;
+}
+
+.invite-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.accept-button, .decline-button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.accept-button {
+    background-color: #28a745;
+    color: white;
+}
+
+.accept-button:hover {
+    background-color: #1e7e34;
+}
+
+.decline-button {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 25px;
+    color: #65c5e8;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: #4aa3c9;
+}

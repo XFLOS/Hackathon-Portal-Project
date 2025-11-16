@@ -1,0 +1,137 @@
+.mentor-dashboard-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-family: 'OpenSans', sans-serif;
+}
+
+.mentor-title {
+    font-family: 'BebasNeue', sans-serif;
+    color: #65c5e8;
+    font-size: 3em;
+    text-align: center;
+    margin-bottom: 5px;
+    letter-spacing: 1.5px;
+}
+
+.mentor-subtitle {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.mentor-denied {
+    text-align: center;
+    padding: 60px;
+    font-size: 1.5em;
+    color: #333;
+    font-weight: bold;
+}
+
+.teams-list-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.team-card {
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s;
+    background-color: #f8f9fa;
+}
+
+.team-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.team-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.team-name {
+    margin: 0;
+    color: #333;
+    font-size: 1.5em;
+    font-family: 'BebasNeue', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+.team-status {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.85em;
+    background-color: #e6f3fb;
+    color: #65c5e8;
+}
+
+.team-project, .team-lead {
+    margin: 8px 0;
+    color: #495057;
+}
+
+.team-actions {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.action-button {
+    padding: 8px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9em;
+    font-weight: 600;
+    text-align: center;
+    transition: background-color 0.2s;
+}
+
+.action-button.updates {
+    background-color: #65c5e8;
+    color: white;
+}
+
+.action-button.chat {
+    background-color: #4aa3c9;
+    color: white;
+}
+
+.action-button.briefing {
+    background-color: #f0f8ff;
+    color: #4aa3c9;
+    border: 1px solid #4aa3c9;
+}
+
+.action-button.updates:hover { background-color: #4aa3c9; }
+.action-button.chat:hover { background-color: #388ba3; }
+.action-button.briefing:hover { background-color: #e6f7ff; }
+
+@media (max-width: 600px) {
+    .mentor-dashboard-container {
+        padding: 15px;
+    }
+    .mentor-title {
+        font-size: 2.5em;
+    }
+    .teams-list-wrapper {
+        grid-template-columns: 1fr;
+    }
+    .team-actions {
+        flex-direction: column;
+    }
+    .action-button {
+        width: 100%;
+    }
+}

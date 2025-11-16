@@ -1,0 +1,164 @@
+.rubric-editor-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    font-family: 'Open Sans', sans-serif;
+}
+
+.editor-title {
+    font-family: 'BebasNeue', sans-serif;
+    color: #4aa3c9;
+    font-size: 2.5em;
+    text-align: center;
+    margin-bottom: 5px;
+    letter-spacing: 1.5px;
+}
+
+.editor-subtitle {
+    text-align: center;
+    color: #6c757d;
+    margin-bottom: 30px;
+}
+
+.rubric-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.editor-input {
+    padding: 10px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.criteria-header {
+    font-family: 'BebasNeue', sans-serif;
+    font-size: 1.5em;
+    color: #333;
+    margin-top: 10px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.criterion-row {
+    display: flex;
+    gap: 15px;
+    align-items: flex-end;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    background-color: #f0f8ff;
+}
+
+.criterion-group {
+    flex: 1;
+}
+
+.name-input {
+    flex: 3;
+}
+
+.weight-input {
+    flex: 1;
+    max-width: 100px;
+}
+
+.remove-button {
+    padding: 8px 15px;
+    border: none;
+    background-color: #dc3545;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+    height: 38px;
+}
+
+.remove-button:hover {
+    background-color: #c82333;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+    gap: 20px;
+}
+
+.add-button {
+    flex: 1;
+    padding: 12px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s;
+}
+
+.add-button:hover {
+    background-color: #1e7e34;
+}
+
+.save-button {
+    flex: 1;
+    padding: 12px 20px;
+    background-color: #28a3e8;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s;
+}
+
+.save-button:hover:not(:disabled) {
+    background-color: #1e7eb3;
+}
+
+.save-button:disabled {
+    background-color: #ced4da;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.weight-warning {
+    color: #dc3545;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+    .rubric-editor-container {
+        padding: 20px;
+    }
+    .editor-title {
+        font-size: 2em;
+    }
+    .criterion-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .action-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

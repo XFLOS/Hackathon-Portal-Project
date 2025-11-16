@@ -1,0 +1,230 @@
+.coordinator-container {
+  max-width: 1100px;
+  margin: 60px auto;
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  font-family: 'OpenSans', sans-serif;
+}
+
+.coordinator-title {
+  font-family: 'BebasNeue', sans-serif;
+  color: #65c5e8;
+  font-size: 3.2em;
+  margin-bottom: 10px;
+  letter-spacing: 1.2px;
+}
+
+.coordinator-subtitle {
+  color: #555;
+  margin-bottom: 40px;
+  font-size: 1.1em;
+}
+
+.coordinator-denied {
+  text-align: center;
+  padding: 100px;
+  font-size: 1.5em;
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.section-title {
+  font-size: 1.6em;
+  font-weight: 700;
+  color: #1a1a1a;
+  border-bottom: 3px solid #65c5e8;
+  padding-bottom: 6px;
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+/* === Stats Section === */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+  margin-bottom: 50px;
+}
+
+.stat-card {
+  background-color: #f0f8ff;
+  padding: 25px;
+  border-radius: 10px;
+  border-left: 5px solid #65c5e8;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+.stat-card h4 {
+  margin-top: 0;
+  font-size: 1.1em;
+  color: #333;
+}
+
+.stat-card p {
+  font-size: 2.5em;
+  font-weight: 900;
+  color: #4aa3c9;
+  margin: 8px 0 0;
+}
+
+/* === Communication Center === */
+.communication-section {
+  padding: 30px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  margin-bottom: 50px;
+  background-color: #fafafa;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+}
+
+.comm-form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 15px;
+}
+
+.comm-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: vertical;
+  box-sizing: border-box;
+  font-family: 'OpenSans', sans-serif;
+  font-size: 1em;
+}
+
+.comm-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.comm-select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: 'OpenSans', sans-serif;
+  font-size: 0.95em;
+}
+
+.comm-button {
+  padding: 12px 25px;
+  border: none;
+  background-color: #65c5e8;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1em;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.2s;
+}
+
+.comm-button:hover {
+  background-color: #4aa3c9;
+}
+
+/* === Alerts Section === */
+.alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.alert-item {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.alert-type {
+  font-weight: bold;
+  margin-right: 10px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  color: white;
+  font-size: 0.9em;
+}
+
+.alert-message {
+  flex-grow: 1;
+  font-size: 1em;
+  color: #333;
+}
+
+.alert-action-button {
+  padding: 6px 14px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.alert-urgent {
+  background-color: #fef0f0;
+  border-left: 5px solid #dc3545;
+}
+.alert-urgent .alert-type {
+  background-color: #dc3545;
+}
+
+.alert-deadline {
+  background-color: #f7f9fd;
+  border-left: 5px solid #4aa3c9;
+}
+.alert-deadline .alert-type {
+  background-color: #4aa3c9;
+}
+
+.alert-data {
+  background-color: #fff8e8;
+  border-left: 5px solid #ffc107;
+}
+.alert-data .alert-type {
+  background-color: #ffc107;
+}
+
+/* === Responsiveness === */
+@media (max-width: 768px) {
+  .coordinator-container {
+    padding: 20px;
+  }
+
+  .coordinator-title {
+    font-size: 2.4em;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .comm-controls {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .comm-select, 
+  .comm-button {
+    width: 100%;
+  }
+
+  .alert-item {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .alert-message {
+    width: 100%;
+    margin: 5px 0;
+  }
+}

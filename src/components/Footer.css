@@ -1,0 +1,46 @@
+
+.portal-footer {
+    background-color: black;
+    color: #ffffff;
+    padding: 15px 20px;
+    text-align: center;
+    font-family: 'Open Sans', sans-serif; 
+    font-size: 14px;
+    width: 100%; 
+    box-sizing: border-box; 
+
+}
+
+.portal-footer p {
+    margin: 5px 0;
+}
+
+.footer-links {
+    margin-top: 5px;
+}
+
+.footer-links a {
+    color: #65c5e8; 
+    text-decoration: none;
+    margin: 0 10px;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.footer-links span {
+    color: #ffffff;
+}
+
+@media (max-width: 600px) {
+    .portal-footer {
+        padding: 15px 10px;
+        font-size: 12px;
+    }
+    .footer-links a {
+        margin: 0 5px;
+    }
+}

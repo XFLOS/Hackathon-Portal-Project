@@ -1,0 +1,125 @@
+.updates-container {
+  max-width: 900px;
+  margin: 80px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  font-family: 'OpenSans', sans-serif;
+}
+
+.updates-title {
+  font-family: 'BebasNeue', sans-serif;
+  font-size: 50px;
+  color: #65c5e8;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.updates-subtitle {
+  text-align: center;
+  color: #495057;
+  margin-bottom: 40px;
+  font-size: 16px;
+}
+
+.updates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.update-card {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-left: 5px solid #65c5e8;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.update-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.update-date {
+  font-weight: bold;
+  color: #333;
+  font-size: 0.95em;
+}
+
+.update-visibility {
+  font-size: 0.85em;
+  color: #65c5e8;
+}
+
+.update-content {
+  line-height: 1.6;
+  margin: 10px 0;
+  color: #495057;
+}
+
+.update-attachment {
+  margin-top: 10px;
+  padding: 8px;
+  background-color: #e6f7ff;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.update-attachment a {
+  color: #4aa3c9;
+}
+
+.mentor-call-to-action {
+  margin-top: 15px;
+  text-align: right;
+}
+
+.chat-link-button {
+  padding: 8px 15px;
+  border-radius: 5px;
+  text-decoration: none;
+  background-color: #ffc107;
+  color: #333;
+  font-weight: 700;
+  transition: background-color 0.2s;
+}
+
+.chat-link-button:hover {
+  background-color: #e0a800;
+}
+
+.updates-footer {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 0.9em;
+  color: #6c757d;
+}
+
+.mentor-denied {
+  text-align: center;
+  font-size: 20px;
+  margin-top: 200px;
+  color: #00bbff;
+}
+
+@media (max-width: 768px) {
+  .updates-title {
+    font-size: 36px;
+  }
+  .update-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .update-visibility {
+    margin-top: 5px;
+  }
+  .mentor-call-to-action {
+    text-align: left;
+  }
+}
