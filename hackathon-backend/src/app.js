@@ -11,15 +11,9 @@ dotenv.config();
 // Initialize Express app
 const app = express();
 
-// CORS Configuration
+// CORS Configuration - Allow all origins for testing
 const corsOptions = {
-  origin: [
-    'http://localhost:3000',                                          // Local development
-    'https://hackathon-portal-project-8737.onrender.com',            // Backend URL (for testing)
-    // Add your frontend deployment URLs here when deployed:
-    // 'https://your-app.netlify.app',
-    // 'https://your-app.vercel.app',
-  ],
+  origin: '*',  // Allow all origins for testing
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   credentials: true,
   optionsSuccessStatus: 200
