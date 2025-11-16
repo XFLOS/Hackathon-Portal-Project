@@ -1,197 +1,391 @@
-# Hackathon Portal Project# Hackathon Backend (Express + Prisma + Firebase Auth)
+# Hackathon Portal Project# Hackathon Portal Project# Hackathon Backend (Express + Prisma + Firebase Auth)
 
 
 
-A full-stack hackathon management platform with React frontend and Express.js backend.## 1) Pré-requisitos
+A full-stack hackathon management platform with React frontend and Express.js backend.
 
-- Node.js 18+
 
-## 📁 Project Structure- Banco PostgreSQL (Neon, Railway, Render, etc.)
 
-- Firebase Service Account (JSON)
+## 📁 Project StructureA full-stack hackathon management platform with React frontend and Express.js backend.## 1) Pré-requisitos
 
-```- Conta Cloudinary (para assinar upload)
+
+
+```- Node.js 18+
 
 Hackathon-Portal-Project/
 
-├── frontend/                    # React application## 2) Configuração
+├── hackathon-frontend/          # React application## 📁 Project Structure- Banco PostgreSQL (Neon, Railway, Render, etc.)
 
-│   ├── src/Crie um arquivo `.env` na raiz com base no `.env.example`:
+│   ├── src/
 
-│   ├── public/
+│   ├── public/- Firebase Service Account (JSON)
 
-│   ├── .env.example            # Frontend environment template```
+│   ├── .env.example            # Frontend environment template
 
-│   └── package.jsonDATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DBNAME?schema=public"
-
-│FIREBASE_SERVICE_ACCOUNT_JSON='{"type":"service_account","project_id":"...","private_key_id":"...","private_key":"-----BEGIN PRIVATE KEY-----\n...","client_email":"...","client_id":"..."}'
-
-├── hackathon-backend/          # Express.js API serverCLOUDINARY_CLOUD_NAME=""
-
-│   ├── src/CLOUDINARY_API_KEY=""
-
-│   │   ├── app.js             # Express app configurationCLOUDINARY_API_SECRET=""
-
-│   │   ├── server.js          # Server entry pointPORT=8080
-
-│   │   ├── config/            # Database & Cloudinary config```
-
-│   │   ├── controllers/       # Business logic
-
-│   │   ├── middleware/        # Auth & error handling## 3) Instalação
-
-│   │   └── routes/            # API endpoints```bash
-
-│   ├── schema.sql             # PostgreSQL database schemanpm install
-
-│   ├── .env.example           # Backend environment templatenpx prisma generate
-
-│   ├── package.jsonnpx prisma migrate dev --name init
-
-│   └── Documentation/npm run dev
-
-│       ├── QUICKSTART.md```
-
-│       ├── DEPLOY_TO_RENDER.md
-
-│       └── ...more docsA API deve subir em `http://localhost:8080/health`.
+│   └── package.json```- Conta Cloudinary (para assinar upload)
 
 │
 
-└── README.md                   # This file## 4) Rotas principais
+├── hackathon-backend/          # Express.js API serverHackathon-Portal-Project/
 
-```- `GET /health` → status
+│   ├── src/
 
-- `GET /teams` (auth) → lista times (inclui membros e projeto)
+│   │   ├── app.js             # Express app configuration├── frontend/                    # React application## 2) Configuração
 
-## 🚀 Quick Start- `POST /teams` (auth) → cria time `{ name }`
+│   │   ├── server.js          # Server entry point
 
-- `POST /scores` (auth) → cria/atualiza nota `{ projectId, judgeUid, criteria }`
+│   │   ├── config/            # Database & Cloudinary config│   ├── src/Crie um arquivo `.env` na raiz com base no `.env.example`:
 
-### Prerequisites- `GET /scores/projects/:id` (auth) → notas de um projeto + média
+│   │   ├── controllers/       # Business logic
 
-- Node.js 16+ and npm- `GET /cloudinary/signature` (auth) → assinatura para upload
+│   │   ├── middleware/        # Auth & error handling│   ├── public/
+
+│   │   └── routes/            # API endpoints
+
+│   ├── schema.sql             # PostgreSQL database schema│   ├── .env.example            # Frontend environment template```
+
+│   ├── .env.example           # Backend environment template
+
+│   ├── package.json│   └── package.jsonDATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DBNAME?schema=public"
+
+│   └── Documentation/
+
+│       ├── QUICKSTART.md│FIREBASE_SERVICE_ACCOUNT_JSON='{"type":"service_account","project_id":"...","private_key_id":"...","private_key":"-----BEGIN PRIVATE KEY-----\n...","client_email":"...","client_id":"..."}'
+
+│       ├── DEPLOY_TO_RENDER.md
+
+│       └── ...more docs├── hackathon-backend/          # Express.js API serverCLOUDINARY_CLOUD_NAME=""
+
+│
+
+└── README.md                   # This file│   ├── src/CLOUDINARY_API_KEY=""
+
+```
+
+│   │   ├── app.js             # Express app configurationCLOUDINARY_API_SECRET=""
+
+## 🚀 Quick Start
+
+│   │   ├── server.js          # Server entry pointPORT=8080
+
+### Prerequisites
+
+- Node.js 16+ and npm│   │   ├── config/            # Database & Cloudinary config```
 
 - PostgreSQL database (recommend [Neon](https://neon.tech))
 
-- Cloudinary account for file uploads> **Auth**: enviar `Authorization: Bearer <ID_TOKEN_FIREBASE>`
+- Cloudinary account for file uploads│   │   ├── controllers/       # Business logic
 
 - Firebase project for authentication
 
-## 5) Integração no Frontend (CRA)
+│   │   ├── middleware/        # Auth & error handling## 3) Instalação
 
-### 1. Clone RepositoryCrie `src/services/api.js`:
+### 1. Clone Repository
 
-```bash
+```bash│   │   └── routes/            # API endpoints```bash
 
-git clone https://github.com/XFLOS/Hackathon-Portal-Project.git```js
+git clone https://github.com/XFLOS/Hackathon-Portal-Project.git
 
-cd Hackathon-Portal-Projectimport axios from 'axios'
+cd Hackathon-Portal-Project│   ├── schema.sql             # PostgreSQL database schemanpm install
 
-```import { auth } from '../firebase/config'
+```
 
-import { getIdToken } from 'firebase/auth'
+│   ├── .env.example           # Backend environment templatenpx prisma generate
 
 ### 2. Setup Frontend
 
-```bashconst api = axios.create({
+```bash│   ├── package.jsonnpx prisma migrate dev --name init
 
-cd frontend  baseURL: process.env.REACT_APP_API_BASE_URL
+cd hackathon-frontend
 
-npm install})
+npm install│   └── Documentation/npm run dev
 
 
 
-# Copy and configure environment variablesapi.interceptors.request.use(async (config) => {
-
-cp .env.example .env  const user = auth.currentUser
-
-# Edit .env with your Firebase credentials  if (user) {
-
-```    const token = await getIdToken(user, true)
-
-    config.headers.Authorization = `Bearer ${token}`
-
-### 3. Setup Backend  }
-
-```bash  return config
-
-cd hackathon-backend})
-
-npm install
-
-export default api
-
-# Copy and configure environment variables```
+# Copy and configure environment variables│       ├── QUICKSTART.md```
 
 cp .env.example .env
 
-# Edit .env with your database and Cloudinary credentialsNo `.env` do front (CRA):
+# Edit .env with your Firebase credentials│       ├── DEPLOY_TO_RENDER.md
 
 ```
 
-# Create database tablesREACT_APP_API_BASE_URL=http://localhost:8080
+│       └── ...more docsA API deve subir em `http://localhost:8080/health`.
 
-# Run schema.sql in your PostgreSQL database```
+### 3. Setup Backend
 
-```
+```bash│
 
-Uso no componente/página:
+cd hackathon-backend
 
-### 4. Run Development Servers```js
-
-import api from '../services/api'
-
-**Frontend** (in `frontend/` directory):
-
-```bashconst { data: teams } = await api.get('/teams')
-
-npm startawait api.post('/scores', { projectId, judgeUid: user.uid, criteria: { inovacao: 8, impacto: 9 } })
-
-# Runs on http://localhost:3000```
-
-```
-
-## 6) Deploy
-
-**Backend** (in `hackathon-backend/` directory):- Suba o banco (Neon/Railway).
-
-```bash- Configure as variáveis de ambiente na plataforma de deploy do backend.
-
-npm run dev- Execute `npx prisma migrate deploy` ao iniciar o container.
-
-# Runs on http://localhost:4000- No front, aponte `REACT_APP_API_BASE_URL` para a URL pública da API.
-
-``````)
+npm install└── README.md                   # This file## 4) Rotas principais
 
 
 
-## 📚 Documentation
+# Copy and configure environment variables```- `GET /health` → status
 
-- **Frontend**: See `frontend/DEPLOY.md`
+cp .env.example .env
+
+# Edit .env with your database and Cloudinary credentials- `GET /teams` (auth) → lista times (inclui membros e projeto)
+
+
+
+# Create database tables## 🚀 Quick Start- `POST /teams` (auth) → cria time `{ name }`
+
+# Run schema.sql in your PostgreSQL database
+
+```- `POST /scores` (auth) → cria/atualiza nota `{ projectId, judgeUid, criteria }`
+
+
+
+### 4. Run Development Servers### Prerequisites- `GET /scores/projects/:id` (auth) → notas de um projeto + média
+
+
+
+**Frontend** (in `hackathon-frontend/` directory):- Node.js 16+ and npm- `GET /cloudinary/signature` (auth) → assinatura para upload
+
+```bash
+
+npm start- PostgreSQL database (recommend [Neon](https://neon.tech))
+
+# Runs on http://localhost:3000
+
+```- Cloudinary account for file uploads> **Auth**: enviar `Authorization: Bearer <ID_TOKEN_FIREBASE>`
+
+
+
+**Backend** (in `hackathon-backend/` directory):- Firebase project for authentication
+
+```bash
+
+npm run dev## 5) Integração no Frontend (CRA)
+
+# Runs on http://localhost:4000
+
+```### 1. Clone RepositoryCrie `src/services/api.js`:
+
+
+
+## 📚 Documentation```bash
+
+
+
+- **Frontend**: See `hackathon-frontend/DEPLOY.md`git clone https://github.com/XFLOS/Hackathon-Portal-Project.git```js
+
 - **Backend**: See `hackathon-backend/QUICKSTART.md`
-- **Deployment**: See `hackathon-backend/DEPLOY_TO_RENDER.md`
+
+- **Deployment**: See `hackathon-backend/DEPLOY_TO_RENDER.md`cd Hackathon-Portal-Projectimport axios from 'axios'
+
 - **API Reference**: See `hackathon-backend/SETUP_COMPLETE.md`
+
+```import { auth } from '../firebase/config'
 
 ## 🔧 Environment Variables
 
+import { getIdToken } from 'firebase/auth'
+
 ### Frontend (.env)
-```env
+
+```env### 2. Setup Frontend
+
 REACT_APP_FIREBASE_API_KEY=your_api_key
-REACT_APP_FIREBASE_AUTH_DOMAIN=your_domain
+
+REACT_APP_FIREBASE_AUTH_DOMAIN=your_domain```bashconst api = axios.create({
+
 REACT_APP_FIREBASE_PROJECT_ID=your_project_id
-REACT_APP_FIREBASE_STORAGE_BUCKET=your_bucket
+
+REACT_APP_FIREBASE_STORAGE_BUCKET=your_bucketcd frontend  baseURL: process.env.REACT_APP_API_BASE_URL
+
 REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-REACT_APP_FIREBASE_APP_ID=your_app_id
+
+REACT_APP_FIREBASE_APP_ID=your_app_idnpm install})
+
 REACT_APP_FIREBASE_MEASUREMENT_ID=your_measurement_id
+
 REACT_APP_API_URL=http://localhost:4000
+
 ```
 
+# Copy and configure environment variablesapi.interceptors.request.use(async (config) => {
+
 ### Backend (.env)
-```env
+
+```envcp .env.example .env  const user = auth.currentUser
+
 PORT=4000
-DATABASE_URL=postgresql://user:password@host/database?sslmode=require
+
+DATABASE_URL=postgresql://user:password@host/database?sslmode=require# Edit .env with your Firebase credentials  if (user) {
+
 JWT_SECRET=your_secret_key
+
+CLOUDINARY_CLOUD_NAME=your_cloud_name```    const token = await getIdToken(user, true)
+
+CLOUDINARY_API_KEY=your_api_key
+
+CLOUDINARY_API_SECRET=your_api_secret    config.headers.Authorization = `Bearer ${token}`
+
+```
+
+### 3. Setup Backend  }
+
+## 🗄️ Database Setup
+
+```bash  return config
+
+1. Create a PostgreSQL database (use [Neon](https://neon.tech) for free hosting)
+
+2. Run the SQL schema:cd hackathon-backend})
+
+   ```bash
+
+   # In Neon SQL Editor or psqlnpm install
+
+   \i hackathon-backend/schema.sql
+
+   ```export default api
+
+3. Update `DATABASE_URL` in `hackathon-backend/.env`
+
+# Copy and configure environment variables```
+
+## 🔐 Security Notes
+
+cp .env.example .env
+
+- **NEVER** commit `.env` files
+
+- Use `.env.example` as templates only# Edit .env with your database and Cloudinary credentialsNo `.env` do front (CRA):
+
+- Keep Firebase keys, database credentials, and API secrets secure
+
+- Rotate JWT_SECRET in production```
+
+
+
+## 🚀 Deployment# Create database tablesREACT_APP_API_BASE_URL=http://localhost:8080
+
+
+
+### Frontend (Vercel/Netlify)# Run schema.sql in your PostgreSQL database```
+
+See `hackathon-frontend/DEPLOY.md` for detailed instructions.
+
+```
+
+### Backend (Render)
+
+See `hackathon-backend/DEPLOY_TO_RENDER.md` for step-by-step deployment guide.Uso no componente/página:
+
+
+
+**Important Render Configuration:**### 4. Run Development Servers```js
+
+- **Root Directory**: `hackathon-backend`
+
+- **Build Command**: `npm install`import api from '../services/api'
+
+- **Start Command**: `npm start`
+
+- Add all environment variables from `hackathon-backend/.env.example`**Frontend** (in `frontend/` directory):
+
+
+
+## 🛠️ Technology Stack```bashconst { data: teams } = await api.get('/teams')
+
+
+
+### Frontendnpm startawait api.post('/scores', { projectId, judgeUid: user.uid, criteria: { inovacao: 8, impacto: 9 } })
+
+- React 19
+
+- Firebase Authentication & Analytics# Runs on http://localhost:3000```
+
+- React Router
+
+- Axios```
+
+
+
+### Backend## 6) Deploy
+
+- Express.js
+
+- PostgreSQL (via node-postgres)**Backend** (in `hackathon-backend/` directory):- Suba o banco (Neon/Railway).
+
+- JWT Authentication
+
+- Cloudinary (file storage)```bash- Configure as variáveis de ambiente na plataforma de deploy do backend.
+
+- Bcrypt (password hashing)
+
+npm run dev- Execute `npx prisma migrate deploy` ao iniciar o container.
+
+## 📖 Features
+
+# Runs on http://localhost:4000- No front, aponte `REACT_APP_API_BASE_URL` para a URL pública da API.
+
+- User authentication (students, mentors, judges, coordinators)
+
+- Team formation and management``````)
+
+- Project submissions
+
+- Judge scoring and evaluations
+
+- Leaderboards
+
+- Event scheduling## 📚 Documentation
+
+- File uploads
+
+- Real-time updates- **Frontend**: See `frontend/DEPLOY.md`
+
+- **Backend**: See `hackathon-backend/QUICKSTART.md`
+
+## 🤝 Contributing- **Deployment**: See `hackathon-backend/DEPLOY_TO_RENDER.md`
+
+- **API Reference**: See `hackathon-backend/SETUP_COMPLETE.md`
+
+1. Fork the repository
+
+2. Create a feature branch## 🔧 Environment Variables
+
+3. Make your changes
+
+4. Test locally### Frontend (.env)
+
+5. Submit a pull request```env
+
+REACT_APP_FIREBASE_API_KEY=your_api_key
+
+## 📄 LicenseREACT_APP_FIREBASE_AUTH_DOMAIN=your_domain
+
+REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+
+See LICENSE file for details.REACT_APP_FIREBASE_STORAGE_BUCKET=your_bucket
+
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+
+## 🆘 SupportREACT_APP_FIREBASE_APP_ID=your_app_id
+
+REACT_APP_FIREBASE_MEASUREMENT_ID=your_measurement_id
+
+For issues or questions:REACT_APP_API_URL=http://localhost:4000
+
+- Check the documentation in `hackathon-backend/` folder```
+
+- Open an issue on GitHub
+
+- Review `QUICKSTART.md` and deployment guides### Backend (.env)
+
+```env
+
+---PORT=4000
+
+DATABASE_URL=postgresql://user:password@host/database?sslmode=require
+
+**Happy Hacking!** 🎉JWT_SECRET=your_secret_key
+
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
