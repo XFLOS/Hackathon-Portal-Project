@@ -1,10 +1,11 @@
 [build]
-  base = "frontend"
-  publish = "frontend/build"
+  base = "hackathon-frontend"
+  publish = "hackathon-frontend/build"
   command = "npm run build"
 
 [build.environment]
   REACT_APP_USE_MOCK_API = "false"
+  REACT_APP_API_URL = "https://hackathon-portal-project-8737.onrender.com"
 
 [[redirects]]
   from = "/*"
