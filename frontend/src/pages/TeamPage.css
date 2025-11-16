@@ -1,0 +1,146 @@
+@font-face {
+  font-family: 'BebasNeue';
+  src: url('../fonts/Bebas_Neue/BebasNeue-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'OpenSans';
+  src: url('../fonts/Open_Sans/OpenSans-Regular.ttf') format('truetype');
+}
+
+.team-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 60px 20px;
+  background-color: white;
+  min-height: 100vh;
+}
+
+.team-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  padding: 40px;
+  width: 100%;
+  max-width: 800px;
+}
+
+.team-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.team-title {
+  font-family: 'BebasNeue', sans-serif;
+  font-size: 48px;
+  color: #65c5e8;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.team-description {
+  font-family: 'OpenSans', sans-serif;
+  font-size: 16px;
+  color: black;
+  margin-bottom: 0;
+}
+
+.team-section {
+  margin-top: 25px;
+}
+
+.team-section h3 {
+  font-family: 'BebasNeue', sans-serif;
+  color: #65c5e8;
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.team-section p, .team-section li {
+  font-family: 'OpenSans', sans-serif;
+  color: black;
+  font-size: 15px;
+}
+
+.member-list {
+  list-style: none;
+  padding: 0;
+}
+
+.member-list li {
+  background: #f4f6f8;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+
+.mentor-link {
+  color: #65c5e8;
+  text-decoration: none;
+}
+
+.mentor-link:hover {
+  text-decoration: underline;
+}
+
+.update-input {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.update-input input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #4aa3c9;
+  font-family: 'OpenSans', sans-serif;
+}
+
+.post-btn {
+  padding: 10px 16px;
+  background-color: #65c5e8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-family: 'OpenSans', sans-serif;
+  transition: 0.2s;
+}
+
+.post-btn:hover {
+  background-color: #4aa3c9;
+}
+
+.update-list li {
+  background: #f4f6f8;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 6px;
+}
+
+.leave-team-button {
+  margin-top: 20px;
+  padding: 10px 18px;
+  background-color: #b95555;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-family: 'OpenSans', sans-serif;
+}
+
+.leave-team-button:hover {
+  background-color: #944848;
+}
+
+.team-message {
+  text-align: center;
+  margin-top: 100px;
+  font-family: 'OpenSans', sans-serif;
+  font-size: 1.1rem;
+  color: #65c5e8;
+}

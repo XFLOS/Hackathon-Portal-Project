@@ -1,0 +1,26 @@
+/* Global theme tokens and primitives */
+:root {
+  --nav-h: 100px;
+  --color-bg: #ffffff;
+  --color-surface: rgba(10,18,32,0.86);
+  --color-primary: #65c5e8;
+  --color-primary-2: #4aa3c9;
+  --color-text: #0b0f17;
+  --color-text-invert: #e8f8ff;
+  --color-muted: #5b8fa3;
+  --color-border: rgba(101,197,232,0.35);
+
+  --radius-s: 8px;
+  --radius-m: 10px;
+  --radius-l: 16px;
+
+  --shadow-soft: 0 12px 22px rgba(101,197,232,0.2);
+}
+
+/* Buttons */
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 18px; border:none; border-radius: var(--radius-m); cursor:pointer; font-weight:800; text-decoration:none; }
+.btn:active { transform: translateY(1px); }
+.btn-primary { background: linear-gradient(90deg, var(--color-primary-2), var(--color-primary)); color: var(--color-text); box-shadow: var(--shadow-soft); }
+
+/* Containers */
+.center { display:grid; place-items:center; }
