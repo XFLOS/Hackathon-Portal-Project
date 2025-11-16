@@ -11,8 +11,22 @@ dotenv.config();
 // Initialize Express app
 const app = express();
 
+// CORS Configuration
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',                                          // Local development
+    'https://hackathon-portal-project-8737.onrender.com',            // Backend URL (for testing)
+    // Add your frontend deployment URLs here when deployed:
+    // 'https://your-app.netlify.app',
+    // 'https://your-app.vercel.app',
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -20,6 +34,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
   next();
+});
+
+// Root endpoint
+app.get('/', (req, res) => {
+  res.send('Hackathon Portal API Running');
 });
 
 // Health check endpoint
