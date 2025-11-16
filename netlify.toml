@@ -1,6 +1,6 @@
 [build]
   base = "hackathon-frontend"
-  publish = "hackathon-frontend/build"
+  publish = "build"
   command = "npm run build"
 
 [build.environment]
