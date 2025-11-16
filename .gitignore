@@ -19,18 +19,37 @@ node_modules/
 .next
 .nuxt
 
-# Environment variables
+# Environment variables - NEVER COMMIT
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+**/.env
+**/. env.*
+!**/.env.example
 
 # Firebase / keys
-.env*
+firebase-service-key.json
+serviceAccountKey.json
 
 # Optional IDE files
 .vscode/
+.idea/
+*.swp
+*.swo
+*~
 
-#Firebase
-firebase-service-key.json
+# OS files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+
+# Diagnostic and debug files
+scripts/network-diagnostics*.txt
+*.diagnostics.txt
+
+# Lock files (optional - uncomment if you want to ignore)
+# package-lock.json
+# yarn.lock

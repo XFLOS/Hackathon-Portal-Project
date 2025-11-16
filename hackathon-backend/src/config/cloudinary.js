@@ -12,8 +12,8 @@ const isConfigured =
   !process.env.CLOUDINARY_API_KEY.includes('<');
 
 if (!isConfigured) {
-  console.warn('⚠️  Cloudinary credentials not properly configured in .env');
-  console.warn('⚠️  File upload features will not work until configured\n');
+  console.warn('WARNING: Cloudinary credentials not properly configured in .env');
+  console.warn('WARNING: File upload features will not work until configured\n');
 }
 
 // Configure Cloudinary
@@ -34,7 +34,7 @@ const storage = new CloudinaryStorage({
 });
 
 if (isConfigured) {
-  console.log('✅ Cloudinary configured');
+  console.log('SUCCESS: Cloudinary configured');
 }
 
 export { cloudinary, storage };

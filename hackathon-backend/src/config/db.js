@@ -7,9 +7,9 @@ const { Pool } = pg;
 
 // Check if DATABASE_URL is configured
 if (!process.env.DATABASE_URL || process.env.DATABASE_URL.includes('<')) {
-  console.warn('⚠️  DATABASE_URL is not properly configured in .env file');
-  console.warn('⚠️  Please update .env with your actual Neon PostgreSQL credentials');
-  console.warn('⚠️  Database operations will fail until this is fixed\n');
+  console.warn('WARNING: DATABASE_URL is not properly configured in .env file');
+  console.warn('WARNING: Please update .env with your actual Neon PostgreSQL credentials');
+  console.warn('WARNING: Database operations will fail until this is fixed\n');
 }
 
 // Create a PostgreSQL connection pool
@@ -22,11 +22,11 @@ const pool = new Pool({
 
 // Test database connection
 pool.on('connect', () => {
-  console.log('✅ Connected to PostgreSQL database');
+  console.log('SUCCESS: Connected to PostgreSQL database');
 });
 
 pool.on('error', (err) => {
-  console.error('❌ Unexpected error on idle client', err);
+  console.error('ERROR: Unexpected error on idle client', err);
   process.exit(-1);
 });
 
