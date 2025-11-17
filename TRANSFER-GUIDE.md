@@ -2,6 +2,10 @@
 
 ## Complete guide to move this Hackathon Portal to a new machine
 
+> **⚠️ GETTING ERRORS?** See **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** for common fixes!
+>
+> **🚀 QUICK START:** Use automated setup scripts: `setup.ps1` (Windows) or `setup.sh` (Mac/Linux)
+
 ---
 
 ## 📦 Method 1: Clone from GitHub (Recommended - Cleanest)
