@@ -1,104 +1,95 @@
-# 🎓 Hackathon Portal - Complete Platform# Hackathon Portal Project# Hackathon Portal Project# Hackathon Backend (Express + Prisma + Firebase Auth)
-
-
+# 🎓 Hackathon Portal - Complete Platform
 
 A full-stack hackathon management system with role-based dashboards for Students, Mentors, Judges, and Coordinators.
 
+---
 
-
-## 🌐 Live DemoA full-stack hackathon management platform with React frontend and Express.js backend.
-
-
+## 🌐 Live Demo
 
 - **Frontend**: https://hackathonportalproject4g5.netlify.app
-
 - **Backend API**: https://hackathon-portal-project-8737.onrender.com
+- **GitHub**: https://github.com/XFLOS/Hackathon-Portal-Project
 
-- **GitHub**: https://github.com/XFLOS/Hackathon-Portal-Project## 📁 Project StructureA full-stack hackathon management platform with React frontend and Express.js backend.## 1) Pré-requisitos
-
-
+---
 
 ## 🎭 Demo Accounts
 
+**All accounts use password: `12345678`**
 
+| Role | Email | Dashboard Features |
+|------|-------|-------------------|
+| 👤 Student | `student@demo.com` | Team "Phoenix Rising", 5 members, file upload |
+| 🧑‍🏫 Mentor | `mentor@demo.com` | Assigned teams, progress monitoring |
+| ⚖️ Judge | `judge@demo.com` | 2 submissions to evaluate, scores 85 & 92 |
+| 🛠 Coordinator | `coordinator@demo.com` | Platform stats, leaderboard, admin tools |
 
-**All accounts use password: `12345678`**```- Node.js 18+
+**Quick Demo:** Login → See role-specific dashboard → Explore features  
+**Full Guide:** See [DEMO-QUICK-REFERENCE.md](./DEMO-QUICK-REFERENCE.md)
 
-
-
-| Role | Email | Dashboard |Hackathon-Portal-Project/
-
-|------|-------|-----------|
-
-| 👤 Student | `student@demo.com` | Team management, submissions, schedule |├── hackathon-frontend/          # React application## 📁 Project Structure- Banco PostgreSQL (Neon, Railway, Render, etc.)
-
-| 🧑‍🏫 Mentor | `mentor@demo.com` | Assigned teams, feedback, monitoring |
-
-| ⚖️ Judge | `judge@demo.com` | Evaluate submissions, scoring |│   ├── src/
-
-| 🛠 Coordinator | `coordinator@demo.com` | Full admin access, statistics |
-
-│   ├── public/- Firebase Service Account (JSON)
+---
 
 ## ✨ Features
 
-│   ├── .env.example            # Frontend environment template
-
 ### 👤 Student Role
+- ✅ View/create teams (max 5 members)
+- ✅ Submit projects with Cloudinary file upload
+- ✅ View team submission status
+- ✅ Check event schedule and deadlines
+- ✅ View leaderboard rankings
 
-- ✅ View/create teams (max 5 members)│   └── package.json```- Conta Cloudinary (para assinar upload)
-
-- ✅ Submit projects with files, GitHub links, demo URLs
-
-- ✅ View team submission status│
-
-- ✅ Check event schedule
-
-- ✅ View leaderboard rankings├── hackathon-backend/          # Express.js API serverHackathon-Portal-Project/
-
-
-
-### 🧑‍🏫 Mentor Role│   ├── src/
-
+### 🧑‍🏫 Mentor Role
 - ✅ View assigned teams
-
-- ✅ Monitor team progress│   │   ├── app.js             # Express app configuration├── frontend/                    # React application## 2) Configuração
-
+- ✅ Monitor team progress
 - ✅ Provide feedback and guidance
+- ✅ Review team submissions
 
-- ✅ Review submissions│   │   ├── server.js          # Server entry point
-
-
-
-### ⚖️ Judge Role│   │   ├── config/            # Database & Cloudinary config│   ├── src/Crie um arquivo `.env` na raiz com base no `.env.example`:
-
+### ⚖️ Judge Role
 - ✅ View all submissions
+- ✅ Evaluate projects with detailed rubrics
+- ✅ Score teams and provide feedback
+- ✅ View evaluation history
 
-- ✅ Evaluate projects (Innovation, Technical, Presentation)│   │   ├── controllers/       # Business logic
-
-- ✅ Score teams (0-10 scale)
-
-- ✅ View evaluation history│   │   ├── middleware/        # Auth & error handling│   ├── public/
-
-
-
-### 🛠 Coordinator Role│   │   └── routes/            # API endpoints
-
-- ✅ Dashboard with statistics
-
-- ✅ View all teams and submissions│   ├── schema.sql             # PostgreSQL database schema│   ├── .env.example            # Frontend environment template```
-
+### 🛠 Coordinator Role
+- ✅ Dashboard with real-time statistics
+- ✅ View all teams and submissions
 - ✅ Manage event schedule
+- ✅ View ranked leaderboard
+- ✅ Full platform administration
 
-- ✅ View leaderboard│   ├── .env.example           # Backend environment template
-
-- ✅ Assign mentors to teams
-
-│   ├── package.json│   └── package.jsonDATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DBNAME?schema=public"
+---
 
 ## 🏗️ Project Structure
 
-│   └── Documentation/
+```
+Hackathon-Portal-Project/
+├── hackathon-frontend/          # React application
+│   ├── src/
+│   │   ├── components/          # Reusable UI components
+│   │   ├── pages/               # Dashboard pages for each role
+│   │   ├── services/            # API integration (axios)
+│   │   └── context/             # Auth context provider
+│   ├── public/
+│   ├── .env.example            # Frontend environment template
+│   └── package.json
+│
+├── hackathon-backend/          # Express.js API server
+│   ├── src/
+│   │   ├── app.js             # Express app configuration
+│   │   ├── server.js          # Server entry point
+│   │   ├── config/            # Database & Cloudinary config
+│   │   ├── controllers/       # Business logic (6 controllers)
+│   │   ├── middleware/        # Auth & error handling
+│   │   └── routes/            # API endpoints (40+ routes)
+│   ├── COMPLETE-DATABASE-SETUP.sql  # Database schema & demo data
+│   ├── .env.example           # Backend environment template
+│   └── package.json
+│
+├── DEMO-SETUP-GUIDE.md         # Complete demo preparation guide
+├── DEMO-QUICK-REFERENCE.md     # Quick demo reference card
+├── TROUBLESHOOTING.md          # Common errors & fixes
+├── setup.ps1                   # Windows automated setup
+└── setup.sh                    # Mac/Linux automated setup
+```
 
 ```
 
