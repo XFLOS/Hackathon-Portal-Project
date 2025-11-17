@@ -34,12 +34,22 @@ export default function LoginPage() {
         // store token and user for api wrapper and UI
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
-        navigate('/team-selection');
+        
+        // Role-based navigation
+        const roleRoutes = {
+          student: '/student-dashboard',
+          mentor: '/mentor-dashboard',
+          judge: '/judge-dashboard',
+          coordinator: '/coordinator-dashboard'
+        };
+        
+        const destination = roleRoutes[user.role] || '/student-dashboard';
+        navigate(destination);
       }
 
     } catch (err) {
       console.error(err);
-      setMessage(err.response?.data?.message || err.message || 'Login failed'); // show error
+      setMessage(err.response?.data?.error || err.response?.data?.message || err.message || 'Login failed'); // show error
     }
   };
 

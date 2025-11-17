@@ -3,6 +3,12 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
+import teamRoutes from './routes/teamRoutes.js';
+import submissionRoutes from './routes/submissionRoutes.js';
+import judgeRoutes from './routes/judgeRoutes.js';
+import mentorRoutes from './routes/mentorRoutes.js';
+import coordinatorRoutes from './routes/coordinatorRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 
 // Load environment variables
@@ -47,11 +53,12 @@ app.get('/health', (req, res) => {
 // API Routes
 app.use('/auth', authRoutes);
 app.use('/upload', uploadRoutes);
-
-// Add more routes here as you create them
-// app.use('/teams', teamRoutes);
-// app.use('/submissions', submissionRoutes);
-// app.use('/users', userRoutes);
+app.use('/team', teamRoutes);
+app.use('/submission', submissionRoutes);
+app.use('/judge', judgeRoutes);
+app.use('/mentor', mentorRoutes);
+app.use('/coordinator', coordinatorRoutes);
+app.use('/users', userRoutes);
 
 // 404 handler
 app.use(notFound);
