@@ -12,8 +12,6 @@ function FileUpload({ teamId, userId }) {
 
   const handleUpload = async () => {
     if (!file) return alert("Please select a file first.");
-    const user = auth.currentUser;
-    if (!user) return alert("You must be logged in!");
 
     try {
       setUploading(true);
@@ -21,19 +19,19 @@ function FileUpload({ teamId, userId }) {
       // Prepare form data
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('teamId', teamId);
-      formData.append('userId', userId);
+      if (teamId) formData.append('teamId', teamId);
+      if (userId) formData.append('userId', userId);
 
-      // Use api wrapper — it will attach Firebase ID token or JWT automatically
-      const response = await api.post('/api/files/upload', formData, {
+      // Upload to backend Cloudinary endpoint
+      const response = await api.post('/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
       alert('✅ File uploaded successfully!');
-      console.log('File URL:', response.data.fileUrl);
+      console.log('Upload response:', response.data);
     } catch (err) {
       console.error("File upload failed:", err);
-      alert("Upload failed. Check console for details.");
+      alert(err.response?.data?.error || "Upload failed. Check console for details.");
     } finally {
       setUploading(false);
     }

@@ -32,8 +32,8 @@ export default function LeaderboardPage() {
     // fetch leaderboard from backend (api will attach auth header)
     const fetchLeaderboard = async () => {
       try {
-        const res = await api.get('/teams/leaderboard');
-        setLeaderboard(res.data);
+        const res = await api.get('/coordinator/leaderboard');
+        setLeaderboard(Array.isArray(res.data) ? res.data : []);
       } catch (err) {
         console.error('Error fetching leaderboard:', err);
       } finally {

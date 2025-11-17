@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 export default function JudgeDashboard() {
-  const [assignments, setAssignments] = useState([]);
+  const [submissions, setSubmissions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
-        const res = await api.get('/assignments');
-        if (mounted && res?.data) setAssignments(res.data.slice(0,5));
+        const res = await api.get('/judge/submissions');
+        if (mounted && res?.data) {
+          setSubmissions(Array.isArray(res.data) ? res.data : []);
+        }
       } catch (err) {
-        // ignore when backend not available
+        console.error('Failed to load judge submissions:', err);
+      } finally {
+        if (mounted) setLoading(false);
       }
     })();
     return () => { mounted = false; };
@@ -21,10 +28,25 @@ export default function JudgeDashboard() {
       <div className="stack">
         <h2 className="h2">Judge Dashboard</h2>
         <p className="subtitle">Evaluate submissions and review feedback history.</p>
+        
+        {loading && <LoadingSpinner />}
+        
         <div className="card panel">
-          <h3 style={{ marginTop: 0 }}>Your assignments</h3>
-          {assignments.length === 0 ? <p className="muted">No assignments (or backend unavailable).</p> : (
-            <ul>{assignments.map(a => <li key={a._id || a.id}>{a.title || a.name}</li>)}</ul>
+          <h3 style={{ marginTop: 0 }}>Submissions to evaluate</h3>
+          {loading ? <p>Loading...</p> : (
+            submissions.length === 0 ? <p className="muted">No submissions assigned yet.</p> : (
+              <ul>
+                {submissions.map(s => (
+                  <li key={s.id}>
+                    <strong>{s.team_name || `Team #${s.team_id}`}</strong>
+                    <p className="muted">
+                      Submitted: {s.submitted_at ? new Date(s.submitted_at).toLocaleDateString() : 'Unknown'}
+                      {s.score && ` • Score: ${s.score}`}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            )
           )}
         </div>
       </div>

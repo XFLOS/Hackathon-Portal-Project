@@ -48,6 +48,11 @@ function App() {
             <Route path="/register" element={<BaseRegister />} />
 
             {/* Student */}
+            <Route path="/student-dashboard" element={
+              <RoleRoute allow={["student", "admin"]}>
+                <StudentDashboard />
+              </RoleRoute>
+            } />
             <Route path="/student" element={
               <RoleRoute allow={["student", "admin"]}>
                 <StudentDashboard />
@@ -75,6 +80,11 @@ function App() {
             } />
 
             {/* Mentor */}
+            <Route path="/mentor-dashboard" element={
+              <RoleRoute allow={["mentor", "admin"]}>
+                <MentorDashboard />
+              </RoleRoute>
+            } />
             <Route path="/mentor" element={
               <RoleRoute allow={["mentor", "admin"]}>
                 <MentorDashboard />
@@ -92,6 +102,11 @@ function App() {
             } />
 
             {/* Judge */}
+            <Route path="/judge-dashboard" element={
+              <RoleRoute allow={["judge", "admin"]}>
+                <JudgeDashboard />
+              </RoleRoute>
+            } />
             <Route path="/judge" element={
               <RoleRoute allow={["judge", "admin"]}>
                 <JudgeDashboard />
@@ -109,8 +124,13 @@ function App() {
             } />
 
             {/* Coordinator/Admin */}
+            <Route path="/coordinator-dashboard" element={
+              <RoleRoute allow={["coordinator", "admin"]}>
+                <CoordinatorDashboard />
+              </RoleRoute>
+            } />
             <Route path="/admin" element={
-              <RoleRoute allow={["admin"]}>
+              <RoleRoute allow={["admin", "coordinator"]}>
                 <CoordinatorDashboard />
               </RoleRoute>
             } />

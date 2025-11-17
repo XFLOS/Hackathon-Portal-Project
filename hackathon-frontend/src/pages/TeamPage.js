@@ -10,32 +10,36 @@ export default function TeamPage() {
   const [newUpdate, setNewUpdate] = useState(""); // input for new update
 
   useEffect(() => {
-    // Prefer explicit teamId saved after creation
-    const teamId = localStorage.getItem('teamId');
-    const loggedUser = JSON.parse(localStorage.getItem("user"));
+    const loggedUser = JSON.parse(localStorage.getItem("user") || 'null');
     if (loggedUser) setUser(loggedUser);
 
-    if (teamId) {
-      api
-        .get(`/api/teams/${teamId}`)
-        .then((res) => {
+    // Fetch user's team from backend
+    api
+      .get('/team/me')
+      .then((res) => {
+        if (res.data) {
           setTeam(res.data);
+          // Team updates can be fetched from a separate endpoint if needed
           setUpdates(res.data.updates || []);
-        })
-        .catch((err) => console.error('Failed to fetch team:', err));
-    }
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to fetch team:', err);
+        // If 404 or error, user has no team
+      });
   }, []);
 
   // Add new team update
   const handleAddUpdate = () => {
-    if (!newUpdate.trim()) return;
+    if (!newUpdate.trim() || !team) return;
 
     const updatedList = [...updates, newUpdate];
     setUpdates(updatedList);
     setNewUpdate("");
 
+    // Post update to backend (if endpoint exists)
     api
-      .post(`/api/teams/${team.id}/updates`, { message: newUpdate })
+      .post(`/team/${team.id}/update`, { message: newUpdate })
       .catch((err) => console.error('Failed to send update:', err));
   };
 
@@ -44,7 +48,7 @@ export default function TeamPage() {
     if (!team) return;
     if (window.confirm("Are you sure you want to leave the team?")) {
       api
-        .post(`/api/teams/${team.id}/leave`, { userId: user.id })
+        .delete(`/team/member/${user.id}`)
         .then(() => {
           setTeam(null);
           alert('You have left the team.');

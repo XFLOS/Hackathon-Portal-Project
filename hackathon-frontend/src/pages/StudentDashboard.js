@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 // Simple mock data provider used when backend is offline or slow.
 function getMockDashboard() {
@@ -20,6 +21,7 @@ function getMockDashboard() {
 
 export default function StudentDashboard() {
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [team, setTeam] = useState(null);
   const [submissions, setSubmissions] = useState([]);
   const [deadlines, setDeadlines] = useState([]);
@@ -41,21 +43,42 @@ export default function StudentDashboard() {
 
     (async () => {
       try {
-        // Try to load dashboard payload from backend-friendly endpoints
-        const [teamRes, subsRes, dlRes, annRes] = await Promise.all([
-          api.get('/teams/me').catch(() => ({ data: null })),
-          api.get('/submissions/mine').catch(() => ({ data: [] })),
-          api.get('/deadlines').catch(() => ({ data: [] })),
-          api.get('/announcements').catch(() => ({ data: [] })),
+        // Load dashboard data from backend endpoints
+        const [teamRes, subsRes, scheduleRes] = await Promise.all([
+          api.get('/team/me').catch(() => ({ data: null })),
+          api.get('/submission/me').catch(() => ({ data: [] })),
+          api.get('/users/schedule').catch(() => ({ data: [] })),
         ]);
 
         if (!mounted) return;
         setTeam(teamRes?.data || null);
-        setSubmissions((subsRes?.data && subsRes.data.length) ? subsRes.data : []);
-        setDeadlines(dlRes?.data || []);
-        setAnnouncements(annRes?.data || []);
+        setSubmissions(Array.isArray(subsRes?.data) ? subsRes.data : (subsRes?.data ? [subsRes.data] : []));
+        
+        // Extract deadlines from schedule events
+        const events = scheduleRes?.data || [];
+        const deadlineEvents = events.filter(e => e.type === 'deadline' || e.title?.toLowerCase().includes('deadline'));
+        setDeadlines(deadlineEvents.map(e => ({ id: e.id, title: e.title, due: e.time })));
+        
+        // Extract announcements from schedule
+        const announcements = events.filter(e => e.type === 'announcement').map(e => ({ 
+          id: e.id, 
+          title: e.title, 
+          body: e.description || '' 
+        }));
+        setAnnouncements(announcements.length ? announcements : [
+          { id: 'welcome', title: 'Welcome', body: 'Check your schedule for important updates!' }
+        ]);
       } catch (err) {
-        // If backend completely fails, mock will be used after timeout
+        console.error('Dashboard load error:', err);
+        if (mounted) {
+          setError(err.response?.data?.error || err.message || 'Failed to load dashboard');
+          // Fall back to mock data
+          const mock = getMockDashboard();
+          setTeam(mock.team);
+          setSubmissions(mock.submissions);
+          setDeadlines(mock.deadlines);
+          setAnnouncements(mock.announcements);
+        }
       } finally {
         if (mounted) setLoading(false);
         clearTimeout(timeout);
@@ -70,6 +93,13 @@ export default function StudentDashboard() {
       <div className="stack">
         <h2 className="h2">Student Dashboard</h2>
         <p className="subtitle">Your team status, submissions, deadlines, and announcements.</p>
+
+        {loading && <LoadingSpinner />}
+        {error && (
+          <div className="alert alert-warning" style={{ padding: '1rem', marginBottom: '1rem', backgroundColor: '#fff3cd', borderRadius: '4px' }}>
+            <strong>⚠️ Warning:</strong> {error}. Showing offline data.
+          </div>
+        )}
 
         <div className="grid">
           <div className="card panel">
