@@ -12,6 +12,10 @@ export const register = async (req, res) => {
       return res.status(400).json({ error: 'Email, password, and name are required' });
     }
 
+    // Force all new registrations to be 'student' role only
+    // Other roles (mentor, judge, coordinator) must be created by admin
+    const userRole = 'student';
+
     // Check if user already exists
     const existingUser = await query('SELECT * FROM users WHERE email = $1', [email]);
     if (existingUser.rows.length > 0) {
@@ -21,10 +25,10 @@ export const register = async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Insert new user
+    // Insert new user with 'student' role
     const result = await query(
-      'INSERT INTO users (email, password, name, role) VALUES ($1, $2, $3, $4) RETURNING id, email, name, role, created_at',
-      [email, hashedPassword, name, role || 'student']
+      'INSERT INTO users (email, password, full_name, role) VALUES ($1, $2, $3, $4) RETURNING id, email, full_name, role, created_at',
+      [email, hashedPassword, name, userRole]
     );
 
     res.status(201).json({
@@ -86,7 +90,7 @@ export const login = async (req, res) => {
 export const getProfile = async (req, res) => {
   try {
     const result = await query(
-      'SELECT id, email, name, role, created_at FROM users WHERE id = $1',
+      'SELECT id, email, full_name, role, created_at FROM users WHERE id = $1',
       [req.user.id]
     );
 
