@@ -45,13 +45,13 @@ app.get('/health', (req, res) => {
 });
 
 // API Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/upload', uploadRoutes);
+app.use('/auth', authRoutes);
+app.use('/upload', uploadRoutes);
 
 // Add more routes here as you create them
-// app.use('/api/teams', teamRoutes);
-// app.use('/api/submissions', submissionRoutes);
-// app.use('/api/users', userRoutes);
+// app.use('/teams', teamRoutes);
+// app.use('/submissions', submissionRoutes);
+// app.use('/users', userRoutes);
 
 // 404 handler
 app.use(notFound);
