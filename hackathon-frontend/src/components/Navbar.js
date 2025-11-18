@@ -163,6 +163,12 @@ function Navbar() {
       
       setUser(null);
       setDropdownOpen(false);
+      
+      // Notify AuthContext to update (triggers ProtectedRoute to redirect)
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('auth-changed'));
+      }
+      
       navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
@@ -170,6 +176,12 @@ function Navbar() {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       setUser(null);
+      
+      // Notify AuthContext to update
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('auth-changed'));
+      }
+      
       navigate("/login");
     }
   };
