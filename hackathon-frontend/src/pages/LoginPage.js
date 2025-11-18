@@ -35,6 +35,11 @@ export default function LoginPage() {
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
         
+        // Notify other components (like Navbar) that auth state changed
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('auth-changed'));
+        }
+        
         // Role-based navigation
         const roleRoutes = {
           student: '/student-dashboard',

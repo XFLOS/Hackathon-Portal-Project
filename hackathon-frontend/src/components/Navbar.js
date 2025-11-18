@@ -43,11 +43,12 @@ function Navbar() {
         const storedUser = raw ? JSON.parse(raw) : null;
         if (storedUser) {
           setUser(storedUser);
-          return; // If we have a stored user, use it
+          return true; // If we have a stored user, use it
         }
       } catch (e) {
         console.error('Failed to load user from localStorage:', e);
       }
+      return false;
     };
 
     loadUser();
@@ -102,6 +103,13 @@ function Navbar() {
             })
           : () => {};
 
+    // Listen for auth changes (login/logout from any component)
+    const onAuthChanged = () => {
+      console.log('Auth changed event received in Navbar');
+      loadUser();
+    };
+    window.addEventListener('auth-changed', onAuthChanged);
+
     // Listen for storage events (user logged in from another tab or programmatically)
     const onStorage = (e) => {
       if (e.key === 'user') {
@@ -112,6 +120,7 @@ function Navbar() {
 
     return () => { 
       try { unsubscribe(); } catch (e) {} 
+      window.removeEventListener('auth-changed', onAuthChanged);
       window.removeEventListener('storage', onStorage);
     };
   }, []);
