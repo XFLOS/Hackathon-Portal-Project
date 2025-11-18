@@ -49,6 +49,11 @@ export const getMyTeam = async (req, res) => {
   try {
     const userId = req.user.id;
 
+    // DEBUG: Log the user ID and query
+    console.log('=== GET MY TEAM DEBUG ===');
+    console.log('req.user:', req.user);
+    console.log('userId:', userId);
+
     const result = await db.query(
       `SELECT t.*, u.full_name as creator_name
        FROM team_members tm
@@ -57,6 +62,9 @@ export const getMyTeam = async (req, res) => {
        WHERE tm.user_id = $1`,
       [userId]
     );
+
+    console.log('Query result rows:', result.rows.length);
+    console.log('Query result:', JSON.stringify(result.rows, null, 2));
 
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'You are not in a team yet' });

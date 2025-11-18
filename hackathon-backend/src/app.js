@@ -50,6 +50,30 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Debug endpoint to check database connection
+app.get('/debug/db', async (req, res) => {
+  try {
+    const db = await import('./config/database.js');
+    const result = await db.query('SELECT COUNT(*) as user_count FROM users');
+    const teamResult = await db.query('SELECT COUNT(*) as team_count FROM teams');
+    const membersResult = await db.query('SELECT COUNT(*) as members_count FROM team_members');
+    
+    res.json({
+      status: 'connected',
+      database: process.env.DATABASE_URL?.split('@')[1]?.split('/')[0] || 'hidden',
+      users: result.rows[0].user_count,
+      teams: teamResult.rows[0].team_count,
+      team_members: membersResult.rows[0].members_count
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      status: 'error', 
+      message: error.message,
+      database: process.env.DATABASE_URL?.split('@')[1]?.split('/')[0] || 'hidden'
+    });
+  }
+});
+
 // API Routes
 app.use('/auth', authRoutes);
 app.use('/upload', uploadRoutes);
