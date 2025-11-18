@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
+import './StudentDashboard.css';
 
 // Simple mock data provider used when backend is offline or slow.
 function getMockDashboard() {
@@ -89,87 +90,82 @@ export default function StudentDashboard() {
   }, []);
 
   return (
-    <div className="container section">
-      <div className="stack">
-        <h2 className="h2">Student Dashboard</h2>
-        <p className="subtitle">Your team status, submissions, deadlines, and announcements.</p>
+    <div className="student-dashboard">
+      <div className="dashboard-header">
+        <h2>Student Dashboard</h2>
+        <p className="dashboard-subtitle">Your team status, submissions, deadlines, and announcements.</p>
+      </div>
 
-        {loading && <LoadingSpinner />}
-        {error && (
-          <div className="alert alert-warning" style={{ padding: '1rem', marginBottom: '1rem', backgroundColor: '#fff3cd', borderRadius: '4px' }}>
-            <strong>⚠️ Warning:</strong> {error}. Showing offline data.
-          </div>
-        )}
+      {loading && <div className="dashboard-loading"><LoadingSpinner /></div>}
+      
+      {error && (
+        <div className="dashboard-alert">
+          <strong>⚠️ Warning:</strong> {error}. Showing offline data.
+        </div>
+      )}
 
-        <div className="grid">
-          <div className="card panel">
+      {!loading && (
+        <div className="dashboard-grid">
+          <div className="dashboard-card">
             <h3>Team</h3>
-            {loading ? <p>Loading…</p> : (
-              team ? (
-                <div>
-                  <strong>{team.name}</strong>
-                  <p>Members: {team.members?.length || 1}</p>
+            {team ? (
+              <div className="team-info">
+                <strong>{team.name}</strong>
+                <p>Members: {team.members?.length || 1}</p>
+              </div>
+            ) : (
+              <div>
+                <p className="no-team-message">You are not in a team.</p>
+                <div className="team-actions">
+                  <a className="team-btn" href="/team-selection">Create Team</a>
+                  <a className="team-btn secondary" href="/team-selection">Join Team</a>
                 </div>
-              ) : (
-                <div>
-                  <p className="muted">You are not in a team.</p>
-                  <div style={{ marginTop: '0.5rem' }}>
-                    <a className="btn" href="/team-selection">Create Team</a>
-                    <a className="btn" style={{ marginLeft: '0.5rem' }} href="/team-selection">Join Team</a>
-                  </div>
-                </div>
-              )
+              </div>
             )}
           </div>
 
-          <div className="card panel">
+          <div className="dashboard-card">
             <h3>Submissions</h3>
-            {loading ? <p>Loading…</p> : (
-              submissions && submissions.length ? (
-                <ul>
-                  {submissions.map(s => (
-                    <li key={s.id}>
-                      <strong>{s.filename}</strong> — {new Date(s.time || s.timestamp || s.createdAt).toLocaleString()} — <em>{s.status}</em>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="muted">No submissions yet.</p>
-              )
+            {submissions && submissions.length ? (
+              <ul className="dashboard-list">
+                {submissions.map(s => (
+                  <li key={s.id}>
+                    <strong>{s.filename}</strong> — {new Date(s.time || s.timestamp || s.createdAt).toLocaleString()} — <em>{s.status}</em>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="empty-state">No submissions yet.</p>
             )}
           </div>
 
-          <div className="card panel">
+          <div className="dashboard-card">
             <h3>Deadlines</h3>
-            {loading ? <p>Loading…</p> : (
-              deadlines && deadlines.length ? (
-                <ul>
-                  {deadlines.map(d => (
-                    <li key={d.id}>{d.title} — due {new Date(d.due).toLocaleString()}</li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="muted">No upcoming deadlines.</p>
-              )
+            {deadlines && deadlines.length ? (
+              <ul className="dashboard-list">
+                {deadlines.map(d => (
+                  <li key={d.id}>{d.title} — due {new Date(d.due).toLocaleString()}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="empty-state">No upcoming deadlines.</p>
             )}
           </div>
 
-          <div className="card panel">
+          <div className="dashboard-card">
             <h3>Announcements</h3>
-            {loading ? <p>Loading…</p> : (
-              announcements && announcements.length ? (
-                <ul>
-                  {announcements.map(a => (
-                    <li key={a.id}><strong>{a.title}</strong> — {a.body}</li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="muted">No announcements.</p>
-              )
+            {announcements && announcements.length ? (
+              <ul className="dashboard-list">
+                {announcements.map(a => (
+                  <li key={a.id}><strong>{a.title}</strong> — {a.body}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="empty-state">No announcements.</p>
             )}
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
