@@ -36,6 +36,22 @@ function Navbar() {
 
   useEffect(() => {
     // Load user from Firebase or local storage
+    const loadUser = () => {
+      // First check localStorage (for backend JWT auth)
+      try {
+        const raw = localStorage.getItem('user');
+        const storedUser = raw ? JSON.parse(raw) : null;
+        if (storedUser) {
+          setUser(storedUser);
+          return; // If we have a stored user, use it
+        }
+      } catch (e) {
+        console.error('Failed to load user from localStorage:', e);
+      }
+    };
+
+    loadUser();
+
     const unsubscribe = typeof onAuthStateChanged === 'function'
       ? onAuthStateChanged(auth, (firebaseUser) => {
           if (firebaseUser) {
@@ -52,8 +68,17 @@ function Navbar() {
             // If the user authenticated, clear the 'homeIsLogin' preference
             try { localStorage.removeItem('homeIsLogin'); } catch (_) {}
           } else {
-            setUser(null);
-            localStorage.removeItem("user");
+            // Only clear user if there's no localStorage user
+            try {
+              const raw = localStorage.getItem('user');
+              if (!raw) {
+                setUser(null);
+                localStorage.removeItem("user");
+              }
+            } catch (e) {
+              setUser(null);
+              localStorage.removeItem("user");
+            }
           }
         })
       : // fallback if auth provides its own method (stub)
@@ -63,13 +88,32 @@ function Navbar() {
                 setUser({ id: firebaseUser.uid, email: firebaseUser.email, name: firebaseUser.displayName || firebaseUser.email });
                 localStorage.setItem('user', JSON.stringify({ id: firebaseUser.uid, email: firebaseUser.email, name: firebaseUser.displayName || firebaseUser.email }));
               } else {
-                setUser(null);
-                localStorage.removeItem('user');
+                try {
+                  const raw = localStorage.getItem('user');
+                  if (!raw) {
+                    setUser(null);
+                    localStorage.removeItem('user');
+                  }
+                } catch (e) {
+                  setUser(null);
+                  localStorage.removeItem('user');
+                }
               }
             })
           : () => {};
 
-    return () => { try { unsubscribe(); } catch (e) {} };
+    // Listen for storage events (user logged in from another tab or programmatically)
+    const onStorage = (e) => {
+      if (e.key === 'user') {
+        loadUser();
+      }
+    };
+    window.addEventListener('storage', onStorage);
+
+    return () => { 
+      try { unsubscribe(); } catch (e) {} 
+      window.removeEventListener('storage', onStorage);
+    };
   }, []);
 
   // Update home target when auth state or storage changes
