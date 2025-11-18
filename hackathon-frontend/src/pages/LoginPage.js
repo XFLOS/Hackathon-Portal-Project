@@ -92,44 +92,46 @@ export default function LoginPage() {
   }, []);
 
   return (
-    <div className="login-container">
-      <h2>log in</h2>
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        /><br />
+    <div className="login-wrapper">
+      <div className="login-card">
+        <h2>LOG IN</h2>
+        <form onSubmit={handleLogin}>
+          <input
+            type="email"
+            placeholder="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-        <input
-          type="password"
-          placeholder="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        /><br />
+          <input
+            type="password"
+            placeholder="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-        <button type="submit">Log in</button>
-      </form>
+          <button type="submit">Log in</button>
+        </form>
 
-      <p><Link to="/reset-password" className="forgot-password-link">Forgot your password?</Link></p>
+        <p><Link to="/reset-password" className="forgot-password-link">Forgot your password?</Link></p>
 
-      <p className="message">{message}</p>
+        <p className="message">{message}</p>
 
-      <div style={{ marginTop: '1rem' }}>
-        {demoInfo && demoInfo.enabled ? (
-          <>
-            <div style={{ marginBottom: '0.5rem' }} className="muted">Demo account: <strong>{demoInfo.email}</strong></div>
-            <button type="button" onClick={handleDemoSignIn} className="demo-btn">Sign in as Demo</button>
-          </>
-        ) : (
-          <button type="button" onClick={handleDemoSignIn} className="demo-btn">Demo sign in</button>
-        )}
+        <div style={{ marginTop: '1rem' }}>
+          {demoInfo && demoInfo.enabled ? (
+            <>
+              <div style={{ marginBottom: '0.5rem' }} className="muted">Demo account: <strong>{demoInfo.email}</strong></div>
+              <button type="button" onClick={handleDemoSignIn} className="demo-btn">Sign in as Demo</button>
+            </>
+          ) : (
+            <button type="button" onClick={handleDemoSignIn} className="demo-btn">Demo sign in</button>
+          )}
+        </div>
+
+        {/* Google sign-in removed */}
+
+        <p className="create-account">Don't have an account? <Link to="/register">Create an account</Link></p>
       </div>
-
-      {/* Google sign-in removed */}
-
-      <p className="already-account">Don't have an account? <Link to="/register">Create an account</Link></p>
     </div>
   );
 }
