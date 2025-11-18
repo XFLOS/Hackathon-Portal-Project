@@ -148,11 +148,29 @@ function Navbar() {
 
   const handleLogout = async () => {
     try {
-      await signOut(auth); // Sign out
+      // Clear backend JWT auth
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      
+      // If Firebase is enabled, sign out from Firebase too
+      if (auth && typeof signOut === 'function') {
+        try {
+          await signOut(auth);
+        } catch (fbError) {
+          console.log('Firebase signout skipped:', fbError);
+        }
+      }
+      
+      setUser(null);
       setDropdownOpen(false);
       navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
+      // Even if signOut fails, clear local state
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setUser(null);
+      navigate("/login");
     }
   };
 
