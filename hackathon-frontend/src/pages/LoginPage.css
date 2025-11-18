@@ -1,72 +1,104 @@
+/* ===============================
+   LOGIN PAGE — THEME CONSISTENT
+   =============================== */
+
 .login-container {
-  padding: 30px;
-  max-width: 400px;
+  max-width: 420px;
   margin: 100px auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
   text-align: center;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #ffffff;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+  animation: fadeInUp 0.6s ease-out;
+  border: 1px solid #e9ecef;
 }
 
 .login-container h2 {
-  font-family: 'BebasNeue', sans-serif;
-  color: #65c5e8;
-  font-size: 40px;
-  margin-bottom: 25px;
-  letter-spacing: 1px;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 1.2rem;
+  letter-spacing: 0.5px;
 }
 
 .login-container input {
-  padding: 8px;
-  width: 90%;
-  margin: 8px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  width: 100%;
+  padding: 0.8rem 1rem;
+  margin: 0.6rem 0;
+  border: 1px solid #dfe4ea;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.login-container input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.25);
+  outline: none;
 }
 
 .login-container button {
-  padding: 10px 20px;
-  margin-top: 15px;
+  width: 100%;
+  padding: 0.9rem;
+  margin-top: 1rem;
   border: none;
-  background-color: #65c5e8;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  border-radius: 4px;
+  font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
-  font-weight: bold;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
 }
 
 .login-container button:hover {
-  background-color: #4aa3c9;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(102, 126, 234, 0.35);
 }
 
 .login-container .message {
-  margin-top: 15px;
-  color: #4aa3c9;
+  margin-top: 1rem;
+  color: #764ba2;
+  font-size: 0.95rem;
 }
 
+/* Forgot Password */
 .forgot-password-link {
-  color: #65c5e8;
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: #667eea;
+  font-weight: 600;
   text-decoration: none;
-  font-weight: bold;
 }
-
 .forgot-password-link:hover {
   text-decoration: underline;
 }
 
+/* Create Account */
 .login-container .create-account {
-  margin-top: 15px;
-  font-size: 14px;
+  margin-top: 1.3rem;
+  font-size: 0.95rem;
+  color: #6c757d;
 }
 
 .login-container .create-account a {
-  color: #65c5e8;
+  color: #667eea;
+  font-weight: 600;
   text-decoration: none;
-  font-weight: bold;
 }
-
 .login-container .create-account a:hover {
   text-decoration: underline;
+}
+
+/* Fade-in Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
