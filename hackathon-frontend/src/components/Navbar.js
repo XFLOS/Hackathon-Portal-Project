@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { auth } from "../firebase/config";
 import { signOut, onAuthStateChanged } from "firebase/auth";
@@ -18,9 +18,21 @@ function Navbar() {
     } catch (e) { return null; }
   });
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { role } = useAuth();
+  const { role: contextRole } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  
+  // Fallback: read role from localStorage if AuthContext doesn't have it
+  const role = useMemo(() => {
+    if (contextRole) return contextRole;
+    try {
+      const raw = localStorage.getItem('user');
+      const u = raw ? JSON.parse(raw) : null;
+      return u?.role || null;
+    } catch (e) {
+      return null;
+    }
+  }, [contextRole]);
 
   useEffect(() => {
     // Load user from Firebase or local storage
