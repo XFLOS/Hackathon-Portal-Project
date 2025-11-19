@@ -13,14 +13,16 @@
   justify-content: center;
   align-items: flex-start;
   padding: 60px 20px;
-  background-color: white;
+  background-color: transparent;
   min-height: 100vh;
 }
 
 .team-card {
-  background: white;
+  background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.14), transparent 40%),
+    rgba(15, 23, 42, 0.98);
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.3);
   padding: 40px;
   width: 100%;
   max-width: 800px;
@@ -34,7 +36,7 @@
 .team-title {
   font-family: 'BebasNeue', sans-serif;
   font-size: 48px;
-  color: #65c5e8;
+  color: var(--text-strong);
   letter-spacing: 1px;
   margin-bottom: 8px;
 }
@@ -42,7 +44,7 @@
 .team-description {
   font-family: 'OpenSans', sans-serif;
   font-size: 16px;
-  color: black;
+  color: var(--text-soft);
   margin-bottom: 0;
 }
 
@@ -52,14 +54,14 @@
 
 .team-section h3 {
   font-family: 'BebasNeue', sans-serif;
-  color: #65c5e8;
+  color: var(--primary);
   font-size: 22px;
   margin-bottom: 8px;
 }
 
 .team-section p, .team-section li {
   font-family: 'OpenSans', sans-serif;
-  color: black;
+  color: var(--text-soft);
   font-size: 15px;
 }
 
@@ -69,19 +71,21 @@
 }
 
 .member-list li {
-  background: #f4f6f8;
+  background: rgba(96, 165, 250, 0.08);
   padding: 8px 12px;
   border-radius: 8px;
   margin-bottom: 6px;
+  color: var(--text-soft);
 }
 
 .mentor-link {
-  color: #65c5e8;
+  color: var(--primary);
   text-decoration: none;
 }
 
 .mentor-link:hover {
   text-decoration: underline;
+  color: var(--primary-strong);
 }
 
 .update-input {
@@ -94,13 +98,19 @@
   flex: 1;
   padding: 10px;
   border-radius: 8px;
-  border: 1px solid #4aa3c9;
+  border: 1px solid rgba(96, 165, 250, 0.4);
+  background: rgba(15, 23, 42, 0.6);
+  color: var(--text);
   font-family: 'OpenSans', sans-serif;
+}
+
+.update-input input::placeholder {
+  color: var(--text-muted);
 }
 
 .post-btn {
   padding: 10px 16px;
-  background-color: #65c5e8;
+  background: linear-gradient(135deg, #60a5fa, #3b82f6);
   color: white;
   border: none;
   border-radius: 8px;
@@ -111,22 +121,29 @@
 }
 
 .post-btn:hover {
-  background-color: #4aa3c9;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(96, 165, 250, 0.3);
 }
 
 .update-list li {
-  background: #f4f6f8;
+  background: rgba(96, 165, 250, 0.08);
   padding: 10px;
   border-radius: 8px;
   margin-top: 6px;
+  color: var(--text-soft);
+}
+
+.no-updates {
+  color: var(--text-muted);
+  font-style: italic;
 }
 
 .leave-team-button {
   margin-top: 20px;
   padding: 10px 18px;
-  background-color: #b95555;
-  color: white;
-  border: none;
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #fecaca;
+  border: 1px solid rgba(239, 68, 68, 0.6);
   border-radius: 8px;
   cursor: pointer;
   transition: 0.2s;
@@ -134,7 +151,8 @@
 }
 
 .leave-team-button:hover {
-  background-color: #944848;
+  background-color: rgba(239, 68, 68, 0.25);
+  transform: translateY(-2px);
 }
 
 .team-message {
@@ -142,5 +160,10 @@
   margin-top: 100px;
   font-family: 'OpenSans', sans-serif;
   font-size: 1.1rem;
-  color: #65c5e8;
+  color: var(--text-soft);
+  padding: 40px;
+  background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.14), transparent 40%),
+    rgba(15, 23, 42, 0.98);
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
 }
