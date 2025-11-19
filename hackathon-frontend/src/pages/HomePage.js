@@ -1,9 +1,31 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "./HomePage.css";
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const { user, role } = useAuth();
+
+  // Redirect logged-in users to their dashboard
+  useEffect(() => {
+    if (user) {
+      const userRole = role?.toLowerCase() || user.role?.toLowerCase();
+      console.log('🏠 [HomePage] User detected, redirecting. Role:', userRole);
+      
+      const dashboardPaths = {
+        student: "/student-dashboard",
+        mentor: "/mentor-dashboard",
+        judge: "/judge-dashboard",
+        coordinator: "/coordinator-dashboard",
+        admin: "/coordinator-dashboard",
+      };
+      
+      const path = dashboardPaths[userRole] || "/student-dashboard";
+      console.log('🏠 [HomePage] Redirecting to:', path);
+      navigate(path, { replace: true });
+    }
+  }, [user, role, navigate]);
 
   // Handle CTA - only for logged-out users
   const handleJoin = () => {
