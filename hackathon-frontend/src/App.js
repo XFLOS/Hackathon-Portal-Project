@@ -10,7 +10,7 @@ function App() {
       <AuthProvider>
         <Navbar />
         <DevAuthIndicator />
-        <AppRoutes />
+        <h1 style={{ color: 'white' }}>ROUTER TEST</h1>
       </AuthProvider>
     </div>
   );
