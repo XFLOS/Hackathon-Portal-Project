@@ -31,3 +31,5 @@ export const authorizeRole = (...allowedRoles) => {
   };
 };
 
+// Alias for authenticateToken (commonly used in routes as 'protect')
+export const protect = authenticateToken;
