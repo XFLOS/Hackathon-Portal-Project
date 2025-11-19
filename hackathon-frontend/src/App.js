@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import Navbar from './components/Navbar';
 import BaseHome from './pages/BaseHome';
@@ -196,9 +196,7 @@ function App() {
       <AuthProvider>
         <Navbar />
         <DevAuthIndicator />
-        <main style={{ padding: '1rem' }}>
-          <AppRoutes />
-        </main>
+        <AppRoutes />
       </AuthProvider>
     </div>
   );
