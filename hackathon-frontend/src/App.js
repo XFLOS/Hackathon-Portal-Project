@@ -36,6 +36,27 @@ import RedirectByRole from './utils/RedirectByRole';
 
 function AppRoutes() {
   const { user } = useAuth();
+  
+  // Check both AuthContext and localStorage to determine if user is logged in
+  const isLoggedIn = user || (() => {
+    try {
+      const storedUser = localStorage.getItem('user');
+      return !!storedUser;
+    } catch (e) {
+      return false;
+    }
+  })();
+  
+  // Get user data from either context or localStorage
+  const getUserData = () => {
+    if (user) return user;
+    try {
+      const storedUser = localStorage.getItem('user');
+      return storedUser ? JSON.parse(storedUser) : null;
+    } catch (e) {
+      return null;
+    }
+  };
 
   return (
     <Routes>
@@ -43,8 +64,8 @@ function AppRoutes() {
       <Route 
         path="/" 
         element={
-          user ? (
-            <RedirectByRole user={user} />
+          isLoggedIn ? (
+            <RedirectByRole user={getUserData()} />
           ) : (
             <HomePage />
           )
