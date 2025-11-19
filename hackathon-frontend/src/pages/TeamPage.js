@@ -1,127 +1,212 @@
 import React, { useEffect, useState } from "react";
-import FileUpload from '../components/FileUpload';
-import api from '../services/api';
+import FileUpload from "../components/FileUpload";
+import api from "../services/api";
 import "./TeamPage.css";
 
 export default function TeamPage() {
-  const [user, setUser] = useState(null); // logged-in user
-  const [team, setTeam] = useState(null); // team data
-  const [updates, setUpdates] = useState([]); // team updates
-  const [newUpdate, setNewUpdate] = useState(""); // input for new update
+  const [user, setUser] = useState(null);
+  const [team, setTeam] = useState(null);
+  const [updates, setUpdates] = useState([]);
+  const [newUpdate, setNewUpdate] = useState("");
 
   useEffect(() => {
-    const loggedUser = JSON.parse(localStorage.getItem("user") || 'null');
-    if (loggedUser) setUser(loggedUser);
+    // Load user from localStorage (same as before)
+    try {
+      const stored = localStorage.getItem("user");
+      if (stored) {
+        const loggedUser = JSON.parse(stored);
+        setUser(loggedUser);
+      }
+    } catch (e) {
+      console.error("Failed to parse user from localStorage:", e);
+    }
 
-    // Fetch user's team from backend
+    // Load team
     api
-      .get('/team/me')
-      .then((res) => {
-        if (res.data) {
-          setTeam(res.data);
-          // Team updates can be fetched from a separate endpoint if needed
-          setUpdates(res.data.updates || []);
+      .get("/team/me")
+      .then(function (res) {
+        var t = res.data;
+        if (t) {
+          setTeam(t);
+          if (Array.isArray(t.updates)) {
+            setUpdates(t.updates);
+          } else {
+            setUpdates([]);
+          }
         }
       })
-      .catch((err) => {
-        console.error('Failed to fetch team:', err);
-        // If 404 or error, user has no team
+      .catch(function (err) {
+        console.error("Failed to fetch team:", err);
       });
   }, []);
 
-  // Add new team update
-  const handleAddUpdate = () => {
-    if (!newUpdate.trim() || !team) return;
+  function handleAddUpdate() {
+    if (!newUpdate || newUpdate.trim() === "") return;
+    if (!team) return;
 
-    const updatedList = [...updates, newUpdate];
+    var message = newUpdate.trim();
+    var updatedList = updates.concat(message);
     setUpdates(updatedList);
     setNewUpdate("");
 
-    // Post update to backend (if endpoint exists)
+    var teamId = team.id || team._id;
+    if (!teamId) return;
+
     api
-      .post(`/team/${team.id}/update`, { message: newUpdate })
-      .catch((err) => console.error('Failed to send update:', err));
-  };
+      .post("/team/" + teamId + "/update", { message: message })
+      .catch(function (err) {
+        console.error("Failed to send update:", err);
+      });
+  }
 
-  // Leave team
-  const handleLeaveTeam = () => {
-    if (!team) return;
-    if (window.confirm("Are you sure you want to leave the team?")) {
-      api
-        .delete(`/team/member/${user.id}`)
-        .then(() => {
-          setTeam(null);
-          alert('You have left the team.');
-        })
-        .catch((err) => {
-          console.error('Failed to leave team:', err);
-          alert('Failed to leave team.');
-        });
+  function handleLeaveTeam() {
+    if (!team || !user) return;
+
+    if (!window.confirm("Are you sure you want to leave the team?")) return;
+
+    var userId = user.id || user._id || user.uid;
+    if (!userId) {
+      console.error("No user id found for leave team");
+      return;
     }
-  };
 
-  if (!team) return <p className="team-message">You are not part of a team.</p>;
+    api
+      .delete("/team/member/" + userId)
+      .then(function () {
+        setTeam(null);
+        alert("You have left the team.");
+      })
+      .catch(function (err) {
+        console.error("Failed to leave team:", err);
+        alert("Failed to leave team.");
+      });
+  }
+
+  // If no team, show simple message
+  if (!team) {
+    return (
+      <div className="team-message">
+        <p>You are not part of a team.</p>
+      </div>
+    );
+  }
+
+  // Safe members list
+  var members =
+    team.members ||
+    team.memberEmails ||
+    team.memberNames ||
+    [];
+  if (!Array.isArray(members)) {
+    members = [];
+  }
+
+  var mentor = team.mentor || {};
+  var mentorName = mentor.name || "No mentor assigned";
+  var mentorEmail = mentor.email || "";
+
+  var teamIdForUpload = team.id || team._id || "";
+  var userIdForUpload =
+    (user && (user.id || user._id || user.uid)) || "";
 
   return (
     <div className="team-container">
       <div className="team-card">
+        {/* Header */}
         <div className="team-header">
-          <h1 className="team-title">{team.name}</h1>
-          <p className="team-description">{team.description}</p>
-        </div>
-
-        <div className="team-section">
-          <h3>Team Leader</h3>
-          <p><strong>{team.leader}</strong></p>
-        </div>
-
-        <div className="team-section">
-          <h3>Team Members</h3>
-          <ul className="member-list">
-            {(team.members || team.memberEmails || []).map((member, index) => <li key={index}>{member}</li>)}
-          </ul>
-        </div>
-
-        <div className="team-section">
-          <h3>Mentor</h3>
-          <p>
-            <strong>{team.mentor.name}</strong> -{" "}
-            <a href={`mailto:${team.mentor.email}`} className="mentor-link">{team.mentor.email}</a>
+          <h1 className="team-title">{team.name || "Unnamed Team"}</h1>
+          <p className="team-description">
+            {team.description || "No description available."}
           </p>
         </div>
 
+        {/* Leader */}
         <div className="team-section">
-          <h3>Upload Team Files</h3>
-          <FileUpload teamId={team.id} userId={user.id} />
+          <h3>Team Leader</h3>
+          <p>
+            <strong>{team.leader || "N/A"}</strong>
+          </p>
         </div>
 
+        {/* Members */}
+        <div className="team-section">
+          <h3>Team Members</h3>
+          <ul className="member-list">
+            {members.length === 0 ? (
+              <li>No members added.</li>
+            ) : (
+              members.map(function (m, index) {
+                return <li key={index}>{m}</li>;
+              })
+            )}
+          </ul>
+        </div>
+
+        {/* Mentor */}
+        <div className="team-section">
+          <h3>Mentor</h3>
+          <p>
+            <strong>{mentorName}</strong>
+            {mentorEmail && (
+              <span>
+                {" - "}
+                <a href={"mailto:" + mentorEmail} className="mentor-link">
+                  {mentorEmail}
+                </a>
+              </span>
+            )}
+          </p>
+        </div>
+
+        {/* File upload */}
+        <div className="team-section">
+          <h3>Upload Team Files</h3>
+          {teamIdForUpload && userIdForUpload ? (
+            <FileUpload teamId={teamIdForUpload} userId={userIdForUpload} />
+          ) : (
+            <p>File upload not available (missing ids).</p>
+          )}
+        </div>
+
+        {/* Updates */}
         <div className="team-section">
           <h3>Team Updates</h3>
           <div className="update-input">
             <input
               type="text"
               value={newUpdate}
-              onChange={(e) => setNewUpdate(e.target.value)}
+              onChange={function (e) {
+                setNewUpdate(e.target.value);
+              }}
               placeholder="Share your progress..."
             />
-            <button onClick={handleAddUpdate} className="post-btn">Post</button>
+            <button onClick={handleAddUpdate} className="post-btn">
+              Post
+            </button>
           </div>
+
           <ul className="update-list">
             {updates.length === 0 ? (
-              <p className="no-updates">No updates yet.</p>
+              <li className="no-updates">No updates yet.</li>
             ) : (
-              updates.map((update, index) => <li key={index}>{update}</li>)
+              updates.map(function (u, index) {
+                return <li key={index}>{u}</li>;
+              })
             )}
           </ul>
         </div>
 
+        {/* Schedule */}
         <div className="team-section">
           <h3>Presentation Schedule</h3>
-          <p>{team.presentationTime}</p>
+          <p>{team.presentationTime || "Not scheduled yet."}</p>
         </div>
 
+        {/* Leave team */}
         <div className="team-section">
-          <button onClick={handleLeaveTeam} className="leave-team-button">Leave Team</button>
+          <button onClick={handleLeaveTeam} className="leave-team-button">
+            Leave Team
+          </button>
         </div>
       </div>
     </div>
