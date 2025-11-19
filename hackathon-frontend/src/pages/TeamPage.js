@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import FileUpload from "../components/FileUpload";
-import api from "../services/api";
+import FileUpload from "../components/FileUpload"; // Ensure this component exists and is correctly imported
+import api from "../services/api"; // Ensure this service is set up (e.g., Axios instance)
 import "./TeamPage.css";
 
 // Simplified version without AppShell wrapper
@@ -9,43 +9,85 @@ export default function TeamPage() {
   const [team, setTeam] = useState(null);
   const [updates, setUpdates] = useState([]);
   const [newUpdate, setNewUpdate] = useState("");
+  const [loading, setLoading] = useState(true); // Added loading state to prevent blank screen
+  const [error, setError] = useState(null); // Added error state for better UX
 
   useEffect(() => {
-    const loggedUser = JSON.parse(localStorage.getItem("user") || "null");
-    if (loggedUser) setUser(loggedUser);
+    const fetchTeamData = async () => {
+      try {
+        const loggedUser = JSON.parse(localStorage.getItem("user") || "null");
+        if (!loggedUser) {
+          setError("You must be logged in to view this page.");
+          setLoading(false);
+          return;
+        }
+        setUser(loggedUser);
 
-    api.get("/team/me")
-      .then((res) => {
+        const res = await api.get("/team/me");
         if (res.data) {
           setTeam(res.data);
           setUpdates(res.data.updates || []);
+        } else {
+          setError("No team data found.");
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Failed to fetch team:", err);
-      });
+        setError("Failed to load team data. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTeamData();
   }, []);
 
-  if (!team)
+  // Show loading spinner or message while fetching
+  if (loading) {
     return (
-      <p className="team-message">
-        You are not part of a team.
-      </p>
+      <div className="team-container">
+        <p className="team-message">Loading team data...</p>
+      </div>
     );
+  }
+
+  // Show error message if something went wrong
+  if (error) {
+    return (
+      <div className="team-container">
+        <p className="team-message error">{error}</p>
+      </div>
+    );
+  }
+
+  // If no team, show the original message
+  if (!team) {
+    return (
+      <div className="team-container">
+        <p className="team-message">
+          You are not part of a team.
+        </p>
+      </div>
+    );
+  }
 
   const mentor = team.mentor || { name: "No mentor assigned", email: "" };
-  const members =
-    team.members ||
-    team.memberEmails ||
-    [];
+  const members = team.members || team.memberEmails || [];
 
-  const handleAddUpdate = () => {
+  const handleAddUpdate = async () => {
     if (!newUpdate.trim()) return;
 
-    setUpdates([...updates, newUpdate]);
+    // Optimistically update UI
+    const updatedUpdates = [...updates, newUpdate];
+    setUpdates(updatedUpdates);
 
-    api.post(`/team/${team.id}/update`, { message: newUpdate })
-      .catch((err) => console.error("Failed to send update:", err));
+    try {
+      await api.post(`/team/${team.id}/update`, { message: newUpdate });
+    } catch (err) {
+      console.error("Failed to send update:", err);
+      // Revert on error
+      setUpdates(updates);
+      alert("Failed to post update. Please try again.");
+    }
 
     setNewUpdate("");
   };
@@ -71,7 +113,7 @@ export default function TeamPage() {
             {members.length === 0 ? (
               <li>No members yet.</li>
             ) : (
-              members.map((m, i) => <li key={i}>{m}</li>)
+              members.map((m, i) => <li key={i}>{typeof m === 'string' ? m : m.name || 'Unknown'}</li>) // Handle object members
             )}
           </ul>
         </div>
@@ -93,7 +135,11 @@ export default function TeamPage() {
 
         <div className="team-section">
           <h3>Upload Team Files</h3>
-          <FileUpload teamId={team.id} userId={user?.id} />
+          {team.id && user?.id ? (
+            <FileUpload teamId={team.id} userId={user.id} />
+          ) : (
+            <p className="error">Unable to load file upload.</p>
+          )}
         </div>
 
         <div className="team-section">
