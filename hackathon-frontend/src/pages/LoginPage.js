@@ -33,8 +33,17 @@ export default function LoginPage() {
           window.dispatchEvent(new Event('auth-changed'));
         }
         
-        // Small delay to ensure context updates
-        setTimeout(() => navigate('/'), 100);
+        // Redirect to appropriate dashboard based on role
+        const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+        const userRole = storedUser.role || 'student';
+        const dashboardRoutes = {
+          student: '/student-dashboard',
+          mentor: '/mentor-dashboard',
+          judge: '/judge-dashboard',
+          coordinator: '/coordinator-dashboard',
+          admin: '/coordinator-dashboard'
+        };
+        navigate(dashboardRoutes[userRole] || '/student-dashboard');
       } else {
         // Backend JWT login
         const res = await api.post('/auth/login', { email, password });
@@ -48,8 +57,15 @@ export default function LoginPage() {
           window.dispatchEvent(new Event('auth-changed'));
         }
         
-        // Small delay to ensure context updates, then redirect
-        setTimeout(() => navigate('/'), 100);
+        // Redirect directly to role-based dashboard
+        const dashboardRoutes = {
+          student: '/student-dashboard',
+          mentor: '/mentor-dashboard',
+          judge: '/judge-dashboard',
+          coordinator: '/coordinator-dashboard',
+          admin: '/coordinator-dashboard'
+        };
+        navigate(dashboardRoutes[user.role] || '/student-dashboard');
       }
 
     } catch (err) {
@@ -72,8 +88,15 @@ export default function LoginPage() {
         window.dispatchEvent(new Event('auth-changed'));
       }
       
-      // Small delay to ensure context updates, then redirect
-      setTimeout(() => navigate('/'), 100);
+      // Redirect directly to role-based dashboard
+      const dashboardRoutes = {
+        student: '/student-dashboard',
+        mentor: '/mentor-dashboard',
+        judge: '/judge-dashboard',
+        coordinator: '/coordinator-dashboard',
+        admin: '/coordinator-dashboard'
+      };
+      navigate(dashboardRoutes[user.role] || '/student-dashboard');
     } catch (err) {
       console.error('Demo login failed', err);
       setMessage(err.response?.data?.error || err.message || 'Demo login failed');
