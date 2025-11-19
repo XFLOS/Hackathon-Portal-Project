@@ -1,0 +1,48 @@
+/* src/components/layout/appShell.css */
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  background: radial-gradient(circle at top, #1f2937 0%, #020617 52%, #020617 100%);
+}
+
+.app-shell__sidebar {
+  background: radial-gradient(circle at top, rgba(79, 70, 229, 0.25), transparent 55%),
+    #020617;
+  border-right: 1px solid rgba(31, 41, 55, 0.95);
+  padding: 1.75rem 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.app-shell__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.app-shell__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .app-shell__sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1rem;
+    backdrop-filter: blur(12px);
+  }
+}

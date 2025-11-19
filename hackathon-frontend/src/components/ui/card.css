@@ -1,0 +1,42 @@
+/* src/components/ui/card.css */
+.ui-card {
+  background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.14), transparent 40%),
+    rgba(15, 23, 42, 0.98);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  padding: 1.25rem 1.3rem;
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(18px);
+  color: var(--color-text);
+}
+
+.ui-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.ui-card__title {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text-strong);
+}
+
+.ui-card__subtitle {
+  margin: 0.2rem 0 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-soft);
+}
+
+.ui-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ui-card__body {
+  font-size: var(--text-sm);
+}
