@@ -16,6 +16,7 @@ export default function RedirectByRole({ user }) {
       return <Navigate to="/judge-dashboard" replace />;
 
     case "coordinator":
+    case "admin":
       return <Navigate to="/coordinator-dashboard" replace />;
 
     default:
