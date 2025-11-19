@@ -57,7 +57,4 @@ export default function JudgeDashboard() {
       </div>
     </AppShell>
   );
-      </div>
-    </div>
-  );
 }
