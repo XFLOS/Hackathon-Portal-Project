@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
+import Card from '../components/ui/Card';
+import Button from '../components/ui/Button';
 import './StudentDashboard.css';
 
 // Simple mock data provider used when backend is offline or slow.
@@ -106,26 +108,36 @@ export default function StudentDashboard() {
 
       {!loading && (
         <div className="dashboard-grid">
-          <div className="dashboard-card">
-            <h3>Team</h3>
+          <Card 
+            title="Team"
+            subtitle={team ? `${team.name} · ${team.members?.length || 1} members` : null}
+            actions={team && <Button size="sm" variant="outline">View Team</Button>}
+          >
             {team ? (
               <div className="team-info">
-                <strong>{team.name}</strong>
-                <p>Members: {team.members?.length || 1}</p>
+                <p>Leader: {team.creator_name || 'Unknown'}</p>
+                <p>Status: Active</p>
               </div>
             ) : (
               <div>
                 <p className="no-team-message">You are not in a team.</p>
                 <div className="team-actions">
-                  <a className="team-btn" href="/team-selection">Create Team</a>
-                  <a className="team-btn secondary" href="/team-selection">Join Team</a>
+                  <Button variant="primary" onClick={() => window.location.href = '/team-selection'}>
+                    Create Team
+                  </Button>
+                  <Button variant="outline" onClick={() => window.location.href = '/team-selection'}>
+                    Join Team
+                  </Button>
                 </div>
               </div>
             )}
-          </div>
+          </Card>
 
-          <div className="dashboard-card">
-            <h3>Submissions</h3>
+          <Card 
+            title="Submissions"
+            subtitle="Track your project uploads"
+            actions={<Button size="sm" variant="outline">Upload</Button>}
+          >
             {submissions && submissions.length ? (
               <ul className="dashboard-list">
                 {submissions.map(s => (
@@ -137,10 +149,12 @@ export default function StudentDashboard() {
             ) : (
               <p className="empty-state">No submissions yet.</p>
             )}
-          </div>
+          </Card>
 
-          <div className="dashboard-card">
-            <h3>Deadlines</h3>
+          <Card 
+            title="Deadlines"
+            subtitle="Upcoming milestones"
+          >
             {deadlines && deadlines.length ? (
               <ul className="dashboard-list">
                 {deadlines.map(d => (
@@ -150,10 +164,12 @@ export default function StudentDashboard() {
             ) : (
               <p className="empty-state">No upcoming deadlines.</p>
             )}
-          </div>
+          </Card>
 
-          <div className="dashboard-card">
-            <h3>Announcements</h3>
+          <Card 
+            title="Announcements"
+            subtitle="Latest updates"
+          >
             {announcements && announcements.length ? (
               <ul className="dashboard-list">
                 {announcements.map(a => (
@@ -163,7 +179,7 @@ export default function StudentDashboard() {
             ) : (
               <p className="empty-state">No announcements.</p>
             )}
-          </div>
+          </Card>
         </div>
       )}
     </div>
