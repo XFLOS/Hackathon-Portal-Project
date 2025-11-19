@@ -38,13 +38,17 @@ import ProtectedRoute from "./ProtectedRoute";
 import RoleRoute from "./RoleRoute";
 
 export default function AppRoutes() {
-  const { user, loading } = useAuth();
+  const { user, role, loading } = useAuth();
+
+  console.log('🔍 [AppRoutes] Auth State:', { user, role, loading });
 
   if (loading) return <CenteredLoading />;
 
   const getDashboardPath = () => {
     if (!user) return "/";
-    const role = user.role?.toLowerCase();
+    const userRole = role?.toLowerCase() || user.role?.toLowerCase();
+    
+    console.log('🎯 [AppRoutes] getDashboardPath - role:', userRole);
 
     return {
       student: "/student-dashboard",
@@ -52,8 +56,13 @@ export default function AppRoutes() {
       judge: "/judge-dashboard",
       coordinator: "/coordinator-dashboard",
       admin: "/coordinator-dashboard",
-    }[role] || "/";
+    }[userRole] || "/";
   };
+
+  const isLoggedIn = !!user;
+  const dashboardPath = getDashboardPath();
+  
+  console.log('🚀 [AppRoutes] Root redirect check:', { isLoggedIn, dashboardPath });
 
   return (
     <Routes>
@@ -61,8 +70,8 @@ export default function AppRoutes() {
       <Route
         path="/"
         element={
-          user ? (
-            <Navigate to={getDashboardPath()} replace />
+          isLoggedIn ? (
+            <Navigate to={dashboardPath} replace />
           ) : (
             <HomePage />
           )
