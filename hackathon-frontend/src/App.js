@@ -39,16 +39,28 @@ function AppRoutes() {
   
   // Get user data from either context or localStorage
   const getUserData = () => {
-    if (user) return user;
+    if (user) {
+      console.log('✅ User from AuthContext:', user);
+      return user;
+    }
     try {
       const storedUser = localStorage.getItem('user');
-      return storedUser ? JSON.parse(storedUser) : null;
+      if (storedUser) {
+        const parsed = JSON.parse(storedUser);
+        console.log('✅ User from localStorage:', parsed);
+        return parsed;
+      }
+      console.log('❌ No user in localStorage');
+      return null;
     } catch (e) {
+      console.error('❌ Error parsing localStorage user:', e);
       return null;
     }
   };
 
   const currentUser = getUserData();
+  console.log('🎯 Current user for routing:', currentUser);
+  console.log('🎯 Will redirect to dashboard?', !!currentUser);
 
   return (
     <Routes>
