@@ -1,133 +1,161 @@
-import React, { useState, useEffect } from 'react';
-import api from '../services/api';
-import LoadingSpinner from '../components/LoadingSpinner';
-import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
-import AppShell from '../components/layout/AppShell';
-import './StudentDashboard.css';
+import React, { useState, useEffect } from "react";
+import api from "../services/api";
+import LoadingSpinner from "../components/LoadingSpinner";
+import Card from "../components/ui/Card";
+import Button from "../components/ui/Button";
+import AppShell from "../components/layout/AppShell";
+import "./StudentDashboard.css";
 
-// Simple mock data provider used when backend is offline or slow.
-function getMockDashboard() {
-  const now = Date.now();
-  return {
-    team: null, // or { id, name, members }
-    submissions: [
-      { id: 'sub1', filename: 'project.zip', time: new Date(now - 1000 * 60 * 60).toISOString(), status: 'Pending' }
-    ],
-    deadlines: [
-      { id: 'd1', title: 'Final Submission', due: new Date(now + 1000 * 60 * 60 * 24).toISOString() }
-    ],
-    announcements: [
-      { id: 'a1', title: 'Welcome', body: 'Welcome to the hackathon! Check deadlines and form your teams.' }
-    ]
-  };
+// Safe date helper
+function safeDate(value) {
+  if (!value) return "N/A";
+  const d = new Date(value);
+  return isNaN(d.getTime()) ? "N/A" : d.toLocaleString();
 }
 
 export default function StudentDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
   const [team, setTeam] = useState(null);
   const [submissions, setSubmissions] = useState([]);
   const [deadlines, setDeadlines] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
 
+  // ================================
+  // Load Dashboard Data
+  // ================================
+
   useEffect(() => {
     let mounted = true;
-    const timeout = setTimeout(() => {
-      // If backend is too slow (2s), fall back to mock to satisfy SLA
-      if (mounted && loading) {
-        const mock = getMockDashboard();
-        setTeam(mock.team);
-        setSubmissions(mock.submissions);
-        setDeadlines(mock.deadlines);
-        setAnnouncements(mock.announcements);
-        setLoading(false);
-      }
-    }, 1800);
 
-    (async () => {
+    async function loadDashboard() {
       try {
-        // Load dashboard data from backend endpoints
         const [teamRes, subsRes, scheduleRes] = await Promise.all([
-          api.get('/team/me').catch(() => ({ data: null })),
-          api.get('/submission/me').catch(() => ({ data: [] })),
-          api.get('/users/schedule').catch(() => ({ data: [] })),
+          api.get("/team/me").catch(() => ({ data: null })),
+          api.get("/submission/me").catch(() => ({ data: [] })),
+          api.get("/users/schedule").catch(() => ({ data: [] })),
         ]);
 
         if (!mounted) return;
+
+        // ---- TEAM ----
         setTeam(teamRes?.data || null);
-        setSubmissions(Array.isArray(subsRes?.data) ? subsRes.data : (subsRes?.data ? [subsRes.data] : []));
-        
-        // Extract deadlines from schedule events
+
+        // ---- SUBMISSIONS ----
+        const subs = subsRes?.data;
+        setSubmissions(
+          Array.isArray(subs) ? subs : subs ? [subs] : []
+        );
+
+        // ---- DEADLINES & ANNOUNCEMENTS ----
         const events = scheduleRes?.data || [];
-        const deadlineEvents = events.filter(e => e.type === 'deadline' || e.title?.toLowerCase().includes('deadline'));
-        setDeadlines(deadlineEvents.map(e => ({ id: e.id, title: e.title, due: e.time })));
-        
-        // Extract announcements from schedule
-        const announcements = events.filter(e => e.type === 'announcement').map(e => ({ 
-          id: e.id, 
-          title: e.title, 
-          body: e.description || '' 
-        }));
-        setAnnouncements(announcements.length ? announcements : [
-          { id: 'welcome', title: 'Welcome', body: 'Check your schedule for important updates!' }
-        ]);
+
+        const d = events.filter((e) =>
+          (e.type === "deadline") ||
+          (e.title?.toLowerCase().includes("deadline"))
+        );
+
+        setDeadlines(
+          d.map((e) => ({
+            id: e.id || Math.random(),
+            title: e.title || "Deadline",
+            due: e.time || null,
+          }))
+        );
+
+        const a = events.filter((e) => e.type === "announcement");
+
+        setAnnouncements(
+          a.map((e) => ({
+            id: e.id || Math.random(),
+            title: e.title || "Announcement",
+            body: e.description || "",
+          }))
+        );
+
       } catch (err) {
-        console.error('Dashboard load error:', err);
-        if (mounted) {
-          setError(err.response?.data?.error || err.message || 'Failed to load dashboard');
-          // Fall back to mock data
-          const mock = getMockDashboard();
-          setTeam(mock.team);
-          setSubmissions(mock.submissions);
-          setDeadlines(mock.deadlines);
-          setAnnouncements(mock.announcements);
-        }
+        console.error("Dashboard load failed:", err);
+        setError("Failed to load dashboard.");
       } finally {
         if (mounted) setLoading(false);
-        clearTimeout(timeout);
       }
-    })();
+    }
 
-    return () => { mounted = false; clearTimeout(timeout); };
+    loadDashboard();
+    return () => { mounted = false; };
   }, []);
+
+  // ================================
+  // Render
+  // ================================
 
   return (
     <AppShell>
       <div className="student-dashboard">
+
+        {/* HEADER */}
         <div className="dashboard-header">
           <h2>Student Dashboard</h2>
-          <p className="dashboard-subtitle">Your team status, submissions, deadlines, and announcements.</p>
+          <p className="dashboard-subtitle">
+            Your team status, submissions, deadlines, and announcements.
+          </p>
         </div>
 
-        {loading && <div className="dashboard-loading"><LoadingSpinner /></div>}
-        
+        {loading && (
+          <div className="dashboard-loading">
+            <LoadingSpinner />
+          </div>
+        )}
+
         {error && (
           <div className="dashboard-alert">
-            <strong>⚠️ Warning:</strong> {error}. Showing offline data.
+            <strong>⚠️ Warning:</strong> {error}
           </div>
         )}
 
         {!loading && (
           <div className="dashboard-grid">
-            <Card 
+
+            {/* TEAM CARD */}
+            <Card
               title="Team"
-              subtitle={team ? `${team.name} · ${team.members?.length || 1} members` : null}
-              actions={team && <Button size="sm" variant="outline">View Team</Button>}
+              subtitle={
+                team
+                  ? `${team.name || "Team"} · ${team.members?.length || 0} members`
+                  : null
+              }
+              actions={
+                team && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => (window.location.href = "/team")}
+                  >
+                    View Team
+                  </Button>
+                )
+              }
             >
               {team ? (
                 <div className="team-info">
-                  <p>Leader: {team.creator_name || 'Unknown'}</p>
+                  <p>Leader: {team.creator_name || "Unknown"}</p>
                   <p>Status: Active</p>
                 </div>
               ) : (
                 <div>
                   <p className="no-team-message">You are not in a team.</p>
                   <div className="team-actions">
-                    <Button variant="primary" onClick={() => window.location.href = '/team-selection'}>
+                    <Button
+                      variant="primary"
+                      onClick={() => (window.location.href = "/team-selection")}
+                    >
                       Create Team
                     </Button>
-                    <Button variant="outline" onClick={() => window.location.href = '/team-selection'}>
+                    <Button
+                      variant="outline"
+                      onClick={() => (window.location.href = "/team-selection")}
+                    >
                       Join Team
                     </Button>
                   </div>
@@ -135,16 +163,23 @@ export default function StudentDashboard() {
               )}
             </Card>
 
-            <Card 
+            {/* SUBMISSIONS */}
+            <Card
               title="Submissions"
               subtitle="Track your project uploads"
-              actions={<Button size="sm" variant="outline">Upload</Button>}
+              actions={
+                <Button size="sm" onClick={() => window.location.href = "/submission"}>
+                  Upload
+                </Button>
+              }
             >
-              {submissions && submissions.length ? (
+              {submissions.length > 0 ? (
                 <ul className="dashboard-list">
-                  {submissions.map(s => (
+                  {submissions.map((s) => (
                     <li key={s.id}>
-                      <strong>{s.filename}</strong> — {new Date(s.time || s.timestamp || s.createdAt).toLocaleString()} — <em>{s.status}</em>
+                      <strong>{s.filename || "File"}</strong>
+                      — {safeDate(s.time || s.createdAt)}
+                      — <em>{s.status || "Unknown"}</em>
                     </li>
                   ))}
                 </ul>
@@ -153,14 +188,17 @@ export default function StudentDashboard() {
               )}
             </Card>
 
-            <Card 
+            {/* DEADLINES */}
+            <Card
               title="Deadlines"
               subtitle="Upcoming milestones"
             >
-              {deadlines && deadlines.length ? (
+              {deadlines.length > 0 ? (
                 <ul className="dashboard-list">
-                  {deadlines.map(d => (
-                    <li key={d.id}>{d.title} — due {new Date(d.due).toLocaleString()}</li>
+                  {deadlines.map((d) => (
+                    <li key={d.id}>
+                      {d.title} — due {safeDate(d.due)}
+                    </li>
                   ))}
                 </ul>
               ) : (
@@ -168,20 +206,25 @@ export default function StudentDashboard() {
               )}
             </Card>
 
-            <Card 
+            {/* ANNOUNCEMENTS */}
+            <Card
               title="Announcements"
               subtitle="Latest updates"
             >
-              {announcements && announcements.length ? (
+              {announcements.length > 0 ? (
                 <ul className="dashboard-list">
-                  {announcements.map(a => (
-                    <li key={a.id}><strong>{a.title}</strong> — {a.body}</li>
+                  {announcements.map((a) => (
+                    <li key={a.id}>
+                      <strong>{a.title}</strong>
+                      — {a.body}
+                    </li>
                   ))}
                 </ul>
               ) : (
                 <p className="empty-state">No announcements.</p>
               )}
             </Card>
+
           </div>
         )}
       </div>
