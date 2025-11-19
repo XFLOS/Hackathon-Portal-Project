@@ -3,7 +3,7 @@ import api from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
-import AppShell from '../components/layout/AppShell.jsx';
+import AppShell from '../components/layout/AppShell';
 import './StudentDashboard.css';
 
 // Simple mock data provider used when backend is offline or slow.

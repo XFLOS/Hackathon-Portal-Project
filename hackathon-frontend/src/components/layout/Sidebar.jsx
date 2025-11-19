@@ -1,22 +1,42 @@
 import React from "react";
-import StudentSidebar from "./StudentSidebar.jsx";
-import MentorSidebar from "./MentorSidebar.jsx";
-import JudgeSidebar from "./JudgeSidebar.jsx";
-import CoordinatorSidebar from "./CoordinatorSidebar.jsx";
+import StudentSidebar from "./StudentSidebar";
+import MentorSidebar from "./MentorSidebar";
+import JudgeSidebar from "./JudgeSidebar";
+import CoordinatorSidebar from "./CoordinatorSidebar";
 import { useAuth } from "../../context/AuthContext";
 
 export default function Sidebar() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
-  if (!user || !user.role) return null;
+  // While loading auth state, don't break the layout
+  if (loading) {
+    return (
+      <div style={{ width: "260px", background: "rgba(255,255,255,0.05)" }} />
+    );
+  }
+
+  // If no user, just render an empty sidebar container to preserve layout
+  if (!user || !user.role) {
+    return (
+      <div style={{ width: "260px", background: "rgba(255,255,255,0.05)" }} />
+    );
+  }
 
   const role = user.role.toLowerCase();
 
-  if (role === "student") return <StudentSidebar />;
-  if (role === "mentor") return <MentorSidebar />;
-  if (role === "judge") return <JudgeSidebar />;
-  if (role === "coordinator" || role === "admin")
-    return <CoordinatorSidebar />;
-
-  return null;
+  switch (role) {
+    case "student":
+      return <StudentSidebar />;
+    case "mentor":
+      return <MentorSidebar />;
+    case "judge":
+      return <JudgeSidebar />;
+    case "coordinator":
+    case "admin":
+      return <CoordinatorSidebar />;
+    default:
+      return (
+        <div style={{ width: "260px", background: "rgba(255,255,255,0.05)" }} />
+      );
+  }
 }

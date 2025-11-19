@@ -3,7 +3,7 @@ import api from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
-import AppShell from '../components/layout/AppShell.jsx';
+import AppShell from '../components/layout/AppShell';
 
 export default function JudgeDashboard() {
   const [submissions, setSubmissions] = useState([]);
