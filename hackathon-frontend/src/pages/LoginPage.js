@@ -27,7 +27,7 @@ export default function LoginPage() {
         } catch (err) {
           console.warn('Failed to persist user to localStorage:', err.message || err);
         }
-        navigate('/team-selection');
+        navigate('/');
       } else {
         // Backend JWT login
         const res = await api.post('/auth/login', { email, password });
@@ -41,16 +41,8 @@ export default function LoginPage() {
           window.dispatchEvent(new Event('auth-changed'));
         }
         
-        // Role-based navigation
-        const roleRoutes = {
-          student: '/student-dashboard',
-          mentor: '/mentor-dashboard',
-          judge: '/judge-dashboard',
-          coordinator: '/coordinator-dashboard'
-        };
-        
-        const destination = roleRoutes[user.role] || '/student-dashboard';
-        navigate(destination);
+        // Redirect to "/" which will auto-redirect to role-based dashboard
+        navigate('/');
       }
 
     } catch (err) {
@@ -67,7 +59,13 @@ export default function LoginPage() {
       const { token, user } = res.data;
       if (token) localStorage.setItem('token', token);
       if (user) localStorage.setItem('user', JSON.stringify(user));
-      navigate('/team-selection');
+      
+      // Notify other components that auth state changed
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('auth-changed'));
+      }
+      
+      navigate('/');
     } catch (err) {
       console.error('Demo login failed', err);
       setMessage(err.response?.data?.error || err.message || 'Demo login failed');

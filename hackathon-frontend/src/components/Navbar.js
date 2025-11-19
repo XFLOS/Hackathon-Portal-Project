@@ -131,23 +131,17 @@ function Navbar() {
       try {
         const homeIsLogin = localStorage.getItem('homeIsLogin') === 'true';
         if (user) {
-          // Authenticated users: set home target based on role
-          try {
-            const raw = localStorage.getItem('user');
-            const u = raw ? JSON.parse(raw) : null;
-            const r = u?.role || null;
-            if (r === 'student') setHomeTarget('/student');
-            else setHomeTarget('/base');
-          } catch (_) { setHomeTarget('/base'); }
+          // Authenticated users: "/" will auto-redirect to their dashboard
+          setHomeTarget('/');
           try { localStorage.removeItem('homeIsLogin'); } catch (_) {}
         } else if (homeIsLogin) {
           // Anonymous user clicked Join previously -> logo goes to login
           setHomeTarget('/login');
         } else {
-          // Default: logo is inactive (no navigation)
-          setHomeTarget(null);
+          // Default: logo goes to landing page
+          setHomeTarget('/');
         }
-      } catch (e) { setHomeTarget(null); }
+      } catch (e) { setHomeTarget('/'); }
     };
     compute();
     const onStorage = (e) => { if (e.key === 'homeIsLogin') compute(); };
@@ -178,7 +172,8 @@ function Navbar() {
         window.dispatchEvent(new Event('auth-changed'));
       }
       
-      navigate("/login");
+      // Redirect to landing page (not login)
+      navigate("/");
     } catch (error) {
       console.error("Logout failed:", error);
       // Even if signOut fails, clear local state
@@ -191,7 +186,7 @@ function Navbar() {
         window.dispatchEvent(new Event('auth-changed'));
       }
       
-      navigate("/login");
+      navigate("/");
     }
   };
 
@@ -216,17 +211,10 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className="nav-left">
-        {/* Home target depends on whether the anonymous user opted into 'Join'.
-            If `homeTarget` is null, render an inert brand element (no navigation). */}
-        {homeTarget ? (
-          <Link to={homeTarget} className="nav-brand" aria-label="Go to home">
-            <img src={logo} alt="Hackathon Logo" className="nav-logo" />
-          </Link>
-        ) : (
-          <div className="nav-brand nav-brand--inactive" aria-hidden="true" tabIndex={-1}>
-            <img src={logo} alt="Hackathon Logo" className="nav-logo" />
-          </div>
-        )}
+        {/* Logo always links to "/" - will auto-redirect to dashboard if logged in */}
+        <Link to="/" className="nav-brand" aria-label="Go to home">
+          <img src={logo} alt="Hackathon Logo" className="nav-logo" />
+        </Link>
       </div>
 
       <div className="nav-right">
@@ -254,12 +242,8 @@ function Navbar() {
           >
             {user ? (
               <>
-                {/* Common for signed-in users - if student, make Dashboard their Home */}
-                {role === 'student' ? (
-                  <Link to="/student">Dashboard</Link>
-                ) : (
-                  <Link to="/">Home</Link>
-                )}
+                {/* Home/Dashboard link - "/" will auto-redirect to role-based dashboard */}
+                <Link to="/">Dashboard</Link>
                 <Link to="/profile">Profile</Link>
                 <Link to="/notifications">Notifications</Link>
                 <div className="dropdown-divider" />
