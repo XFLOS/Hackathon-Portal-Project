@@ -27,7 +27,14 @@ export default function LoginPage() {
         } catch (err) {
           console.warn('Failed to persist user to localStorage:', err.message || err);
         }
-        navigate('/');
+        
+        // Notify auth context
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('auth-changed'));
+        }
+        
+        // Small delay to ensure context updates
+        setTimeout(() => navigate('/'), 100);
       } else {
         // Backend JWT login
         const res = await api.post('/auth/login', { email, password });
@@ -41,8 +48,8 @@ export default function LoginPage() {
           window.dispatchEvent(new Event('auth-changed'));
         }
         
-        // Redirect to "/" which will auto-redirect to role-based dashboard
-        navigate('/');
+        // Small delay to ensure context updates, then redirect
+        setTimeout(() => navigate('/'), 100);
       }
 
     } catch (err) {
@@ -65,7 +72,8 @@ export default function LoginPage() {
         window.dispatchEvent(new Event('auth-changed'));
       }
       
-      navigate('/');
+      // Small delay to ensure context updates, then redirect
+      setTimeout(() => navigate('/'), 100);
     } catch (err) {
       console.error('Demo login failed', err);
       setMessage(err.response?.data?.error || err.message || 'Demo login failed');

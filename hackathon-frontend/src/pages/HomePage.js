@@ -9,25 +9,48 @@ export default function HomePage() {
 
   // Redirect logged-in users to their dashboard immediately
   useEffect(() => {
-    if (user && role) {
-      switch (role) {
-        case 'student':
-          navigate('/student-dashboard', { replace: true });
-          break;
-        case 'mentor':
-          navigate('/mentor-dashboard', { replace: true });
-          break;
-        case 'judge':
-          navigate('/judge-dashboard', { replace: true });
-          break;
-        case 'coordinator':
-        case 'admin':
-          navigate('/coordinator-dashboard', { replace: true });
-          break;
-        default:
-          break;
+    // Check both AuthContext and localStorage for user/role
+    const checkAndRedirect = () => {
+      let currentUser = user;
+      let currentRole = role;
+
+      // Fallback to localStorage if context hasn't updated yet
+      if (!currentUser || !currentRole) {
+        try {
+          const storedUser = localStorage.getItem('user');
+          if (storedUser) {
+            const parsed = JSON.parse(storedUser);
+            currentUser = currentUser || parsed;
+            currentRole = currentRole || parsed.role;
+          }
+        } catch (e) {
+          console.error('Failed to parse stored user:', e);
+        }
       }
-    }
+
+      // Redirect if we have a user and role
+      if (currentUser && currentRole) {
+        switch (currentRole) {
+          case 'student':
+            navigate('/student-dashboard', { replace: true });
+            break;
+          case 'mentor':
+            navigate('/mentor-dashboard', { replace: true });
+            break;
+          case 'judge':
+            navigate('/judge-dashboard', { replace: true });
+            break;
+          case 'coordinator':
+          case 'admin':
+            navigate('/coordinator-dashboard', { replace: true });
+            break;
+          default:
+            break;
+        }
+      }
+    };
+
+    checkAndRedirect();
   }, [user, role, navigate]);
 
   // Handle CTA
@@ -47,7 +70,16 @@ export default function HomePage() {
   };
 
   // Don't render landing page content if user is logged in
-  if (user) {
+  // Check both context and localStorage
+  const isLoggedIn = user || (() => {
+    try {
+      return !!localStorage.getItem('user');
+    } catch (e) {
+      return false;
+    }
+  })();
+
+  if (isLoggedIn) {
     return null; // Will redirect via useEffect
   }
 
