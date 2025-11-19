@@ -13,7 +13,7 @@
   letter-spacing: 0.02em;
   cursor: pointer;
   background: transparent;
-  color: var(--color-text-strong);
+  color: var(--text-strong);
   transition:
     background var(--transition-normal),
     color var(--transition-normal),
@@ -24,25 +24,25 @@
 }
 
 .ui-btn--primary {
-  background: radial-gradient(circle at 0% 0%, #a855f7 0%, #6366f1 40%, #22c55e 120%);
-  border-color: rgba(129, 140, 248, 0.6);
+  background: radial-gradient(circle at 0% 0%, #60a5fa 0%, #3b82f6 40%, #2563eb 120%);
+  border-color: rgba(96, 165, 250, 0.6);
   color: white;
 }
 
 .ui-btn--ghost {
   background: rgba(15, 23, 42, 0.7);
-  border-color: rgba(148, 163, 184, 0.4);
-  color: var(--color-text-soft);
+  border-color: rgba(203, 213, 225, 0.4);
+  color: var(--text-soft);
 }
 
 .ui-btn--outline {
   background: transparent;
-  border-color: rgba(129, 140, 248, 0.7);
-  color: var(--color-primary);
+  border-color: rgba(96, 165, 250, 0.7);
+  color: var(--text-strong);
 }
 
 .ui-btn--danger {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(239, 68, 68, 0.15);
   border-color: rgba(239, 68, 68, 0.6);
   color: #fecaca;
 }

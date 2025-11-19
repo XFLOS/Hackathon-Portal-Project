@@ -7,14 +7,23 @@
   padding: 1.25rem 1.3rem;
   box-shadow: var(--shadow-soft);
   backdrop-filter: blur(18px);
-  color: var(--color-text);
+  color: var(--text-soft);
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .ui-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 15px 35px rgba(101, 197, 232, 0.25);
-  border-color: rgba(101, 197, 232, 0.6);
+  box-shadow: 0 15px 35px rgba(96, 165, 250, 0.25);
+  border-color: rgba(96, 165, 250, 0.6);
+}
+
+.ui-card h1,
+.ui-card h2,
+.ui-card h3,
+.ui-card h4,
+.ui-card h5,
+.ui-card h6 {
+  color: var(--text-strong);
 }
 
 .ui-card__header {

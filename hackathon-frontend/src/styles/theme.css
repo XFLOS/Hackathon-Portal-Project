@@ -1,26 +1,66 @@
 /* Global theme tokens and primitives */
 :root {
-  --nav-h: 100px;
-  --color-bg: #ffffff;
-  --color-surface: rgba(10,18,32,0.86);
-  --color-primary: #65c5e8;
-  --color-primary-2: #4aa3c9;
-  --color-text: #0b0f17;
-  --color-text-invert: #e8f8ff;
-  --color-muted: #5b8fa3;
-  --color-border: rgba(101,197,232,0.35);
+  /* High-contrast text colors for readability */
+  --text: #f8fafc;                    /* Very bright white */
+  --text-strong: #ffffff;              /* Pure white for headings */
+  --text-soft: #cbd5e1;                /* Light gray (readable on dark) */
+  --text-muted: #94a3b8;               /* Slightly muted */
+  --heading: #e2e8f0;                  /* Bright headings */
 
+  /* Legacy color mappings (kept for compatibility) */
+  --color-text: #f8fafc;
+  --color-text-strong: #ffffff;
+  --color-text-soft: #cbd5e1;
+  --color-text-invert: #0b0f17;
+  --color-muted: #94a3b8;
+
+  /* Backgrounds */
+  --nav-h: 100px;
+  --color-bg: #0b0f1a;
+  --bg: #0b0f1a;
+  --bg-soft: rgba(255,255,255,0.03);
+  --bg-glass: rgba(255,255,255,0.08);
+  --color-surface: rgba(10,18,32,0.86);
+
+  /* Primary colors (keeping your blue theme) */
+  --color-primary: #60a5fa;
+  --color-primary-2: #3b82f6;
+  --primary: #60a5fa;
+  --primary-strong: #3b82f6;
+
+  /* Borders */
+  --border: rgba(255,255,255,0.15);
+  --color-border: rgba(255,255,255,0.15);
+
+  /* Radius */
   --radius-s: 8px;
   --radius-m: 10px;
   --radius-l: 16px;
+  --radius-lg: 22px;
   --radius-pill: 50px;
 
-  --shadow-soft: 0 12px 22px rgba(101,197,232,0.2);
-  --shadow-hover: 0 16px 32px rgba(101,197,232,0.3);
+  /* Shadows */
+  --shadow-soft: 0 12px 22px rgba(96,165,250,0.2);
+  --shadow-hover: 0 16px 32px rgba(96,165,250,0.3);
   
+  /* Transitions */
   --transition-fast: 0.15s ease;
   --transition-normal: 0.25s ease;
   --transition-slow: 0.4s ease;
+}
+
+/* Global typography fixes for readability */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--heading);
+  font-weight: 600;
+}
+
+p, span, label, li, div {
+  color: var(--text-soft);
+}
+
+strong, b {
+  color: var(--text-strong);
 }
 
 /* Smooth transitions for all interactive elements */
