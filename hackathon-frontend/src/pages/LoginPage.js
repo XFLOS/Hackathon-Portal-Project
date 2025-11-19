@@ -4,6 +4,7 @@ import { firebaseEnabled } from '../firebase/config';
 import { loginWithFirebase } from '../services/auth';
 import api from '../services/api';
 import { Link, useNavigate } from 'react-router-dom';
+import Button from '../components/ui/Button';
 import './LoginPage.css';
 
 export default function LoginPage() {
@@ -93,44 +94,90 @@ export default function LoginPage() {
 
   return (
     <div className="login-wrapper">
-      <div className="login-card">
-        <h2>LOG IN</h2>
-        <form onSubmit={handleLogin}>
-          <input
-            type="email"
-            placeholder="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-
-          <input
-            type="password"
-            placeholder="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-
-          <button type="submit">Log in</button>
-        </form>
-
-        <p><Link to="/reset-password" className="forgot-password-link">Forgot your password?</Link></p>
-
-        <p className="message">{message}</p>
-
-        <div style={{ marginTop: '1rem' }}>
-          {demoInfo && demoInfo.enabled ? (
-            <>
-              <div style={{ marginBottom: '0.5rem' }} className="muted">Demo account: <strong>{demoInfo.email}</strong></div>
-              <button type="button" onClick={handleDemoSignIn} className="demo-btn">Sign in as Demo</button>
-            </>
-          ) : (
-            <button type="button" onClick={handleDemoSignIn} className="demo-btn">Demo sign in</button>
-          )}
+      <div className="login-grid">
+        {/* Left: Brand Section */}
+        <div className="login-brand">
+          <h1>Hackathon Portal</h1>
+          <p className="login-brand-tagline">Collaborate. Innovate. Compete.</p>
+          <div className="login-brand-features">
+            <div className="feature-item">
+              <span className="feature-icon">🚀</span>
+              <span>Build Amazing Projects</span>
+            </div>
+            <div className="feature-item">
+              <span className="feature-icon">👥</span>
+              <span>Team Collaboration</span>
+            </div>
+            <div className="feature-item">
+              <span className="feature-icon">🏆</span>
+              <span>Win Prizes</span>
+            </div>
+          </div>
         </div>
 
-        {/* Google sign-in removed */}
+        {/* Right: Login Form */}
+        <div className="login-form-side">
+          <div className="login-card">
+            <h2>Welcome Back</h2>
+            <p className="login-subtitle">Sign in to continue to your dashboard</p>
+            
+            <form onSubmit={handleLogin} className="login-form">
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
 
-        <p className="create-account">Don't have an account? <Link to="/register">Create an account</Link></p>
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="form-footer">
+                <Link to="/reset-password" className="forgot-password-link">
+                  Forgot password?
+                </Link>
+              </div>
+
+              <Button type="submit" full>
+                Sign In
+              </Button>
+            </form>
+
+            {message && <p className="login-message error">{message}</p>}
+
+            {demoInfo && demoInfo.enabled && (
+              <div className="demo-section">
+                <div className="divider">
+                  <span>or</span>
+                </div>
+                <div className="demo-info">
+                  <p className="muted">Demo account: <strong>{demoInfo.email}</strong></p>
+                </div>
+                <Button variant="outline" full onClick={handleDemoSignIn}>
+                  Sign in as Demo
+                </Button>
+              </div>
+            )}
+
+            <p className="create-account">
+              Don't have an account? <Link to="/register">Create an account</Link>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
