@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
+import AppShell from '../components/layout/AppShell';
+import StudentSidebar from '../components/layout/StudentSidebar';
 import './StudentDashboard.css';
 
 // Simple mock data provider used when backend is offline or slow.
@@ -92,96 +94,98 @@ export default function StudentDashboard() {
   }, []);
 
   return (
-    <div className="student-dashboard">
-      <div className="dashboard-header">
-        <h2>Student Dashboard</h2>
-        <p className="dashboard-subtitle">Your team status, submissions, deadlines, and announcements.</p>
-      </div>
-
-      {loading && <div className="dashboard-loading"><LoadingSpinner /></div>}
-      
-      {error && (
-        <div className="dashboard-alert">
-          <strong>⚠️ Warning:</strong> {error}. Showing offline data.
+    <AppShell sidebar={<StudentSidebar />}>
+      <div className="student-dashboard">
+        <div className="dashboard-header">
+          <h2>Student Dashboard</h2>
+          <p className="dashboard-subtitle">Your team status, submissions, deadlines, and announcements.</p>
         </div>
-      )}
 
-      {!loading && (
-        <div className="dashboard-grid">
-          <Card 
-            title="Team"
-            subtitle={team ? `${team.name} · ${team.members?.length || 1} members` : null}
-            actions={team && <Button size="sm" variant="outline">View Team</Button>}
-          >
-            {team ? (
-              <div className="team-info">
-                <p>Leader: {team.creator_name || 'Unknown'}</p>
-                <p>Status: Active</p>
-              </div>
-            ) : (
-              <div>
-                <p className="no-team-message">You are not in a team.</p>
-                <div className="team-actions">
-                  <Button variant="primary" onClick={() => window.location.href = '/team-selection'}>
-                    Create Team
-                  </Button>
-                  <Button variant="outline" onClick={() => window.location.href = '/team-selection'}>
-                    Join Team
-                  </Button>
+        {loading && <div className="dashboard-loading"><LoadingSpinner /></div>}
+        
+        {error && (
+          <div className="dashboard-alert">
+            <strong>⚠️ Warning:</strong> {error}. Showing offline data.
+          </div>
+        )}
+
+        {!loading && (
+          <div className="dashboard-grid">
+            <Card 
+              title="Team"
+              subtitle={team ? `${team.name} · ${team.members?.length || 1} members` : null}
+              actions={team && <Button size="sm" variant="outline">View Team</Button>}
+            >
+              {team ? (
+                <div className="team-info">
+                  <p>Leader: {team.creator_name || 'Unknown'}</p>
+                  <p>Status: Active</p>
                 </div>
-              </div>
-            )}
-          </Card>
+              ) : (
+                <div>
+                  <p className="no-team-message">You are not in a team.</p>
+                  <div className="team-actions">
+                    <Button variant="primary" onClick={() => window.location.href = '/team-selection'}>
+                      Create Team
+                    </Button>
+                    <Button variant="outline" onClick={() => window.location.href = '/team-selection'}>
+                      Join Team
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </Card>
 
-          <Card 
-            title="Submissions"
-            subtitle="Track your project uploads"
-            actions={<Button size="sm" variant="outline">Upload</Button>}
-          >
-            {submissions && submissions.length ? (
-              <ul className="dashboard-list">
-                {submissions.map(s => (
-                  <li key={s.id}>
-                    <strong>{s.filename}</strong> — {new Date(s.time || s.timestamp || s.createdAt).toLocaleString()} — <em>{s.status}</em>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="empty-state">No submissions yet.</p>
-            )}
-          </Card>
+            <Card 
+              title="Submissions"
+              subtitle="Track your project uploads"
+              actions={<Button size="sm" variant="outline">Upload</Button>}
+            >
+              {submissions && submissions.length ? (
+                <ul className="dashboard-list">
+                  {submissions.map(s => (
+                    <li key={s.id}>
+                      <strong>{s.filename}</strong> — {new Date(s.time || s.timestamp || s.createdAt).toLocaleString()} — <em>{s.status}</em>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="empty-state">No submissions yet.</p>
+              )}
+            </Card>
 
-          <Card 
-            title="Deadlines"
-            subtitle="Upcoming milestones"
-          >
-            {deadlines && deadlines.length ? (
-              <ul className="dashboard-list">
-                {deadlines.map(d => (
-                  <li key={d.id}>{d.title} — due {new Date(d.due).toLocaleString()}</li>
-                ))}
-              </ul>
-            ) : (
-              <p className="empty-state">No upcoming deadlines.</p>
-            )}
-          </Card>
+            <Card 
+              title="Deadlines"
+              subtitle="Upcoming milestones"
+            >
+              {deadlines && deadlines.length ? (
+                <ul className="dashboard-list">
+                  {deadlines.map(d => (
+                    <li key={d.id}>{d.title} — due {new Date(d.due).toLocaleString()}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="empty-state">No upcoming deadlines.</p>
+              )}
+            </Card>
 
-          <Card 
-            title="Announcements"
-            subtitle="Latest updates"
-          >
-            {announcements && announcements.length ? (
-              <ul className="dashboard-list">
-                {announcements.map(a => (
-                  <li key={a.id}><strong>{a.title}</strong> — {a.body}</li>
-                ))}
-              </ul>
-            ) : (
-              <p className="empty-state">No announcements.</p>
-            )}
-          </Card>
-        </div>
-      )}
-    </div>
+            <Card 
+              title="Announcements"
+              subtitle="Latest updates"
+            >
+              {announcements && announcements.length ? (
+                <ul className="dashboard-list">
+                  {announcements.map(a => (
+                    <li key={a.id}><strong>{a.title}</strong> — {a.body}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="empty-state">No announcements.</p>
+              )}
+            </Card>
+          </div>
+        )}
+      </div>
+    </AppShell>
   );
 }

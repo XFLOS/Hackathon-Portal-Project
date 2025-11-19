@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
+import Card from '../components/ui/Card';
+import Button from '../components/ui/Button';
+import AppShell from '../components/layout/AppShell';
+import MentorSidebar from '../components/layout/MentorSidebar';
 
 export default function MentorDashboard() {
   const [teams, setTeams] = useState([]);
@@ -24,29 +28,30 @@ export default function MentorDashboard() {
   }, []);
 
   return (
-    <div className="container section">
-      <div className="stack">
-        <h2 className="h2">Mentor Dashboard</h2>
-        <p className="subtitle">Team info and Q&amp;A. Provide feedback to teams.</p>
-        
-        {loading && <LoadingSpinner />}
-        
-        <div className="card panel">
-          <h3 style={{ marginTop: 0 }}>Assigned teams</h3>
-          {loading ? <p>Loading...</p> : (
-            teams.length === 0 ? <p className="muted">No teams assigned yet.</p> : (
-              <ul>
-                {teams.map(t => (
-                  <li key={t.id}>
-                    <strong>{t.name}</strong>
-                    <p className="muted">{t.members?.length || 0} members</p>
-                  </li>
-                ))}
-              </ul>
-            )
-          )}
+    <AppShell sidebar={<MentorSidebar />}>
+      <div className="container section">
+        <div className="stack">
+          <h2 className="h2">Mentor Dashboard</h2>
+          <p className="subtitle">Team info and Q&amp;A. Provide feedback to teams.</p>
+          
+          {loading && <LoadingSpinner />}
+          
+          <Card title="Assigned Teams" subtitle={`${teams.length} teams under your guidance`}>
+            {loading ? <p>Loading...</p> : (
+              teams.length === 0 ? <p className="muted">No teams assigned yet.</p> : (
+                <ul>
+                  {teams.map(t => (
+                    <li key={t.id}>
+                      <strong>{t.name}</strong>
+                      <p className="muted">{t.members?.length || 0} members</p>
+                    </li>
+                  ))}
+                </ul>
+              )
+            )}
+          </Card>
         </div>
       </div>
-    </div>
+    </AppShell>
   );
 }
