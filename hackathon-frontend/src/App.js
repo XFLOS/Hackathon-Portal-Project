@@ -35,41 +35,35 @@ import SurveysPage from './pages/SurveysPage';
 import RedirectByRole from './utils/RedirectByRole';
 
 function AppRoutes() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   
-  // Get user data from either context or localStorage
-  const getUserData = () => {
-    if (user) {
-      console.log('✅ User from AuthContext:', user);
-      return user;
-    }
-    try {
-      const storedUser = localStorage.getItem('user');
-      if (storedUser) {
-        const parsed = JSON.parse(storedUser);
-        console.log('✅ User from localStorage:', parsed);
-        return parsed;
-      }
-      console.log('❌ No user in localStorage');
-      return null;
-    } catch (e) {
-      console.error('❌ Error parsing localStorage user:', e);
-      return null;
-    }
-  };
+  // Show loading state while auth is initializing
+  if (loading) {
+    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>Loading...</div>;
+  }
 
-  const currentUser = getUserData();
-  console.log('🎯 Current user for routing:', currentUser);
-  console.log('🎯 Will redirect to dashboard?', !!currentUser);
+  // Helper to get dashboard path based on role
+  const getDashboardPath = () => {
+    if (!user || !user.role) return "/";
+
+    const role = user.role.toLowerCase();
+
+    if (role === "student") return "/student-dashboard";
+    if (role === "mentor") return "/mentor-dashboard";
+    if (role === "judge") return "/judge-dashboard";
+    if (role === "coordinator" || role === "admin") return "/coordinator-dashboard";
+
+    return "/";
+  };
 
   return (
     <Routes>
-      {/* Landing page with auto-redirect for logged-in users */}
+      {/* ROOT: landing if logged out, dashboard redirect if logged in */}
       <Route 
         path="/" 
         element={
-          currentUser ? (
-            <RedirectByRole user={currentUser} />
+          user ? (
+            <Navigate to={getDashboardPath()} replace />
           ) : (
             <HomePage />
           )
