@@ -6,8 +6,10 @@ import LoadingSpinner from '../components/LoadingSpinner.jsx';
 
 export default function ProtectedRoute({ children, allowUnverified = false }) {
   const { user, loading } = useAuth();
-  
-  // Also check localStorage for backend JWT auth
+
+  // Validate children is JSX, not objects
+  const safeChild = React.isValidElement(children) ? children : null;
+
   const hasToken = React.useMemo(() => {
     try {
       const token = localStorage.getItem('token');
@@ -16,19 +18,30 @@ export default function ProtectedRoute({ children, allowUnverified = false }) {
     } catch (e) {
       return false;
     }
-  }, [user]); // Re-check when user changes
-  
+  }, [user]);
+
   if (loading) return <LoadingSpinner />;
-  
-  // If Firebase is enabled, enforce email verification for Firebase users unless explicitly allowed
+
+  // Email verification check
   if (!allowUnverified && firebaseEnabled && user && user.emailVerified === false) {
     return <Navigate to="/verify-email" replace />;
   }
-  
-  // Check both AuthContext user and localStorage token
+
+  // Auth check
   if (!user && !hasToken) {
     return <Navigate to="/login" replace />;
   }
-  
-  return children;
+
+  // FINAL SAFETY LAYER:
+  // If the "children" passed is NOT valid JSX, do NOT crash — show a fallback
+  if (!safeChild) {
+    console.error("ProtectedRoute received invalid children:", children);
+    return (
+      <div style={{ padding: "2rem", color: "white" }}>
+        Invalid component inside ProtectedRoute
+      </div>
+    );
+  }
+
+  return safeChild;
 }
