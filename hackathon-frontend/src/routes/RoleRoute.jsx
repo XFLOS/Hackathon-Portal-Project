@@ -2,7 +2,7 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { firebaseEnabled } from '../firebase/config';
-import LoadingSpinner from '../components/LoadingSpinner';
+import LoadingSpinner from '../components/LoadingSpinner.jsx';
 
 export default function RoleRoute({ allow = [], children }) {
   const { user, role, loading } = useAuth();
