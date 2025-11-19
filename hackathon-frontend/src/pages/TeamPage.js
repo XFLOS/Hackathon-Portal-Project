@@ -8,6 +8,8 @@ export default function TeamPage() {
   const [team, setTeam] = useState(null);
   const [updates, setUpdates] = useState([]);
   const [newUpdate, setNewUpdate] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     // Load user from localStorage (same as before)
@@ -22,6 +24,7 @@ export default function TeamPage() {
     }
 
     // Load team
+    setLoading(true);
     api
       .get("/team/me")
       .then(function (res) {
@@ -34,9 +37,12 @@ export default function TeamPage() {
             setUpdates([]);
           }
         }
+        setLoading(false);
       })
       .catch(function (err) {
         console.error("Failed to fetch team:", err);
+        setError(err.message || "Failed to load team");
+        setLoading(false);
       });
   }, []);
 
@@ -82,11 +88,41 @@ export default function TeamPage() {
       });
   }
 
+  // If loading, show spinner
+  if (loading) {
+    return (
+      <div className="team-container">
+        <div className="team-message">
+          <p>Loading team information...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If error, show error message
+  if (error) {
+    return (
+      <div className="team-container">
+        <div className="team-message">
+          <p>Error: {error}</p>
+          <p style={{ fontSize: '0.9rem', marginTop: '10px' }}>
+            Please try refreshing the page or contact support.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   // If no team, show simple message
   if (!team) {
     return (
-      <div className="team-message">
-        <p>You are not part of a team.</p>
+      <div className="team-container">
+        <div className="team-message">
+          <p>You are not part of a team yet.</p>
+          <p style={{ fontSize: '0.9rem', marginTop: '10px' }}>
+            Please join or create a team to see team information.
+          </p>
+        </div>
       </div>
     );
   }
