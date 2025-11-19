@@ -1,7 +1,7 @@
 // src/components/layout/AppShell.jsx
 import React from "react";
-import Sidebar from "./Sidebar";
-import Topbar from "./Topbar";
+import Sidebar from "./Sidebar.jsx";
+import Topbar from "./Topbar.jsx";
 import "./appShell.css";
 
 export default function AppShell({ children }) {

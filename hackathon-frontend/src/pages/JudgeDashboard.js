@@ -3,8 +3,7 @@ import api from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
-import AppShell from '../components/layout/AppShell';
-import JudgeSidebar from '../components/layout/JudgeSidebar';
+import AppShell from '../components/layout/AppShell.jsx';
 
 export default function JudgeDashboard() {
   const [submissions, setSubmissions] = useState([]);
@@ -28,7 +27,7 @@ export default function JudgeDashboard() {
   }, []);
 
   return (
-    <AppShell sidebar={<JudgeSidebar />}>
+    <AppShell>
       <div className="container section">
         <div className="stack">
           <h2 className="h2">Judge Dashboard</h2>

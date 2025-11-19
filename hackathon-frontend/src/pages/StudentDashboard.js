@@ -3,8 +3,7 @@ import api from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
-import AppShell from '../components/layout/AppShell';
-import StudentSidebar from '../components/layout/StudentSidebar';
+import AppShell from '../components/layout/AppShell.jsx';
 import './StudentDashboard.css';
 
 // Simple mock data provider used when backend is offline or slow.
@@ -94,7 +93,7 @@ export default function StudentDashboard() {
   }, []);
 
   return (
-    <AppShell sidebar={<StudentSidebar />}>
+    <AppShell>
       <div className="student-dashboard">
         <div className="dashboard-header">
           <h2>Student Dashboard</h2>

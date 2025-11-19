@@ -3,8 +3,7 @@ import api from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
-import AppShell from '../components/layout/AppShell';
-import CoordinatorSidebar from '../components/layout/CoordinatorSidebar';
+import AppShell from '../components/layout/AppShell.jsx';
 
 export default function CoordinatorDashboard() {
   const [stats, setStats] = useState(null);
@@ -26,7 +25,7 @@ export default function CoordinatorDashboard() {
   }, []);
 
   return (
-    <AppShell sidebar={<CoordinatorSidebar />}>
+    <AppShell>
       <div className="container section">
         <div className="stack">
           <h2 className="h2">Coordinator Dashboard</h2>

@@ -1,8 +1,8 @@
 import React from "react";
-import StudentSidebar from "./StudentSidebar";
-import MentorSidebar from "./MentorSidebar";
-import JudgeSidebar from "./JudgeSidebar";
-import CoordinatorSidebar from "./CoordinatorSidebar";
+import StudentSidebar from "./StudentSidebar.jsx";
+import MentorSidebar from "./MentorSidebar.jsx";
+import JudgeSidebar from "./JudgeSidebar.jsx";
+import CoordinatorSidebar from "./CoordinatorSidebar.jsx";
 import { useAuth } from "../../context/AuthContext";
 
 export default function Sidebar() {
