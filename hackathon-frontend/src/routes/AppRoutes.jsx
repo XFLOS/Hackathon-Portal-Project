@@ -40,15 +40,11 @@ import RoleRoute from "./RoleRoute";
 export default function AppRoutes() {
   const { user, role, loading } = useAuth();
 
-  console.log('🔍 [AppRoutes] Auth State:', { user, role, loading });
-
   if (loading) return <CenteredLoading />;
 
   const getDashboardPath = () => {
     if (!user) return "/";
     const userRole = role?.toLowerCase() || user.role?.toLowerCase();
-    
-    console.log('🎯 [AppRoutes] getDashboardPath - role:', userRole);
 
     return {
       student: "/student-dashboard",
@@ -61,8 +57,6 @@ export default function AppRoutes() {
 
   const isLoggedIn = !!user;
   const dashboardPath = getDashboardPath();
-  
-  console.log('🚀 [AppRoutes] Root redirect check:', { isLoggedIn, dashboardPath });
 
   return (
     <Routes>

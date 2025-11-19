@@ -8,6 +8,13 @@
   box-shadow: var(--shadow-soft);
   backdrop-filter: blur(18px);
   color: var(--color-text);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.ui-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px rgba(101, 197, 232, 0.25);
+  border-color: rgba(101, 197, 232, 0.6);
 }
 
 .ui-card__header {

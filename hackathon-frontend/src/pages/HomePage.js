@@ -11,7 +11,6 @@ export default function HomePage() {
   useEffect(() => {
     if (user) {
       const userRole = role?.toLowerCase() || user.role?.toLowerCase();
-      console.log('🏠 [HomePage] User detected, redirecting. Role:', userRole);
       
       const dashboardPaths = {
         student: "/student-dashboard",
@@ -22,7 +21,6 @@ export default function HomePage() {
       };
       
       const path = dashboardPaths[userRole] || "/student-dashboard";
-      console.log('🏠 [HomePage] Redirecting to:', path);
       navigate(path, { replace: true });
     }
   }, [user, role, navigate]);

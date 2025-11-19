@@ -11,11 +11,8 @@ export function AuthProvider({ children }) {
   const initialUser = (() => {
     try {
       const raw = localStorage.getItem('user');
-      const parsed = raw ? JSON.parse(raw) : null;
-      console.log('🔐 [AuthContext] initialUser from localStorage:', parsed);
-      return parsed;
+      return raw ? JSON.parse(raw) : null;
     } catch (e) {
-      console.error('🔐 [AuthContext] Error parsing user from localStorage:', e);
       return null;
     }
   })();
@@ -23,8 +20,6 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(initialUser);
   const [role, setRole] = useState(initialUser?.role || null);
   const [loading, setLoading] = useState(true);
-
-  console.log('🔐 [AuthContext] State:', { user, role, loading, firebaseEnabled });
 
   useEffect(() => {
     let unsub = () => {};
@@ -79,20 +74,16 @@ export function AuthProvider({ children }) {
       }
     } else {
       // Backend-only flow: use localStorage user if present and try to refresh profile
-      console.log('🔐 [AuthContext] Backend-only flow, loading profile...');
       (async () => {
         await loadBackendProfile(initialUser);
-        console.log('🔐 [AuthContext] Backend profile loaded, setting loading=false');
         setLoading(false);
       })();
 
       // Listen for other windows or code dispatching an 'auth-changed' event
       const onAuthChanged = async () => {
-        console.log('🔐 [AuthContext] auth-changed event received');
         const raw = localStorage.getItem('user');
         let newUser = null;
         try { newUser = raw ? JSON.parse(raw) : null; } catch (_) { newUser = null; }
-        console.log('🔐 [AuthContext] New user from localStorage:', newUser);
         setUser(newUser);
         await loadBackendProfile(newUser);
       };
