@@ -1,17 +1,17 @@
 // src/components/layout/AppShell.jsx
 import React from "react";
+import Sidebar from "./Sidebar";
+import Topbar from "./Topbar";
 import "./appShell.css";
 
-const AppShell = ({ sidebar, header, children }) => {
+export default function AppShell({ children }) {
   return (
     <div className="app-shell">
-      {sidebar && <aside className="app-shell__sidebar">{sidebar}</aside>}
-      <main className="app-main">
-        {header && <div className="app-shell__header">{header}</div>}
-        <div className="app-shell__content">{children}</div>
-      </main>
+      <Sidebar />
+      <div className="app-main">
+        <Topbar />
+        <div className="app-content">{children}</div>
+      </div>
     </div>
   );
-};
-
-export default AppShell;
+}
