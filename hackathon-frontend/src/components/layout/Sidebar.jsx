@@ -6,7 +6,7 @@ import CoordinatorSidebar from "./CoordinatorSidebar";
 import { useAuth } from "../../context/AuthContext";
 
 export default function Sidebar() {
-  const { user, loading } = useAuth();
+  const { user, role, loading } = useAuth();
 
   // While loading auth state, don't break the layout
   if (loading) {
@@ -15,16 +15,16 @@ export default function Sidebar() {
     );
   }
 
-  // If no user, just render an empty sidebar container to preserve layout
-  if (!user || !user.role) {
+  // If no user or no role, just render an empty sidebar container to preserve layout
+  if (!user || !role) {
     return (
       <div style={{ width: "260px", background: "rgba(255,255,255,0.05)" }} />
     );
   }
 
-  const role = user.role.toLowerCase();
+  const normalizedRole = role.toLowerCase();
 
-  switch (role) {
+  switch (normalizedRole) {
     case "student":
       return <StudentSidebar />;
     case "mentor":
