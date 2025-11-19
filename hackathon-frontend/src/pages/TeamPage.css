@@ -131,4 +131,49 @@
 
 .post-btn {
   padding: 10px 16px;
-  background: linear-gradient(135deg, #60a5fa, #3b82f
+  background: linear-gradient(135deg, #60a5fa, #3b82f6);
+  border: none;
+  border-radius: 8px;
+  color: var(--text-strong, #ffffff);
+  font-family: 'OpenSans', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.post-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+}
+
+.update-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 15px;
+}
+
+.update-list li {
+  background: rgba(96, 165, 250, 0.06);
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  color: var(--text-soft, #cbd5e1);
+  border-left: 3px solid var(--primary, #60a5fa);
+}
+
+.no-updates {
+  color: var(--text-muted, #64748b);
+  font-style: italic;
+}
+
+.team-message {
+  text-align: center;
+  color: var(--text-soft, #cbd5e1);
+  font-family: 'OpenSans', sans-serif;
+  font-size: 18px;
+  padding: 40px;
+}
+
+.team-message.error {
+  color: #f87171;
+}
