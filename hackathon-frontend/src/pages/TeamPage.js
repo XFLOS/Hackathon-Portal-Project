@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AppShell from "../components/layout/AppShell";
-import StudentSidebar from "../components/layout/StudentSidebar";
+import Sidebar from "../components/layout/Sidebar";
 import FileUpload from "../components/FileUpload";
 import api from "../services/api";
 import "./TeamPage.css";
@@ -83,7 +83,7 @@ export default function TeamPage() {
 
   if (loading) {
     return (
-      <AppShell sidebar={<StudentSidebar />}>
+      <AppShell sidebar={<Sidebar />}>
         <div className="team-container">
           <div className="team-message">
             <p>Loading team information...</p>
@@ -95,7 +95,7 @@ export default function TeamPage() {
 
   if (error) {
     return (
-      <AppShell sidebar={<StudentSidebar />}>
+      <AppShell sidebar={<Sidebar />}>
         <div className="team-container">
           <div className="team-message">
             <p>Error: {error}</p>
@@ -110,7 +110,7 @@ export default function TeamPage() {
 
   if (!team) {
     return (
-      <AppShell sidebar={<StudentSidebar />}>
+      <AppShell sidebar={<Sidebar />}>
         <div className="team-container">
           <div className="team-message">
             <p>You are not part of a team yet.</p>
@@ -134,7 +134,7 @@ export default function TeamPage() {
   const userIdForUpload = (user && (user.id || user._id || user.uid)) || "";
 
   return (
-    <AppShell sidebar={<StudentSidebar />}>
+    <AppShell sidebar={<Sidebar />}>
       <div className="team-container">
       <div className="team-card">
         {/* Header */}
