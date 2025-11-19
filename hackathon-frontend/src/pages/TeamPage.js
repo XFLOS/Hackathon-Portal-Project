@@ -1,239 +1,128 @@
 import React, { useEffect, useState } from "react";
-import AppShell from "../components/layout/AppShell";
 import FileUpload from "../components/FileUpload";
 import api from "../services/api";
 import "./TeamPage.css";
 
+// Simplified version without AppShell wrapper
 export default function TeamPage() {
   const [user, setUser] = useState(null);
   const [team, setTeam] = useState(null);
   const [updates, setUpdates] = useState([]);
   const [newUpdate, setNewUpdate] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem("user");
-    if (stored) {
-      try {
-        setUser(JSON.parse(stored));
-      } catch (e) {
-        console.error("Failed to parse user:", e);
-      }
-    }
+    const loggedUser = JSON.parse(localStorage.getItem("user") || "null");
+    if (loggedUser) setUser(loggedUser);
 
-    setLoading(true);
-    api
-      .get("/team/me")
+    api.get("/team/me")
       .then((res) => {
-        const t = res.data;
-        if (t) {
-          setTeam(t);
-          setUpdates(Array.isArray(t.updates) ? t.updates : []);
+        if (res.data) {
+          setTeam(res.data);
+          setUpdates(res.data.updates || []);
         }
-        setLoading(false);
       })
       .catch((err) => {
         console.error("Failed to fetch team:", err);
-        setError(err.message || "Failed to load team");
-        setLoading(false);
       });
   }, []);
 
+  if (!team)
+    return (
+      <p className="team-message">
+        You are not part of a team.
+      </p>
+    );
+
+  const mentor = team.mentor || { name: "No mentor assigned", email: "" };
+  const members =
+    team.members ||
+    team.memberEmails ||
+    [];
+
   const handleAddUpdate = () => {
-    if (!newUpdate || newUpdate.trim() === "") return;
-    if (!team) return;
+    if (!newUpdate.trim()) return;
 
-    const message = newUpdate.trim();
-    const updatedList = [...updates, message];
-    setUpdates(updatedList);
-    setNewUpdate("");
+    setUpdates([...updates, newUpdate]);
 
-    const teamId = team.id || team._id;
-    if (!teamId) return;
-
-    api
-      .post("/team/" + teamId + "/update", { message })
+    api.post(`/team/${team.id}/update`, { message: newUpdate })
       .catch((err) => console.error("Failed to send update:", err));
+
+    setNewUpdate("");
   };
-
-  const handleLeaveTeam = () => {
-    if (!team || !user) return;
-
-    if (!window.confirm("Are you sure you want to leave the team?")) return;
-
-    const userId = user.id || user._id || user.uid;
-    if (!userId) {
-      console.error("No user id found for leave team");
-      return;
-    }
-
-    api
-      .delete("/team/member/" + userId)
-      .then(() => {
-        setTeam(null);
-        alert("You have left the team.");
-      })
-      .catch((err) => {
-        console.error("Failed to leave team:", err);
-        alert("Failed to leave team.");
-      });
-  };
-
-  if (loading) {
-    return (
-      <AppShell>
-        <div className="team-container">
-          <div className="team-message">
-            <p>Loading team information...</p>
-          </div>
-        </div>
-      </AppShell>
-    );
-  }
-
-  if (error) {
-    return (
-      <AppShell>
-        <div className="team-container">
-          <div className="team-message">
-            <p>Error: {error}</p>
-            <p style={{ fontSize: '0.9rem', marginTop: '10px' }}>
-              Please try refreshing the page or contact support.
-            </p>
-          </div>
-        </div>
-      </AppShell>
-    );
-  }
-
-  if (!team) {
-    return (
-      <AppShell>
-        <div className="team-container">
-          <div className="team-message">
-            <p>You are not part of a team yet.</p>
-            <p style={{ fontSize: '0.9rem', marginTop: '10px' }}>
-              Please join or create a team to see team information.
-            </p>
-          </div>
-        </div>
-      </AppShell>
-    );
-  }
-
-  const members = Array.isArray(team.members) 
-    ? team.members 
-    : team.memberEmails || team.memberNames || [];
-  const mentor = team.mentor || {};
-  const mentorName = mentor.name || "No mentor assigned";
-  const mentorEmail = mentor.email || "";
-
-  const teamIdForUpload = team.id || team._id || "";
-  const userIdForUpload = (user && (user.id || user._id || user.uid)) || "";
 
   return (
-    <AppShell>
-      <div className="team-container">
+    <div className="team-container">
       <div className="team-card">
-        {/* Header */}
         <div className="team-header">
-          <h1 className="team-title">{team.name || "Unnamed Team"}</h1>
+          <h1 className="team-title">{team?.name || "Unnamed Team"}</h1>
           <p className="team-description">
-            {team.description || "No description available."}
+            {team?.description || "No description provided."}
           </p>
         </div>
 
-        {/* Leader */}
         <div className="team-section">
           <h3>Team Leader</h3>
-          <p>
-            <strong>{team.leader || "N/A"}</strong>
-          </p>
+          <p><strong>{team?.leader || "N/A"}</strong></p>
         </div>
 
-        {/* Members */}
         <div className="team-section">
           <h3>Team Members</h3>
           <ul className="member-list">
             {members.length === 0 ? (
-              <li>No members added.</li>
+              <li>No members yet.</li>
             ) : (
-              members.map(function (m, index) {
-                return <li key={index}>{m}</li>;
-              })
+              members.map((m, i) => <li key={i}>{m}</li>)
             )}
           </ul>
         </div>
 
-        {/* Mentor */}
         <div className="team-section">
           <h3>Mentor</h3>
           <p>
-            <strong>{mentorName}</strong>
-            {mentorEmail && (
-              <span>
+            <strong>{mentor.name}</strong>
+            {mentor.email && (
+              <>
                 {" - "}
-                <a href={"mailto:" + mentorEmail} className="mentor-link">
-                  {mentorEmail}
+                <a href={`mailto:${mentor.email}`} className="mentor-link">
+                  {mentor.email}
                 </a>
-              </span>
+              </>
             )}
           </p>
         </div>
 
-        {/* File upload */}
         <div className="team-section">
           <h3>Upload Team Files</h3>
-          {teamIdForUpload && userIdForUpload ? (
-            <FileUpload teamId={teamIdForUpload} userId={userIdForUpload} />
-          ) : (
-            <p>File upload not available (missing ids).</p>
-          )}
+          <FileUpload teamId={team.id} userId={user?.id} />
         </div>
 
-        {/* Updates */}
         <div className="team-section">
           <h3>Team Updates</h3>
           <div className="update-input">
             <input
               type="text"
               value={newUpdate}
-              onChange={function (e) {
-                setNewUpdate(e.target.value);
-              }}
+              onChange={(e) => setNewUpdate(e.target.value)}
               placeholder="Share your progress..."
             />
             <button onClick={handleAddUpdate} className="post-btn">
               Post
             </button>
           </div>
-
           <ul className="update-list">
             {updates.length === 0 ? (
-              <li className="no-updates">No updates yet.</li>
+              <p className="no-updates">No updates yet.</p>
             ) : (
-              updates.map(function (u, index) {
-                return <li key={index}>{u}</li>;
-              })
+              updates.map((u, i) => <li key={i}>{u}</li>)
             )}
           </ul>
         </div>
 
-        {/* Schedule */}
         <div className="team-section">
           <h3>Presentation Schedule</h3>
-          <p>{team.presentationTime || "Not scheduled yet."}</p>
-        </div>
-
-        {/* Leave team */}
-        <div className="team-section">
-          <button onClick={handleLeaveTeam} className="leave-team-button">
-            Leave Team
-          </button>
+          <p>{team?.presentationTime || "No schedule assigned"}</p>
         </div>
       </div>
     </div>
-    </AppShell>
   );
 }
