@@ -7,8 +7,8 @@ export default function StudentSidebar() {
     { path: '/student-dashboard', label: 'Dashboard', icon: '📊' },
     { path: '/team', label: 'Team', icon: '👥' },
     { path: '/team-selection', label: 'Team Selection', icon: '🔍' },
-    { path: '/submissions', label: 'Submissions', icon: '📤' },
-    { path: '/schedule', label: 'Schedule', icon: '📅' },
+    { path: '/submission', label: 'Submissions', icon: '📤' },
+    // Schedule removed until implemented
     { path: '/leaderboard', label: 'Leaderboard', icon: '🏆' },
     { path: '/profile', label: 'Profile', icon: '👤' },
   ];
@@ -18,12 +18,16 @@ export default function StudentSidebar() {
       <div className="sidebar-header">
         <h3>Student Portal</h3>
       </div>
+
       <ul className="sidebar-nav">
         {navItems.map(item => (
           <li key={item.path}>
             <NavLink 
               to={item.path}
-              className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}
+              className={({ isActive }) => 
+                isActive ? 'nav-item active' : 'nav-item'
+              }
+              end
             >
               <span className="nav-icon">{item.icon}</span>
               <span className="nav-label">{item.label}</span>
