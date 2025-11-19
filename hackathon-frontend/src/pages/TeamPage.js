@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import AppShell from "../components/layout/AppShell";
+import StudentSidebar from "../components/layout/StudentSidebar";
 import FileUpload from "../components/FileUpload";
 import api from "../services/api";
 import "./TeamPage.css";
@@ -12,65 +14,56 @@ export default function TeamPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Load user from localStorage (same as before)
-    try {
-      const stored = localStorage.getItem("user");
-      if (stored) {
-        const loggedUser = JSON.parse(stored);
-        setUser(loggedUser);
+    const stored = localStorage.getItem("user");
+    if (stored) {
+      try {
+        setUser(JSON.parse(stored));
+      } catch (e) {
+        console.error("Failed to parse user:", e);
       }
-    } catch (e) {
-      console.error("Failed to parse user from localStorage:", e);
     }
 
-    // Load team
     setLoading(true);
     api
       .get("/team/me")
-      .then(function (res) {
-        var t = res.data;
+      .then((res) => {
+        const t = res.data;
         if (t) {
           setTeam(t);
-          if (Array.isArray(t.updates)) {
-            setUpdates(t.updates);
-          } else {
-            setUpdates([]);
-          }
+          setUpdates(Array.isArray(t.updates) ? t.updates : []);
         }
         setLoading(false);
       })
-      .catch(function (err) {
+      .catch((err) => {
         console.error("Failed to fetch team:", err);
         setError(err.message || "Failed to load team");
         setLoading(false);
       });
   }, []);
 
-  function handleAddUpdate() {
+  const handleAddUpdate = () => {
     if (!newUpdate || newUpdate.trim() === "") return;
     if (!team) return;
 
-    var message = newUpdate.trim();
-    var updatedList = updates.concat(message);
+    const message = newUpdate.trim();
+    const updatedList = [...updates, message];
     setUpdates(updatedList);
     setNewUpdate("");
 
-    var teamId = team.id || team._id;
+    const teamId = team.id || team._id;
     if (!teamId) return;
 
     api
-      .post("/team/" + teamId + "/update", { message: message })
-      .catch(function (err) {
-        console.error("Failed to send update:", err);
-      });
-  }
+      .post("/team/" + teamId + "/update", { message })
+      .catch((err) => console.error("Failed to send update:", err));
+  };
 
-  function handleLeaveTeam() {
+  const handleLeaveTeam = () => {
     if (!team || !user) return;
 
     if (!window.confirm("Are you sure you want to leave the team?")) return;
 
-    var userId = user.id || user._id || user.uid;
+    const userId = user.id || user._id || user.uid;
     if (!userId) {
       console.error("No user id found for leave team");
       return;
@@ -78,75 +71,71 @@ export default function TeamPage() {
 
     api
       .delete("/team/member/" + userId)
-      .then(function () {
+      .then(() => {
         setTeam(null);
         alert("You have left the team.");
       })
-      .catch(function (err) {
+      .catch((err) => {
         console.error("Failed to leave team:", err);
         alert("Failed to leave team.");
       });
-  }
+  };
 
-  // If loading, show spinner
   if (loading) {
     return (
-      <div className="team-container">
-        <div className="team-message">
-          <p>Loading team information...</p>
+      <AppShell sidebar={<StudentSidebar />}>
+        <div className="team-container">
+          <div className="team-message">
+            <p>Loading team information...</p>
+          </div>
         </div>
-      </div>
+      </AppShell>
     );
   }
 
-  // If error, show error message
   if (error) {
     return (
-      <div className="team-container">
-        <div className="team-message">
-          <p>Error: {error}</p>
-          <p style={{ fontSize: '0.9rem', marginTop: '10px' }}>
-            Please try refreshing the page or contact support.
-          </p>
+      <AppShell sidebar={<StudentSidebar />}>
+        <div className="team-container">
+          <div className="team-message">
+            <p>Error: {error}</p>
+            <p style={{ fontSize: '0.9rem', marginTop: '10px' }}>
+              Please try refreshing the page or contact support.
+            </p>
+          </div>
         </div>
-      </div>
+      </AppShell>
     );
   }
 
-  // If no team, show simple message
   if (!team) {
     return (
-      <div className="team-container">
-        <div className="team-message">
-          <p>You are not part of a team yet.</p>
-          <p style={{ fontSize: '0.9rem', marginTop: '10px' }}>
-            Please join or create a team to see team information.
-          </p>
+      <AppShell sidebar={<StudentSidebar />}>
+        <div className="team-container">
+          <div className="team-message">
+            <p>You are not part of a team yet.</p>
+            <p style={{ fontSize: '0.9rem', marginTop: '10px' }}>
+              Please join or create a team to see team information.
+            </p>
+          </div>
         </div>
-      </div>
+      </AppShell>
     );
   }
 
-  // Safe members list
-  var members =
-    team.members ||
-    team.memberEmails ||
-    team.memberNames ||
-    [];
-  if (!Array.isArray(members)) {
-    members = [];
-  }
+  const members = Array.isArray(team.members) 
+    ? team.members 
+    : team.memberEmails || team.memberNames || [];
+  const mentor = team.mentor || {};
+  const mentorName = mentor.name || "No mentor assigned";
+  const mentorEmail = mentor.email || "";
 
-  var mentor = team.mentor || {};
-  var mentorName = mentor.name || "No mentor assigned";
-  var mentorEmail = mentor.email || "";
-
-  var teamIdForUpload = team.id || team._id || "";
-  var userIdForUpload =
-    (user && (user.id || user._id || user.uid)) || "";
+  const teamIdForUpload = team.id || team._id || "";
+  const userIdForUpload = (user && (user.id || user._id || user.uid)) || "";
 
   return (
-    <div className="team-container">
+    <AppShell sidebar={<StudentSidebar />}>
+      <div className="team-container">
       <div className="team-card">
         {/* Header */}
         <div className="team-header">
@@ -246,5 +235,6 @@ export default function TeamPage() {
         </div>
       </div>
     </div>
+    </AppShell>
   );
 }
