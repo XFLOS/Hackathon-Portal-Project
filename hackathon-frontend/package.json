@@ -6,7 +6,11 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint src/**/*.{js,jsx}",
+    "lint:fix": "eslint src/**/*.{js,jsx} --fix",
+    "lint:css": "stylelint src/**/*.css",
+    "lint:css:fix": "stylelint src/**/*.css --fix"
   },
   "dependencies": {
     "axios": "1.13.1",
@@ -21,7 +25,12 @@
   "devDependencies": {
     "@testing-library/react": "16.3.0",
     "@testing-library/jest-dom": "6.9.1",
-    "@testing-library/user-event": "14.6.1"
+    "@testing-library/user-event": "14.6.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.34.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "stylelint": "^16.2.0",
+    "stylelint-config-standard": "^36.0.0"
   },
   "jest": {
     "moduleNameMapper": {

@@ -1,0 +1,7 @@
+build/
+node_modules/
+public/
+*.config.js
+serviceWorker.js
+setupTests.js
+reportWebVitals.js
