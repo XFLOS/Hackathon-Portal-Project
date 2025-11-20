@@ -146,5 +146,15 @@
   margin: 6px 0;
 }
 
+.logout-btn {
+  color: #fca5a5 !important;
+  font-weight: 700 !important;
+}
+
+.logout-btn:hover {
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.16), rgba(239, 68, 68, 0.05)) !important;
+  color: #fee2e2 !important;
+}
+
 /* Hide the old text trigger on wide screens */
 .menu-trigger { display: none; }

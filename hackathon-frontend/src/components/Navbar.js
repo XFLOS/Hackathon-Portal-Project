@@ -9,7 +9,27 @@ export default function Navbar() {
   
   // Safe useAuth call with fallback
   const ctx = useAuth ? useAuth() : {};
-  const { user, role } = ctx || {};
+  const { user, role, logout } = ctx || {};
+
+  const handleLogout = async () => {
+    try {
+      if (typeof logout === 'function') {
+        await logout();
+      } else {
+        // Fallback logout if logout function not available
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+      }
+      setDropdownOpen(false);
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Force logout even if there's an error
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
+    }
+  };
 
   // Close dropdown on outside click or Escape
   useEffect(() => {
@@ -105,6 +125,8 @@ export default function Navbar() {
                 <Link to="/leaderboard">Leaderboard</Link>
                 <Link to="/surveys">Surveys</Link>
                 <Link to="/help">Help</Link>
+                <div className="dropdown-divider" />
+                <button onClick={handleLogout} className="logout-btn">Logout</button>
               </>
             ) : (
               <>
