@@ -275,11 +275,13 @@
 .event-title {
   font-family: 'BebasNeue', sans-serif;
   font-size: 24px;
-  color: #f0f4f8;
+  color: #ffffff;
   margin: 0;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
   flex: 1;
   min-width: 200px;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+  font-weight: 700;
 }
 
 .status-badge {
@@ -313,23 +315,26 @@
 }
 
 .status-badge.past {
-  background: rgba(100, 116, 139, 0.25);
-  color: #a8b8cc;
-  border: 1px solid rgba(100, 116, 139, 0.4);
+  background: rgba(100, 116, 139, 0.3);
+  color: #cbd5e1;
+  border: 1px solid rgba(100, 116, 139, 0.5);
+  font-weight: 700;
 }
 
 .status-badge.upcoming {
-  background: rgba(0, 217, 255, 0.25);
-  color: #66e5ff;
-  border: 1px solid rgba(0, 217, 255, 0.4);
+  background: rgba(0, 217, 255, 0.3);
+  color: #7df3ff;
+  border: 1px solid rgba(0, 217, 255, 0.5);
+  font-weight: 700;
 }
 
 .event-description {
   font-family: 'OpenSans', sans-serif;
   font-size: 14px;
-  color: #e2e8f0;
+  color: #f8fafc;
   line-height: 1.6;
   margin: 0 0 15px 0;
+  opacity: 0.95;
 }
 
 .event-meta {
@@ -352,13 +357,13 @@
 }
 
 .meta-label {
-  color: #94a3b8;
+  color: #a0aec0;
   font-weight: 600;
 }
 
 .meta-value {
-  color: #e2e8f0;
-  font-weight: 500;
+  color: #f1f5f9;
+  font-weight: 600;
 }
 
 .ongoing-indicator {
