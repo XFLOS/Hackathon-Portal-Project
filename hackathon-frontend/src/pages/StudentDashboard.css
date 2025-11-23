@@ -1,131 +1,195 @@
+/* ================================
+   Student Dashboard – Dark Theme
+   Consistent with new design system
+===================================*/
+
 .student-dashboard {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2rem 1.5rem;
   min-height: calc(100vh - 80px);
-  animation: fadeIn 0.4s ease-out;
 }
 
-/* HEADER */
+/* ================================
+   Header
+===================================*/
+
 .dashboard-header {
-  text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
+  text-align: left;
 }
 
 .dashboard-header h2 {
-  font-size: 2.2rem;
+  font-size: 2.5rem;
   font-weight: 700;
-  color: #1f1f1f;
-  margin-bottom: 0.25rem;
+  letter-spacing: -0.03em;
+  color: #00d9ff;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
 }
 
 .dashboard-subtitle {
   font-size: 1rem;
-  color: #6d6d6d;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 300;
 }
 
-/* ALERT */
+/* ================================
+   Alert / Info Banner
+===================================*/
+
 .dashboard-alert {
   padding: 1rem 1.25rem;
-  background: #fff8df;
-  border-left: 4px solid #f3c232;
-  border-radius: 8px;
   margin-bottom: 2rem;
-  color: #856404;
-  font-size: 0.95rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  animation: slideIn 0.4s ease-out;
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-left-width: 4px;
+  border-radius: 12px;
+  color: #fca5a5;
+  animation: fadeInUp 0.35s ease-out;
 }
 
-/* GRID CARDS */
+.dashboard-alert strong {
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+/* ================================
+   Grid Layout
+===================================*/
+
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-/* CARD */
-.dashboard-card {
-  background: #ffffff;
-  border-radius: 10px;
-  padding: 1.5rem;
-  border: 1px solid #e6e6e6;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  animation: cardFade 0.5s ease-out forwards;
-  opacity: 0;
-}
+/* ================================
+   Team Info Styles
+===================================*/
 
-.dashboard-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.10);
-}
-
-.dashboard-card h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #222;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-/* TEAM INFO */
 .team-info {
-  margin-top: 1rem;
+  margin-top: 0.5rem;
 }
 
-.team-info strong {
-  color: #0f1741;
-  font-size: 1.05rem;
-  display: block;
-}
-
-.team-info p {
-  color: #5a5a5a;
+.team-detail {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.8);
   font-size: 0.95rem;
-  margin-top: 0.3rem;
 }
 
-.no-team-message {
-  color: #999;
+.team-detail:last-child {
+  border-bottom: none;
+}
+
+.team-detail strong {
+  color: #00d9ff;
+  margin-right: 0.5rem;
+}
+
+.status-active {
+  color: #4ade80;
+  font-weight: 500;
+}
+
+.mentor-unassigned {
+  color: rgba(255, 255, 255, 0.5);
   font-style: italic;
 }
 
-/* BUTTONS */
+.no-team-message {
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+/* ================================
+   Buttons / Actions
+===================================*/
+
 .team-actions {
-  margin-top: 1.2rem;
+  margin-top: 1rem;
   display: flex;
   gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
-.team-btn {
-  flex: 1;
-  padding: 0.7rem 1rem;
-  background: #4f46e5;
-  border-radius: 8px;
-  color: #fff;
-  border: none;
-  cursor: pointer;
+/* ================================
+   Submission Styles
+===================================*/
+
+.submission-item {
+  padding: 0.75rem 0 !important;
+  display: block !important;
+}
+
+.submission-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.submission-header strong {
+  color: #00d9ff;
+  font-size: 1rem;
+}
+
+.submission-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
   font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-submitted,
+.status-pending {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+}
+
+.status-approved,
+.status-evaluated {
+  background: rgba(74, 222, 128, 0.2);
+  color: #4ade80;
+}
+
+.status-rejected {
+  background: rgba(248, 113, 113, 0.2);
+  color: #f87171;
+}
+
+.submission-description {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+  line-height: 1.5;
+}
+
+.submission-meta {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.empty-state-with-action {
   text-align: center;
-  transition: background 0.3s ease, transform 0.2s ease;
+  padding: 1.5rem;
 }
 
-.team-btn:hover {
-  background: #4338ca;
-  transform: translateY(-2px);
+.empty-state-with-action p {
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 1rem;
 }
 
-.team-btn.secondary {
-  background: #ef4444;
-}
+/* ================================
+   List / Info Blocks
+===================================*/
 
-.team-btn.secondary:hover {
-  background: #dc2626;
-}
-
-/* LISTS */
 .dashboard-list {
   list-style: none;
   padding: 0;
@@ -133,9 +197,9 @@
 }
 
 .dashboard-list li {
-  padding: 0.65rem 0;
-  border-bottom: 1px solid #efefef;
-  color: #424242;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
   font-size: 0.95rem;
 }
 
@@ -143,52 +207,96 @@
   border-bottom: none;
 }
 
-/* EMPTY STATE */
-.empty-state {
-  text-align: center;
-  padding: 1.5rem;
-  color: #9b9b9b;
-  background: #f7f7f7;
-  border-radius: 10px;
-  font-style: italic;
+.dashboard-list strong {
+  color: #00d9ff;
+  font-weight: 600;
 }
 
-/* LOADING */
+.announcement-date {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 0.25rem;
+}
+
+.info-text {
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* ================================
+   Empty / Placeholder State
+===================================*/
+
+.empty-state {
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+  padding: 1.5rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+/* ================================
+   Loading State
+===================================*/
+
 .dashboard-loading {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 180px;
+  min-height: 300px;
+  color: rgba(255, 255, 255, 0.6);
 }
 
-/* ===============================
-   ANIMATIONS
-   =============================== */
+/* ================================
+   Animations
+===================================*/
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-@keyframes slideIn {
-  from { opacity: 0; transform: translateX(-10px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
+/* ================================
+   Responsive
+===================================*/
 
-@keyframes cardFade {
-  0% { opacity: 0; transform: translateY(8px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-/* Card stagger animation */
-.dashboard-card:nth-child(1) { animation-delay: 0.1s; }
-.dashboard-card:nth-child(2) { animation-delay: 0.2s; }
-.dashboard-card:nth-child(3) { animation-delay: 0.3s; }
-.dashboard-card:nth-child(4) { animation-delay: 0.4s; }
-
-/* Responsive */
 @media (max-width: 768px) {
-  .student-dashboard { padding: 1rem; }
-  .dashboard-header h2 { font-size: 1.8rem; }
-  .dashboard-grid { grid-template-columns: 1fr; }
+  .student-dashboard {
+    padding: 1.5rem 1rem;
+  }
+
+  .dashboard-header h2 {
+    font-size: 2rem;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .team-actions {
+    flex-direction: column;
+  }
+
+  .submission-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-header h2 {
+    font-size: 1.75rem;
+  }
 }

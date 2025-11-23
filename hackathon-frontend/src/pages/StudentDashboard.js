@@ -31,10 +31,11 @@ export default function StudentDashboard() {
 
     async function loadDashboard() {
       try {
-        const [teamRes, subsRes, scheduleRes] = await Promise.all([
+        const [teamRes, subsRes, scheduleRes, announcementsRes] = await Promise.all([
           api.get("/teams/me").catch(() => ({ data: null })),
           api.get("/submission/me").catch(() => ({ data: [] })),
           api.get("/users/schedule").catch(() => ({ data: [] })),
+          api.get("/users/announcements").catch(() => ({ data: [] })),
         ]);
 
         if (!mounted) return;
@@ -48,7 +49,7 @@ export default function StudentDashboard() {
           Array.isArray(subs) ? subs : subs ? [subs] : []
         );
 
-        // ---- DEADLINES & ANNOUNCEMENTS ----
+        // ---- DEADLINES (from schedule) ----
         const events = scheduleRes?.data || [];
 
         const d = events.filter((e) =>
@@ -64,13 +65,14 @@ export default function StudentDashboard() {
           }))
         );
 
-        const a = events.filter((e) => e.type === "announcement");
-
+        // ---- ANNOUNCEMENTS (from announcements endpoint) ----
+        const announcements = announcementsRes?.data || [];
         setAnnouncements(
-          a.map((e) => ({
-            id: e.id || Math.random(),
-            title: e.title || "Announcement",
-            body: e.description || "",
+          announcements.map((a) => ({
+            id: a.id || Math.random(),
+            title: a.title || "Announcement",
+            body: a.message || a.description || a.body || "",
+            created_at: a.created_at || a.time || null,
           }))
         );
 
@@ -139,12 +141,30 @@ export default function StudentDashboard() {
             >
               {team ? (
                 <div className="team-info">
-                  <p>Leader: {team.creator_name || "Unknown"}</p>
-                  <p>Status: Active</p>
+                  <div className="team-detail">
+                    <strong>Team Leader:</strong> {team.creator_name || "Unknown"}
+                  </div>
+                  <div className="team-detail">
+                    <strong>Status:</strong> <span className="status-active">Active</span>
+                  </div>
+                  {team.project_name && (
+                    <div className="team-detail">
+                      <strong>Project:</strong> {team.project_name}
+                    </div>
+                  )}
+                  {team.mentor_id || team.mentor ? (
+                    <div className="team-detail">
+                      <strong>Mentor:</strong> {team.mentor_name || team.mentor?.name || "Assigned"}
+                    </div>
+                  ) : (
+                    <div className="team-detail mentor-unassigned">
+                      <strong>Mentor:</strong> Not assigned yet
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div>
-                  <p className="no-team-message">You are not in a team.</p>
+                  <p className="no-team-message">You are not in a team yet.</p>
                   <div className="team-actions">
                     <Button
                       variant="primary"
@@ -169,22 +189,40 @@ export default function StudentDashboard() {
               subtitle="Track your project uploads"
               actions={
                 <Button size="sm" onClick={() => window.location.href = "/submission"}>
-                  Upload
+                  New Submission
                 </Button>
               }
             >
               {submissions.length > 0 ? (
                 <ul className="dashboard-list">
                   {submissions.map((s) => (
-                    <li key={s.id}>
-                      <strong>{s.filename || "File"}</strong>
-                      — {safeDate(s.time || s.createdAt)}
-                      — <em>{s.status || "Unknown"}</em>
+                    <li key={s.id} className="submission-item">
+                      <div className="submission-header">
+                        <strong>{s.title || s.project_name || s.filename || "Project Submission"}</strong>
+                        <span className={`submission-status status-${(s.status || "pending").toLowerCase()}`}>
+                          {s.status || "Pending"}
+                        </span>
+                      </div>
+                      {s.description && (
+                        <p className="submission-description">{s.description}</p>
+                      )}
+                      <div className="submission-meta">
+                        Submitted: {safeDate(s.submitted_at || s.created_at || s.time)}
+                      </div>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="empty-state">No submissions yet.</p>
+                <div className="empty-state-with-action">
+                  <p>No submissions yet.</p>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => window.location.href = "/submission"}
+                  >
+                    Submit Your Project
+                  </Button>
+                </div>
               )}
             </Card>
 
@@ -216,13 +254,38 @@ export default function StudentDashboard() {
                   {announcements.map((a) => (
                     <li key={a.id}>
                       <strong>{a.title}</strong>
-                      — {a.body}
+                      {a.body && <> — {a.body}</>}
+                      {a.created_at && (
+                        <div className="announcement-date">
+                          {safeDate(a.created_at)}
+                        </div>
+                      )}
                     </li>
                   ))}
                 </ul>
               ) : (
                 <p className="empty-state">No announcements.</p>
               )}
+            </Card>
+
+            {/* LEADERBOARD LINK */}
+            <Card
+              title="Leaderboard"
+              subtitle="View team rankings"
+              actions={
+                <Button 
+                  size="sm" 
+                  variant="primary"
+                  onClick={() => window.location.href = "/leaderboard"}
+                >
+                  View Leaderboard
+                </Button>
+              }
+            >
+              <p className="info-text">
+                Check where your team ranks among all participating teams. 
+                Track scores and competition progress.
+              </p>
             </Card>
 
           </div>
