@@ -122,9 +122,9 @@ export default function Navbar() {
                 
                 {role === 'mentor' && (
                   <>
-                    <Link to="/mentor-dashboard">Mentor Dashboard</Link>
                     <Link to="/mentor/teams">Teams & Q&A</Link>
                     <Link to="/mentor/feedback">Feedback</Link>
+                    <Link to="/mentor/chat">Chat</Link>
                   </>
                 )}
                 
