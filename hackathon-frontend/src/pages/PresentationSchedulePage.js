@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import api from '../api';
+import api from '../services/api';
 import './PresentationSchedulePage.css';
 
 export default function PresentationSchedulePage() {
