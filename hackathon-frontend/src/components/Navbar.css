@@ -158,3 +158,38 @@
 
 /* Hide the old text trigger on wide screens */
 .menu-trigger { display: none; }
+
+/* Notification badge */
+.notification-link {
+  position: relative;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px;
+}
+
+.notification-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  background: linear-gradient(135deg, #ff4444, #cc0000);
+  color: white;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: bold;
+  font-family: 'OpenSans', sans-serif;
+  box-shadow: 0 2px 8px rgba(255, 68, 68, 0.4);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 2px 8px rgba(255, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 2px 12px rgba(255, 68, 68, 0.6);
+  }
+}
+

@@ -1,15 +1,36 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import api from "../api";
 import logo from "../images/1.png";
 import "./Navbar.css";
 
 export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   
   // Safe useAuth call with fallback
   const ctx = useAuth ? useAuth() : {};
   const { user, role, logout } = ctx || {};
+
+  // Fetch unread notification count
+  useEffect(() => {
+    if (user) {
+      fetchUnreadCount();
+      // Poll every 30 seconds
+      const interval = setInterval(fetchUnreadCount, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [user]);
+
+  const fetchUnreadCount = async () => {
+    try {
+      const res = await api.get('/notifications/unread-count');
+      setUnreadCount(res.data.unread_count || 0);
+    } catch (error) {
+      console.error('Failed to fetch unread count:', error);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -84,7 +105,10 @@ export default function Navbar() {
               <>
                 <Link to="/">Dashboard</Link>
                 <Link to="/profile">Profile</Link>
-                <Link to="/notifications">Notifications</Link>
+                <Link to="/notifications" className="notification-link">
+                  Notifications
+                  {unreadCount > 0 && <span className="notification-badge">{unreadCount}</span>}
+                </Link>
                 <div className="dropdown-divider" />
                 
                 {role === 'student' && (
