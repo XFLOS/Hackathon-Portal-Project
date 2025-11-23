@@ -12,6 +12,7 @@ import LeaderboardPage from "../pages/LeaderboardPage";
 
 import StudentDashboard from "../pages/StudentDashboard";
 import MentorDashboard from "../pages/MentorDashboard";
+import MentorSubmissionView from "../pages/MentorSubmissionView";
 import JudgeDashboard from "../pages/JudgeDashboard";
 import CoordinatorDashboard from "../pages/CoordinatorDashboard";
 
@@ -147,6 +148,14 @@ function AppRoutesInner() {
         element={
           <RoleRoute allow={["mentor", "admin"]}>
             <MentorFeedback />
+          </RoleRoute>
+        }
+      />
+      <Route
+        path="/mentor/submission/:teamId"
+        element={
+          <RoleRoute allow={["mentor", "admin"]}>
+            <MentorSubmissionView />
           </RoleRoute>
         }
       />

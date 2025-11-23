@@ -223,10 +223,15 @@ export default function MentorDashboard() {
 
                             {/* Action Buttons */}
                             <div className="team-actions">
+                              {details.submission && (
+                                <Link to={`/mentor/submission/${team.id}`} className="btn-primary">
+                                  View Full Submission
+                                </Link>
+                              )}
                               <Link to={`/mentor/teams?team=${team.id}`} className="btn-secondary">
                                 View Updates
                               </Link>
-                              <Link to={`/mentor/feedback?team=${team.id}`} className="btn-primary">
+                              <Link to={`/mentor/feedback?team=${team.id}`} className="btn-secondary">
                                 Give Feedback
                               </Link>
                             </div>
