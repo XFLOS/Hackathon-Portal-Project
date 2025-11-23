@@ -5,7 +5,7 @@ import './sidebar.css';
 export default function MentorSidebar() {
   const navItems = [
     { path: '/mentor-dashboard', label: 'Dashboard', icon: '📊' },
-    { path: '/mentor-teams', label: 'Assigned Teams', icon: '👥' },
+    { path: '/mentor/teams', label: 'Assigned Teams', icon: '👥' },
     { path: '/mentor-chat', label: 'Chat', icon: '💬' },
     { path: '/mentor-updates', label: 'Team Updates', icon: '📝' },
     { path: '/mentor-briefing', label: 'Briefing', icon: '📋' },
