@@ -10,6 +10,7 @@ import mentorRoutes from './routes/mentorRoutes.js';
 import coordinatorRoutes from './routes/coordinatorRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import messageRoutes from './routes/messageRoutes.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 
 // Load environment variables
@@ -86,6 +87,7 @@ app.use('/mentor', mentorRoutes);
 app.use('/coordinator', coordinatorRoutes);
 app.use('/users', userRoutes);
 app.use('/notifications', notificationRoutes);
+app.use('/messages', messageRoutes);
 
 // 404 handler
 app.use(notFound);

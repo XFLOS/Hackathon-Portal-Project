@@ -24,6 +24,8 @@ import HelpPage from "../pages/HelpPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import MentorTeamQA from "../pages/MentorTeamQA";
 import MentorFeedback from "../pages/MentorFeedback";
+import MentorChatPage from "../pages/MentorChatPage";
+import StudentChatPage from "../pages/StudentChatPage";
 import JudgeEvaluationPage from "../pages/JudgeEvaluationPage";
 import JudgeFeedbackHistoryPage from "../pages/JudgeFeedbackHistoryPage";
 import CoordinatorManagePage from "../pages/CoordinatorManagePage";
@@ -119,6 +121,14 @@ function AppRoutesInner() {
         }
       />
       <Route
+        path="/student/chat"
+        element={
+          <RoleRoute allow={["student", "admin"]}>
+            <StudentChatPage />
+          </RoleRoute>
+        }
+      />
+      <Route
         path="/certificate"
         element={
           <RoleRoute allow={["student", "mentor", "judge", 'coordinator', "admin"]}>
@@ -149,6 +159,14 @@ function AppRoutesInner() {
         element={
           <RoleRoute allow={["mentor", "admin"]}>
             <MentorFeedback />
+          </RoleRoute>
+        }
+      />
+      <Route
+        path="/mentor/chat"
+        element={
+          <RoleRoute allow={["mentor", "admin"]}>
+            <MentorChatPage />
           </RoleRoute>
         }
       />

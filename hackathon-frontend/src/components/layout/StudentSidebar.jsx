@@ -8,6 +8,7 @@ export default function StudentSidebar() {
     { path: '/team', label: 'Team', icon: '👥' },
     { path: '/team-selection', label: 'Team Selection', icon: '🔍' },
     { path: '/submission', label: 'Submissions', icon: '📤' },
+    { path: '/student/chat', label: 'Chat', icon: '💬' },
     // Schedule removed until implemented
     { path: '/leaderboard', label: 'Leaderboard', icon: '🏆' },
     { path: '/profile', label: 'Profile', icon: '👤' },

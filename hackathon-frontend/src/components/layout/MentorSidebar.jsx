@@ -7,6 +7,7 @@ export default function MentorSidebar() {
     { path: '/mentor-dashboard', label: 'Dashboard', icon: '📊' },
     { path: '/mentor/teams', label: 'Assigned Teams', icon: '👥' },
     { path: '/mentor/feedback', label: 'Feedback', icon: '📝' },
+    { path: '/mentor/chat', label: 'Chat', icon: '💬' },
     { path: '/schedule', label: 'Schedule', icon: '📅' },
     { path: '/announcements', label: 'Announcements', icon: '📢' },
   ];
