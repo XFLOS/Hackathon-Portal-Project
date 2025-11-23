@@ -230,6 +230,14 @@ function AppRoutesInner() {
         }
       />
       <Route
+        path="/schedule"
+        element={
+          <RoleRoute allow={["student", "mentor", "judge", "coordinator", "admin"]}>
+            <PresentationSchedulePage />
+          </RoleRoute>
+        }
+      />
+      <Route
         path="/verify-email"
         element={
           <ProtectedRoute allowUnverified>

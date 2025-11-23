@@ -79,7 +79,7 @@
 
 .quick-actions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
   margin-bottom: 3rem;
 }
@@ -118,6 +118,112 @@
 .action-desc {
   color: #94a3b8;
   font-size: 0.9rem;
+}
+
+/* ===============================
+   SCHEDULE PREVIEW
+   =============================== */
+
+.schedule-preview {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 217, 255, 0.2);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 3rem;
+}
+
+.schedule-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+}
+
+.schedule-preview-header h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #e0e0e0;
+  font-size: 1.5rem;
+  margin: 0;
+  font-weight: 600;
+}
+
+.schedule-icon {
+  font-size: 1.8rem;
+}
+
+.view-full-schedule {
+  color: #00d9ff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+}
+
+.view-full-schedule:hover {
+  color: #33e0ff;
+  text-decoration: underline;
+}
+
+.next-event-card {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(0, 217, 255, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.event-main-info {
+  margin-bottom: 1.5rem;
+}
+
+.event-name {
+  color: #e0e0e0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.event-description {
+  color: #cbd5e1;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.event-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.event-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.detail-icon {
+  font-size: 1.2rem;
+}
+
+.detail-label {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.detail-value {
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+.detail-value.countdown {
+  color: #00d9ff;
+  font-size: 1.1rem;
 }
 
 /* ===============================

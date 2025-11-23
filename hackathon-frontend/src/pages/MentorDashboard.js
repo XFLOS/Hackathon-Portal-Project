@@ -11,12 +11,30 @@ export default function MentorDashboard() {
   const [teams, setTeams] = useState([]);
   const [expandedTeams, setExpandedTeams] = useState({});
   const [teamDetails, setTeamDetails] = useState({});
+  const [schedule, setSchedule] = useState([]);
+  const [nextEvent, setNextEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [loadingDetails, setLoadingDetails] = useState({});
   
   useEffect(() => {
     fetchAssignedTeams();
+    fetchSchedule();
+    
+    // Update next event every minute
+    const interval = setInterval(() => {
+      if (schedule.length > 0) {
+        findNextEvent(schedule);
+      }
+    }, 60000);
+    
+    return () => clearInterval(interval);
   }, []);
+  
+  useEffect(() => {
+    if (schedule.length > 0) {
+      findNextEvent(schedule);
+    }
+  }, [schedule]);
 
   const fetchAssignedTeams = async () => {
     try {
@@ -29,6 +47,27 @@ export default function MentorDashboard() {
     } finally {
       setLoading(false);
     }
+  };
+  
+  const fetchSchedule = async () => {
+    try {
+      const res = await api.get('/users/schedule');
+      const sortedEvents = (res.data || []).sort((a, b) => 
+        new Date(a.start_time) - new Date(b.start_time)
+      );
+      setSchedule(sortedEvents);
+    } catch (err) {
+      console.error('Failed to load schedule:', err);
+    }
+  };
+  
+  const findNextEvent = (events) => {
+    const now = new Date().getTime();
+    const upcoming = events.find(event => {
+      const startTime = new Date(event.start_time).getTime();
+      return startTime > now;
+    });
+    setNextEvent(upcoming || null);
   };
 
   const toggleTeamExpand = async (teamId) => {
@@ -63,6 +102,32 @@ export default function MentorDashboard() {
       month: 'short',
       day: 'numeric'
     });
+  };
+  
+  const formatEventTime = (dateString) => {
+    return new Date(dateString).toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+  
+  const formatTimeUntil = (targetDate) => {
+    const now = new Date().getTime();
+    const target = new Date(targetDate).getTime();
+    const diff = target - now;
+
+    if (diff <= 0) return 'Starting soon';
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+    if (days > 0) return `in ${days}d ${hours}h`;
+    if (hours > 0) return `in ${hours}h ${minutes}m`;
+    return `in ${minutes}m`;
   };
 
   if (loading) {
@@ -114,7 +179,56 @@ export default function MentorDashboard() {
               <div className="action-desc">Give guidance and suggestions</div>
             </div>
           </Link>
+          <Link to="/schedule" className="action-btn">
+            <span className="action-icon">📅</span>
+            <div>
+              <div className="action-title">Event Schedule</div>
+              <div className="action-desc">View workshops and check-ins</div>
+            </div>
+          </Link>
         </div>
+
+        {/* Schedule Preview */}
+        {nextEvent && (
+          <div className="schedule-preview">
+            <div className="schedule-preview-header">
+              <h3>
+                <span className="schedule-icon">⏰</span>
+                Next Event
+              </h3>
+              <Link to="/schedule" className="view-full-schedule">
+                View Full Schedule →
+              </Link>
+            </div>
+            <div className="next-event-card">
+              <div className="event-main-info">
+                <h4 className="event-name">{nextEvent.event_name}</h4>
+                {nextEvent.description && (
+                  <p className="event-description">{nextEvent.description}</p>
+                )}
+              </div>
+              <div className="event-details-grid">
+                <div className="event-detail-item">
+                  <span className="detail-icon">🕒</span>
+                  <span className="detail-label">Time:</span>
+                  <span className="detail-value">{formatEventTime(nextEvent.start_time)}</span>
+                </div>
+                {nextEvent.location && (
+                  <div className="event-detail-item">
+                    <span className="detail-icon">📍</span>
+                    <span className="detail-label">Location:</span>
+                    <span className="detail-value">{nextEvent.location}</span>
+                  </div>
+                )}
+                <div className="event-detail-item">
+                  <span className="detail-icon">⏳</span>
+                  <span className="detail-label">Starts:</span>
+                  <span className="detail-value countdown">{formatTimeUntil(nextEvent.start_time)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Teams List */}
         <div className="teams-section">
