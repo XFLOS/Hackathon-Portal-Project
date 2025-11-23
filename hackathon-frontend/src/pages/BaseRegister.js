@@ -19,10 +19,14 @@ function BaseRegister() {
     // If already authenticated, redirect to role-based dashboard
     if (!authLoading && (user || currentRole)) {
       const r = (currentRole || (user && user.role) || 'student');
-      if (r === 'student') navigate('/student');
-      else if (r === 'mentor') navigate('/mentor');
-      else if (r === 'judge') navigate('/judge');
-      else if (r === 'admin') navigate('/admin');
+      const dashboardRoutes = {
+        student: '/student-dashboard',
+        mentor: '/mentor-dashboard',
+        judge: '/judge-dashboard',
+        coordinator: '/coordinator-dashboard',
+        admin: '/coordinator-dashboard'
+      };
+      navigate(dashboardRoutes[r] || '/student-dashboard');
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authLoading, user, currentRole]);

@@ -14,7 +14,15 @@ function BaseLogin() {
 
   useEffect(() => {
     if (!authLoading && (user || currentRole)) {
-      navigate('/student');
+      // Redirect to role-based dashboard
+      const dashboardRoutes = {
+        student: '/student-dashboard',
+        mentor: '/mentor-dashboard',
+        judge: '/judge-dashboard',
+        coordinator: '/coordinator-dashboard',
+        admin: '/coordinator-dashboard'
+      };
+      navigate(dashboardRoutes[currentRole] || '/student-dashboard');
     }
   }, [authLoading, user, currentRole, navigate]);
 
@@ -24,7 +32,16 @@ function BaseLogin() {
     setLoading(true);
     try {
       await loginWithEmail(email, password);
-      navigate('/student');
+      // Redirect to role-based dashboard after successful login
+      const userRole = currentRole || 'student';
+      const dashboardRoutes = {
+        student: '/student-dashboard',
+        mentor: '/mentor-dashboard',
+        judge: '/judge-dashboard',
+        coordinator: '/coordinator-dashboard',
+        admin: '/coordinator-dashboard'
+      };
+      navigate(dashboardRoutes[userRole] || '/student-dashboard');
     } catch (err) {
       // Provide clearer guidance depending on auth mode and error shape
       const axiosNetwork = !err?.response && (err?.code === 'ERR_NETWORK' || err?.message === 'Network Error');
