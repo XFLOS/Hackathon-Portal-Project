@@ -75,9 +75,10 @@ app.get('/debug/db', async (req, res) => {
 });
 
 // API Routes
-app.use('/auth', authRoutes);
+// Auth routes mounted at root level (login, register)
+app.use('/', authRoutes);
 app.use('/upload', uploadRoutes);
-app.use('/team', teamRoutes);
+app.use('/teams', teamRoutes);
 app.use('/submission', submissionRoutes);
 app.use('/judge', judgeRoutes);
 app.use('/mentor', mentorRoutes);
