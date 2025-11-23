@@ -6,11 +6,9 @@ export default function MentorSidebar() {
   const navItems = [
     { path: '/mentor-dashboard', label: 'Dashboard', icon: '📊' },
     { path: '/mentor/teams', label: 'Assigned Teams', icon: '👥' },
-    { path: '/mentor-chat', label: 'Chat', icon: '💬' },
-    { path: '/mentor-updates', label: 'Team Updates', icon: '📝' },
-    { path: '/mentor-briefing', label: 'Briefing', icon: '📋' },
+    { path: '/mentor/feedback', label: 'Feedback', icon: '📝' },
     { path: '/schedule', label: 'Schedule', icon: '📅' },
-    { path: '/mentor-profile', label: 'Profile', icon: '👤' },
+    { path: '/announcements', label: 'Announcements', icon: '📢' },
   ];
 
   return (
