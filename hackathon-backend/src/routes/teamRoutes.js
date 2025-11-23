@@ -5,16 +5,18 @@ import {
   getMyTeam,
   addMember,
   getAllTeams,
-  getTeamById
+  getTeamById,
+  postTeamUpdate
 } from '../controllers/teamController.js';
 
 const router = express.Router();
 
 // Protected routes (require authentication)
-router.post('/create', protect, createTeam);
+router.post('/', protect, createTeam); // Changed from /create to / (matches frontend POST /teams)
+router.get('/', protect, getAllTeams); // Added GET /teams (matches frontend)
 router.get('/me', protect, getMyTeam);
-router.post('/add-member', protect, addMember);
-router.get('/all', protect, getAllTeams);
+router.post('/join', protect, addMember); // Changed from /add-member to /join (matches frontend)
 router.get('/:id', protect, getTeamById);
+router.post('/:id/update', protect, postTeamUpdate); // Added team update endpoint
 
 export default router;

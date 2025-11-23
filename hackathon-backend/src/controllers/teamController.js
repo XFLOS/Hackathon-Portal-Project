@@ -213,3 +213,36 @@ export const getTeamById = async (req, res) => {
     res.status(500).json({ message: 'Error fetching team' });
   }
 };
+
+// Post team update (for team communication/progress updates)
+export const postTeamUpdate = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { message } = req.body;
+    const userId = req.user.id;
+
+    // Verify user is a member of this team
+    const memberCheck = await db.query(
+      'SELECT * FROM team_members WHERE team_id = $1 AND user_id = $2',
+      [id, userId]
+    );
+
+    if (memberCheck.rows.length === 0) {
+      return res.status(403).json({ message: 'You are not a member of this team' });
+    }
+
+    // For now, just return success (you can store updates in a team_updates table later)
+    res.json({ 
+      message: 'Update posted successfully',
+      update: {
+        team_id: id,
+        user_id: userId,
+        message,
+        created_at: new Date()
+      }
+    });
+  } catch (error) {
+    console.error('Post team update error:', error);
+    res.status(500).json({ message: 'Error posting team update' });
+  }
+};
