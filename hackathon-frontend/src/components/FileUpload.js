@@ -23,7 +23,7 @@ function FileUpload({ teamId, userId }) {
       if (userId) formData.append('userId', userId);
 
       // Upload to backend Cloudinary endpoint
-      const response = await api.post('/upload', formData, {
+      const response = await api.post('/upload/single', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
