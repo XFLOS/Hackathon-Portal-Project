@@ -1,8 +1,8 @@
 // src/pages/AnnouncementsPage.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../services/api';
-import AppShell from '../components/AppShell';
+import api from '../api';
+import AppShell from '../components/layout/AppShell';
 import './AnnouncementsPage.css';
 
 function AnnouncementsPage() {
