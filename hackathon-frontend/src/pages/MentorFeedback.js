@@ -178,7 +178,7 @@ function MentorFeedback() {
                   <option value="">-- Choose a team --</option>
                   {teams.map(team => (
                     <option key={team.id} value={team.id}>
-                      {team.team_name}
+                      {team.name || `Team #${team.id}`}
                     </option>
                   ))}
                 </select>
@@ -187,9 +187,12 @@ function MentorFeedback() {
               {/* Selected Team Info */}
               {selectedTeam && (
                 <div className="selected-team-info">
-                  <div className="team-badge-large">{selectedTeam.team_name}</div>
+                  <div className="team-badge-large">{selectedTeam.name || `Team #${selectedTeam.id}`}</div>
                   {selectedTeam.project_idea && (
-                    <p className="team-project">{selectedTeam.project_idea}</p>
+                    <p className="team-project">💡 {selectedTeam.project_idea}</p>
+                  )}
+                  {selectedTeam.description && (
+                    <p className="team-description">📝 {selectedTeam.description}</p>
                   )}
                 </div>
               )}
