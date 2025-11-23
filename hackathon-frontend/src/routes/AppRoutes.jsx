@@ -32,6 +32,7 @@ import VerifyEmail from "../pages/VerifyEmail";
 import PresentationSchedulePage from "../pages/PresentationSchedulePage";
 import HackathonsListPage from "../pages/HackathonsListPage";
 import SurveysPage from "../pages/SurveysPage";
+import AnnouncementsPage from "../pages/AnnouncementsPage";
 
 import ProtectedRoute from "./ProtectedRoute";
 import RoleRoute from "./RoleRoute";
@@ -234,6 +235,14 @@ function AppRoutesInner() {
         element={
           <RoleRoute allow={["student", "mentor", "judge", "coordinator", "admin"]}>
             <PresentationSchedulePage />
+          </RoleRoute>
+        }
+      />
+      <Route
+        path="/announcements"
+        element={
+          <RoleRoute allow={["student", "mentor", "judge", "coordinator", "admin"]}>
+            <AnnouncementsPage />
           </RoleRoute>
         }
       />

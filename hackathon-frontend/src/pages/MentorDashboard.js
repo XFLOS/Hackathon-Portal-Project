@@ -186,6 +186,13 @@ export default function MentorDashboard() {
               <div className="action-desc">View workshops and check-ins</div>
             </div>
           </Link>
+          <Link to="/announcements" className="action-btn">
+            <span className="action-icon">📢</span>
+            <div>
+              <div className="action-title">Announcements</div>
+              <div className="action-desc">View coordinator updates</div>
+            </div>
+          </Link>
         </div>
 
         {/* Schedule Preview */}
