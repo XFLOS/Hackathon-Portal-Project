@@ -1,0 +1,513 @@
+/* ===============================
+   MENTOR DASHBOARD — DARK THEME
+   Matching portal design system
+   =============================== */
+
+.mentor-dashboard {
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, #020617 0%, #0f172a 60%, #1e293b 100%);
+  padding: 2rem 1.5rem;
+  color: #e0e0e0;
+}
+
+/* ===============================
+   HEADER
+   =============================== */
+
+.mentor-dashboard .dashboard-header {
+  margin-bottom: 2rem;
+}
+
+.mentor-dashboard h2 {
+  font-family: 'BebasNeue', sans-serif;
+  font-size: 2.5rem;
+  color: #e0e0e0;
+  margin-bottom: 0.5rem;
+  letter-spacing: 1px;
+}
+
+.mentor-dashboard .subtitle {
+  color: #94a3b8;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* ===============================
+   STATS CARDS
+   =============================== */
+
+.mentor-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 217, 255, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  border-color: rgba(0, 217, 255, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 217, 255, 0.2);
+}
+
+.stat-value {
+  font-family: 'BebasNeue', sans-serif;
+  font-size: 3rem;
+  color: #00d9ff;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* ===============================
+   QUICK ACTIONS
+   =============================== */
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.action-btn {
+  background: linear-gradient(135deg, rgba(0, 217, 255, 0.1), rgba(0, 217, 255, 0.05));
+  border: 1px solid rgba(0, 217, 255, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+  background: linear-gradient(135deg, rgba(0, 217, 255, 0.2), rgba(0, 217, 255, 0.1));
+  border-color: #00d9ff;
+  transform: translateX(4px);
+}
+
+.action-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.action-title {
+  color: #e0e0e0;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+
+.action-desc {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+/* ===============================
+   TEAMS SECTION
+   =============================== */
+
+.teams-section {
+  margin-bottom: 2rem;
+}
+
+.teams-section h3 {
+  font-family: 'BebasNeue', sans-serif;
+  font-size: 2rem;
+  color: #e0e0e0;
+  margin-bottom: 1.5rem;
+  letter-spacing: 1px;
+}
+
+.teams-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+/* ===============================
+   TEAM CARD
+   =============================== */
+
+.team-card {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 217, 255, 0.2);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.team-card.expanded {
+  border-color: #00d9ff;
+}
+
+.team-card:hover {
+  border-color: rgba(0, 217, 255, 0.4);
+}
+
+.team-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.team-card-header:hover {
+  background: rgba(0, 217, 255, 0.05);
+}
+
+.team-info {
+  flex: 1;
+}
+
+.team-name {
+  font-size: 1.3rem;
+  color: #e0e0e0;
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.team-meta {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.expand-btn {
+  background: rgba(0, 217, 255, 0.1);
+  border: 1px solid rgba(0, 217, 255, 0.3);
+  color: #00d9ff;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.expand-btn:hover {
+  background: rgba(0, 217, 255, 0.2);
+  border-color: #00d9ff;
+}
+
+.team-card-body {
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  border-top: 1px solid rgba(0, 217, 255, 0.1);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===============================
+   DETAIL SECTIONS
+   =============================== */
+
+.detail-section {
+  margin-top: 1.5rem;
+}
+
+.detail-section h5 {
+  font-size: 1rem;
+  color: #cbd5e1;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.project-info {
+  background: rgba(30, 41, 59, 0.4);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.info-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-row .label {
+  color: #94a3b8;
+  font-weight: 500;
+  min-width: 120px;
+}
+
+.info-row .value {
+  color: #e0e0e0;
+  flex: 1;
+}
+
+/* ===============================
+   MEMBERS LIST
+   =============================== */
+
+.members-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.member-item {
+  background: rgba(30, 41, 59, 0.4);
+  border-radius: 8px;
+  padding: 0.875rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s ease;
+}
+
+.member-item:hover {
+  background: rgba(30, 41, 59, 0.6);
+}
+
+.member-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.member-name {
+  color: #e0e0e0;
+  font-weight: 500;
+}
+
+.leader-badge {
+  background: linear-gradient(135deg, #00d9ff, #0099cc);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.member-email {
+  color: #00d9ff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.member-email:hover {
+  color: #33e0ff;
+  text-decoration: underline;
+}
+
+/* ===============================
+   SUBMISSION STATUS
+   =============================== */
+
+.submission-info {
+  background: rgba(30, 41, 59, 0.4);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.status-badge.submitted {
+  background: rgba(0, 217, 100, 0.2);
+  border: 1px solid rgba(0, 217, 100, 0.4);
+  color: #00ff88;
+}
+
+.status-badge.pending {
+  background: rgba(255, 193, 7, 0.2);
+  border: 1px solid rgba(255, 193, 7, 0.4);
+  color: #ffc107;
+}
+
+.submission-details p {
+  margin: 0 0 0.5rem 0;
+  color: #cbd5e1;
+}
+
+.submission-desc {
+  color: #94a3b8 !important;
+  font-size: 0.9rem;
+}
+
+.submission-link {
+  display: inline-block;
+  margin-right: 1rem;
+  margin-top: 0.5rem;
+  color: #00d9ff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.submission-link:hover {
+  color: #33e0ff;
+  text-decoration: underline;
+}
+
+/* ===============================
+   TEAM ACTIONS
+   =============================== */
+
+.team-actions {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(0, 217, 255, 0.1);
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #00d9ff, #0099cc);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #0099cc, #00d9ff);
+  box-shadow: 0 6px 16px rgba(0, 217, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: rgba(0, 217, 255, 0.1);
+  border: 1px solid rgba(0, 217, 255, 0.3);
+  color: #00d9ff;
+}
+
+.btn-secondary:hover {
+  background: rgba(0, 217, 255, 0.2);
+  border-color: #00d9ff;
+}
+
+/* ===============================
+   STATES
+   =============================== */
+
+.loading-details {
+  text-align: center;
+  padding: 2rem;
+  color: #94a3b8;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 217, 255, 0.1);
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.empty-title {
+  font-size: 1.3rem;
+  color: #cbd5e1;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.empty-desc {
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+.empty-text {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.error-text {
+  color: #ff6b6b;
+  font-size: 0.9rem;
+}
+
+/* ===============================
+   RESPONSIVE
+   =============================== */
+
+@media (max-width: 768px) {
+  .mentor-dashboard {
+    padding: 1rem;
+  }
+
+  .mentor-dashboard h2 {
+    font-size: 2rem;
+  }
+
+  .mentor-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .team-actions {
+    flex-direction: column;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    text-align: center;
+  }
+
+  .member-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
