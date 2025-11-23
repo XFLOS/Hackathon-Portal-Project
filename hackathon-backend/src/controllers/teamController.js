@@ -94,8 +94,62 @@ export const getMyTeam = async (req, res) => {
 // Add member to team
 export const addMember = async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email, code } = req.body;
     const userId = req.user.id;
+    const { id } = req.params; // For /:id/members route
+
+    let teamId = id; // If called via /:id/members
+
+    // If code is provided, this is a "join by code" request
+    if (code) {
+      // Find team by join code
+      const teamResult = await db.query(
+        'SELECT id FROM teams WHERE join_code = $1',
+        [code]
+      );
+
+      if (teamResult.rows.length === 0) {
+        return res.status(404).json({ message: 'Invalid join code' });
+      }
+
+      teamId = teamResult.rows[0].id;
+
+      // Check if user is already in a team
+      const existingMember = await db.query(
+        'SELECT * FROM team_members WHERE user_id = $1',
+        [userId]
+      );
+
+      if (existingMember.rows.length > 0) {
+        return res.status(400).json({ message: 'You are already in a team' });
+      }
+
+      // Check team size
+      const memberCount = await db.query(
+        'SELECT COUNT(*) FROM team_members WHERE team_id = $1',
+        [teamId]
+      );
+
+      if (parseInt(memberCount.rows[0].count) >= 5) {
+        return res.status(400).json({ message: 'Team is full (max 5 members)' });
+      }
+
+      // Add user as member
+      await db.query(
+        'INSERT INTO team_members (team_id, user_id, role) VALUES ($1, $2, $3)',
+        [teamId, userId, 'member']
+      );
+
+      return res.json({ 
+        message: 'Successfully joined the team',
+        id: teamId
+      });
+    }
+
+    // Otherwise, this is "add member by email" (leader only)
+    if (!email) {
+      return res.status(400).json({ message: 'Email or join code is required' });
+    }
 
     // Get user's team and verify they are the leader
     const teamResult = await db.query(
@@ -103,15 +157,23 @@ export const addMember = async (req, res) => {
       [userId]
     );
 
-    if (teamResult.rows.length === 0) {
+    if (!teamId && teamResult.rows.length === 0) {
       return res.status(404).json({ message: 'You are not in a team' });
     }
 
-    if (teamResult.rows[0].role !== 'leader') {
-      return res.status(403).json({ message: 'Only team leaders can add members' });
+    if (!teamId) {
+      teamId = teamResult.rows[0].team_id;
     }
 
-    const teamId = teamResult.rows[0].team_id;
+    // Verify user is leader (if adding by email)
+    const leaderCheck = await db.query(
+      'SELECT * FROM team_members WHERE team_id = $1 AND user_id = $2 AND role = $3',
+      [teamId, userId, 'leader']
+    );
+
+    if (leaderCheck.rows.length === 0) {
+      return res.status(403).json({ message: 'Only team leaders can add members' });
+    }
 
     // Check team size
     const memberCount = await db.query(
@@ -244,5 +306,131 @@ export const postTeamUpdate = async (req, res) => {
   } catch (error) {
     console.error('Post team update error:', error);
     res.status(500).json({ message: 'Error posting team update' });
+  }
+};
+
+// Leave team (for regular members)
+export const leaveTeam = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Get user's team and role
+    const memberResult = await db.query(
+      'SELECT team_id, role FROM team_members WHERE user_id = $1',
+      [userId]
+    );
+
+    if (memberResult.rows.length === 0) {
+      return res.status(404).json({ message: 'You are not in a team' });
+    }
+
+    const { team_id, role } = memberResult.rows[0];
+
+    if (role === 'leader') {
+      return res.status(400).json({ 
+        message: 'Team leaders cannot leave. Please delete the team or transfer leadership first.' 
+      });
+    }
+
+    // Remove member from team
+    await db.query(
+      'DELETE FROM team_members WHERE user_id = $1',
+      [userId]
+    );
+
+    res.json({ message: 'Successfully left the team' });
+  } catch (error) {
+    console.error('Leave team error:', error);
+    res.status(500).json({ message: 'Error leaving team' });
+  }
+};
+
+// Delete team (leader only)
+export const deleteTeam = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    // Verify user is the team leader
+    const leaderCheck = await db.query(
+      'SELECT * FROM team_members WHERE team_id = $1 AND user_id = $2 AND role = $3',
+      [id, userId, 'leader']
+    );
+
+    if (leaderCheck.rows.length === 0) {
+      return res.status(403).json({ message: 'Only team leaders can delete the team' });
+    }
+
+    // Delete all team members first (foreign key constraint)
+    await db.query('DELETE FROM team_members WHERE team_id = $1', [id]);
+
+    // Delete the team
+    await db.query('DELETE FROM teams WHERE id = $1', [id]);
+
+    res.json({ message: 'Team deleted successfully' });
+  } catch (error) {
+    console.error('Delete team error:', error);
+    res.status(500).json({ message: 'Error deleting team' });
+  }
+};
+
+// Update team details (leader only)
+export const updateTeam = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, description, project_name, project_description } = req.body;
+    const userId = req.user.id;
+
+    // Verify user is the team leader
+    const leaderCheck = await db.query(
+      'SELECT * FROM team_members WHERE team_id = $1 AND user_id = $2 AND role = $3',
+      [id, userId, 'leader']
+    );
+
+    if (leaderCheck.rows.length === 0) {
+      return res.status(403).json({ message: 'Only team leaders can update team details' });
+    }
+
+    // Build update query dynamically
+    const updates = [];
+    const values = [];
+    let paramCount = 1;
+
+    if (name !== undefined) {
+      updates.push(`name = $${paramCount++}`);
+      values.push(name);
+    }
+    if (description !== undefined) {
+      updates.push(`description = $${paramCount++}`);
+      values.push(description);
+    }
+    if (project_name !== undefined) {
+      updates.push(`project_name = $${paramCount++}`);
+      values.push(project_name);
+    }
+    if (project_description !== undefined) {
+      updates.push(`project_description = $${paramCount++}`);
+      values.push(project_description);
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).json({ message: 'No fields to update' });
+    }
+
+    values.push(id);
+    const query = `UPDATE teams SET ${updates.join(', ')} WHERE id = $${paramCount} RETURNING *`;
+
+    const result = await db.query(query, values);
+
+    res.json({
+      message: 'Team updated successfully',
+      team: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Update team error:', error);
+    if (error.code === '23505') { // Unique violation
+      return res.status(400).json({ message: 'Team name already exists' });
+    }
+    res.status(500).json({ message: 'Error updating team' });
   }
 };
