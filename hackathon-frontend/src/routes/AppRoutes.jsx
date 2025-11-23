@@ -1,82 +1,89 @@
+// src/routes/AppRoutes.jsx
+import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 
-import HomePage from "../pages/HomePage";
+import BaseHome from "../pages/BaseHome";
 import BaseLogin from "../pages/BaseLogin";
 import BaseRegister from "../pages/BaseRegister";
+import HomePage from "../pages/HomePage";
+import TeamPage from "../pages/TeamPage";
+import TeamSelectionPage from "../pages/TeamSelectionPage";
+import LeaderboardPage from "../pages/LeaderboardPage";
 
 import StudentDashboard from "../pages/StudentDashboard";
 import MentorDashboard from "../pages/MentorDashboard";
 import JudgeDashboard from "../pages/JudgeDashboard";
 import CoordinatorDashboard from "../pages/CoordinatorDashboard";
 
-import TeamPage from "../pages/TeamPage";
-import TeamSelectionPage from "../pages/TeamSelectionPage";
 import SubmissionPage from "../pages/SubmissionPage";
 import CertificatePage from "../pages/CertificatePage";
-import LeaderboardPage from "../pages/LeaderboardPage";
 import ProfilePage from "../pages/ProfilePage";
 import NotificationsPage from "../pages/NotificationsPage";
 import HelpPage from "../pages/HelpPage";
-import SurveysPage from "../pages/SurveysPage";
-import VerifyEmail from "../pages/VerifyEmail";
-
+import NotFoundPage from "../pages/NotFoundPage";
 import MentorTeamQA from "../pages/MentorTeamQA";
 import MentorFeedback from "../pages/MentorFeedback";
-
 import JudgeEvaluationPage from "../pages/JudgeEvaluationPage";
 import JudgeFeedbackHistoryPage from "../pages/JudgeFeedbackHistoryPage";
-
 import CoordinatorManagePage from "../pages/CoordinatorManagePage";
 import CoordinatorReportsPage from "../pages/CoordinatorReportsPage";
+import VerifyEmail from "../pages/VerifyEmail";
 import PresentationSchedulePage from "../pages/PresentationSchedulePage";
 import HackathonsListPage from "../pages/HackathonsListPage";
-
-import NotFoundPage from "../pages/NotFoundPage";
+import SurveysPage from "../pages/SurveysPage";
 
 import ProtectedRoute from "./ProtectedRoute";
 import RoleRoute from "./RoleRoute";
+import { useAuth } from "../context/AuthContext";
 
-export default function AppRoutes() {
-  const { user, role, loading } = useAuth();
+function AppRoutesInner() {
+  const { user, loading } = useAuth();
 
-  if (loading) return <CenteredLoading />;
+  if (loading) {
+    return (
+      <div
+        style={{
+          minHeight: "60vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          color: "white",
+        }}
+      >
+        Loading...
+      </div>
+    );
+  }
 
   const getDashboardPath = () => {
-    if (!user) return "/";
-    const userRole = role?.toLowerCase() || user.role?.toLowerCase();
+    if (!user || !user.role) return "/";
 
-    return {
-      student: "/student-dashboard",
-      mentor: "/mentor-dashboard",
-      judge: "/judge-dashboard",
-      coordinator: "/coordinator-dashboard",
-      admin: "/coordinator-dashboard",
-    }[userRole] || "/";
+    const role = user.role.toLowerCase();
+    if (role === "student") return "/student-dashboard";
+    if (role === "mentor") return "/mentor-dashboard";
+    if (role === "judge") return "/judge-dashboard";
+    if (role === "coordinator" || role === "admin")
+      return "/coordinator-dashboard";
+    return "/";
   };
-
-  const isLoggedIn = !!user;
-  const dashboardPath = getDashboardPath();
 
   return (
     <Routes>
-      {/* PUBLIC ROOT - landing if logged out, redirect if logged in */}
+      {/* Root: if logged in go to dashboard, else public home */}
       <Route
         path="/"
         element={
-          isLoggedIn ? (
-            <Navigate to={dashboardPath} replace />
-          ) : (
-            <HomePage />
-          )
+          user ? <Navigate to={getDashboardPath()} replace /> : <HomePage />
         }
       />
 
-      {/* PUBLIC AUTH ROUTES */}
+      {/* Public */}
+      <Route path="/hackathons" element={<HackathonsListPage />} />
       <Route path="/login" element={<BaseLogin />} />
       <Route path="/register" element={<BaseRegister />} />
+      <Route path="/base" element={<BaseHome />} />
 
-      {/* DASHBOARD ROUTES */}
+      {/* Student */}
       <Route
         path="/student-dashboard"
         element={
@@ -85,55 +92,20 @@ export default function AppRoutes() {
           </RoleRoute>
         }
       />
-
-      <Route
-        path="/mentor-dashboard"
-        element={
-          <RoleRoute allow={["mentor", "admin"]}>
-            <MentorDashboard />
-          </RoleRoute>
-        }
-      />
-
-      <Route
-        path="/judge-dashboard"
-        element={
-          <RoleRoute allow={["judge", "admin"]}>
-            <JudgeDashboard />
-          </RoleRoute>
-        }
-      />
-
-      <Route
-        path="/coordinator-dashboard"
-        element={
-          <RoleRoute allow={["coordinator", "admin"]}>
-            <CoordinatorDashboard />
-          </RoleRoute>
-        }
-      />
-
-      {/* LEGACY ROUTES (for compatibility) */}
-      <Route path="/student" element={<Navigate to="/student-dashboard" replace />} />
-      <Route path="/mentor" element={<Navigate to="/mentor-dashboard" replace />} />
-      <Route path="/judge" element={<Navigate to="/judge-dashboard" replace />} />
-      <Route path="/admin" element={<Navigate to="/coordinator-dashboard" replace />} />
-
-      {/* STUDENT ROUTES */}
       <Route
         path="/team"
         element={
-          <ProtectedRoute>
+          <RoleRoute allow={["student", "admin"]}>
             <TeamPage />
-          </ProtectedRoute>
+          </RoleRoute>
         }
       />
       <Route
         path="/team-selection"
         element={
-          <ProtectedRoute>
+          <RoleRoute allow={["student", "admin"]}>
             <TeamSelectionPage />
-          </ProtectedRoute>
+          </RoleRoute>
         }
       />
       <Route
@@ -147,13 +119,21 @@ export default function AppRoutes() {
       <Route
         path="/certificate"
         element={
-          <RoleRoute allow={["student", "mentor", "judge", "admin"]}>
+          <RoleRoute allow={["student", "mentor", "judge", 'coordinator', "admin"]}>
             <CertificatePage />
           </RoleRoute>
         }
       />
 
-      {/* MENTOR ROUTES */}
+      {/* Mentor */}
+      <Route
+        path="/mentor-dashboard"
+        element={
+          <RoleRoute allow={["mentor", "admin"]}>
+            <MentorDashboard />
+          </RoleRoute>
+        }
+      />
       <Route
         path="/mentor/teams"
         element={
@@ -171,7 +151,15 @@ export default function AppRoutes() {
         }
       />
 
-      {/* JUDGE ROUTES */}
+      {/* Judge */}
+      <Route
+        path="/judge-dashboard"
+        element={
+          <RoleRoute allow={["judge", "admin"]}>
+            <JudgeDashboard />
+          </RoleRoute>
+        }
+      />
       <Route
         path="/judge/evaluation"
         element={
@@ -189,7 +177,15 @@ export default function AppRoutes() {
         }
       />
 
-      {/* COORDINATOR / ADMIN ROUTES */}
+      {/* Coordinator/Admin */}
+      <Route
+        path="/coordinator-dashboard"
+        element={
+          <RoleRoute allow={["coordinator", "admin"]}>
+            <CoordinatorDashboard />
+          </RoleRoute>
+        }
+      />
       <Route
         path="/admin/manage"
         element={
@@ -215,44 +211,15 @@ export default function AppRoutes() {
         }
       />
 
-      {/* COMMON ROUTES */}
+      {/* Common */}
       <Route
         path="/leaderboard"
         element={
-          <ProtectedRoute>
+          <RoleRoute allow={["student", "mentor", "judge", "coordinator", "admin"]}>
             <LeaderboardPage />
-          </ProtectedRoute>
+          </RoleRoute>
         }
       />
-
-      <Route
-        path="/profile"
-        element={
-          <ProtectedRoute>
-            <ProfilePage />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/notifications"
-        element={
-          <ProtectedRoute>
-            <NotificationsPage />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/surveys"
-        element={
-          <ProtectedRoute>
-            <SurveysPage />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route path="/hackathons" element={<HackathonsListPage />} />
       <Route
         path="/verify-email"
         element={
@@ -261,6 +228,27 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/profile"
+        element={
+          <RoleRoute allow={["student", "mentor", "judge", "coordinator", "admin"]}>
+            <ProfilePage />
+          </RoleRoute>
+        }
+      />
+      <Route
+        path="/notifications"
+        element={
+          <RoleRoute allow={["student", "mentor", "judge", "coordinator", "admin"]}>
+            <NotificationsPage />
+          </RoleRoute>
+        }
+      />
+      <Route path="/surveys" element={
+        <RoleRoute allow={["student", "mentor", "judge", "coordinator", "admin"]}>
+          <SurveysPage />
+        </RoleRoute>
+      } />
       <Route path="/help" element={<HelpPage />} />
 
       {/* 404 */}
@@ -269,17 +257,4 @@ export default function AppRoutes() {
   );
 }
 
-/* CLEAN LOADING COMPONENT */
-function CenteredLoading() {
-  return (
-    <div style={{
-      minHeight: "80vh",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      fontSize: "1.3rem",
-    }}>
-      Loading...
-    </div>
-  );
-}
+export default AppRoutesInner;
