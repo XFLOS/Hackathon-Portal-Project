@@ -5,9 +5,12 @@
 -- =====================================================================
 
 -- Drop existing tables if they exist
+DROP TABLE IF EXISTS messages CASCADE;
+DROP TABLE IF EXISTS notifications CASCADE;
 DROP TABLE IF EXISTS announcements CASCADE;
 DROP TABLE IF EXISTS schedule CASCADE;
 DROP TABLE IF EXISTS mentor_assignments CASCADE;
+DROP TABLE IF EXISTS mentor_feedback CASCADE;
 DROP TABLE IF EXISTS evaluations CASCADE;
 DROP TABLE IF EXISTS submissions CASCADE;
 DROP TABLE IF EXISTS team_members CASCADE;
@@ -136,6 +139,34 @@ CREATE TABLE mentor_feedback (
 );
 
 -- =====================================================================
+-- CREATE NOTIFICATIONS TABLE
+-- =====================================================================
+CREATE TABLE notifications (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  title VARCHAR(255) NOT NULL,
+  message TEXT NOT NULL,
+  type VARCHAR(50) DEFAULT 'info',
+  read BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =====================================================================
+-- CREATE MESSAGES TABLE (for mentor-student chat)
+-- =====================================================================
+CREATE TABLE messages (
+  id SERIAL PRIMARY KEY,
+  sender_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  receiver_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  team_id INTEGER REFERENCES teams(id) ON DELETE CASCADE,
+  message TEXT NOT NULL,
+  is_read BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =====================================================================
 -- CREATE INDEXES
 -- =====================================================================
 CREATE INDEX idx_users_email ON users(email);
@@ -149,6 +180,15 @@ CREATE INDEX idx_evaluations_submission ON evaluations(submission_id);
 CREATE INDEX idx_evaluations_judge ON evaluations(judge_id);
 CREATE INDEX idx_mentor_assignments_mentor ON mentor_assignments(mentor_id);
 CREATE INDEX idx_mentor_assignments_team ON mentor_assignments(team_id);
+CREATE INDEX idx_notifications_user_id ON notifications(user_id);
+CREATE INDEX idx_notifications_read ON notifications(read);
+CREATE INDEX idx_notifications_created_at ON notifications(created_at);
+CREATE INDEX idx_notifications_user_unread ON notifications(user_id, read, created_at);
+CREATE INDEX idx_messages_sender ON messages(sender_id);
+CREATE INDEX idx_messages_receiver ON messages(receiver_id);
+CREATE INDEX idx_messages_team ON messages(team_id);
+CREATE INDEX idx_messages_created_at ON messages(created_at);
+CREATE INDEX idx_messages_conversation ON messages(sender_id, receiver_id, created_at);
 
 -- =====================================================================
 -- INSERT DEMO USERS
