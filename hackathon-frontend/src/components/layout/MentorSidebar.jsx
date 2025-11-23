@@ -5,11 +5,12 @@ import './sidebar.css';
 export default function MentorSidebar() {
   const navItems = [
     { path: '/mentor-dashboard', label: 'Dashboard', icon: '📊' },
-    { path: '/mentor/teams', label: 'Assigned Teams', icon: '👥' },
+    { path: '/mentor/teams', label: 'Teams & Q&A', icon: '👥' },
     { path: '/mentor/feedback', label: 'Feedback', icon: '📝' },
     { path: '/mentor/chat', label: 'Chat', icon: '💬' },
     { path: '/schedule', label: 'Schedule', icon: '📅' },
     { path: '/announcements', label: 'Announcements', icon: '📢' },
+    { path: '/profile', label: 'Profile', icon: '👤' },
   ];
 
   return (
