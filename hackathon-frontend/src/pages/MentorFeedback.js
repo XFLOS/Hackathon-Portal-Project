@@ -9,7 +9,7 @@ export default function MentorFeedback() {
 
   useEffect(() => {
     let on = true;
-    api.get('/api/mentor/teams')
+    api.get('/mentor/teams')
       .then(res => {
         if (!on) return; 
         const list = res.data || [];

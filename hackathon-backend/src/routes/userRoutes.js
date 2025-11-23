@@ -13,6 +13,10 @@ const router = express.Router();
 // Protected routes (require authentication)
 router.get('/me', protect, getProfile);
 router.put('/me', protect, updateProfile);
+router.get('/me/certificates', protect, (req, res) => {
+  // TODO: Implement certificate generation/retrieval
+  res.json([]);
+});
 
 // Public routes (available to all authenticated users)
 router.get('/schedule', protect, getSchedule);

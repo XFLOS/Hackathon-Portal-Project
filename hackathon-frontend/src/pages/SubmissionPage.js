@@ -10,7 +10,7 @@ export default function SubmissionPage() {
     e.preventDefault();
     setMessage('');
     try {
-      const res = await api.post('/projects', { title, description });
+      const res = await api.post('/submission', { title, description });
       setMessage('Submitted: ' + res.data?.project?.title);
       setTitle('');
       setDescription('');

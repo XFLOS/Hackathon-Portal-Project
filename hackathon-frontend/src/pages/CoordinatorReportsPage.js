@@ -7,7 +7,7 @@ export default function CoordinatorReportsPage() {
 
   useEffect(() => {
     let mounted = true;
-    api.get('/admin/reports')
+    api.get('/coordinator/stats')
       .then(res => { if (mounted) setStats(res.data || null); })
       .catch(() => { if (mounted) setStats(null); })
       .finally(() => { if (mounted) setLoading(false); });

@@ -85,6 +85,11 @@ app.use('/mentor', mentorRoutes);
 app.use('/coordinator', coordinatorRoutes);
 app.use('/users', userRoutes);
 
+// Notifications endpoint (TODO: implement proper notifications system)
+app.get('/notifications', (req, res) => {
+  res.json([]);
+});
+
 // 404 handler
 app.use(notFound);
 

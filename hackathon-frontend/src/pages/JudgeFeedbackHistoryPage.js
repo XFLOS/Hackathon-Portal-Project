@@ -8,7 +8,7 @@ export default function JudgeFeedbackHistoryPage() {
 
   useEffect(() => {
     let on = true;
-    api.get('/api/judge/feedback')
+    api.get('/judge/history')
       .then(res => { if (on) setItems(res.data || []); })
       .catch(e => { if (on) setError(e.response?.data?.message || e.message); })
       .finally(() => { if (on) setLoading(false); });

@@ -8,7 +8,7 @@ export default function MentorTeamQA() {
 
   useEffect(() => {
     let on = true;
-    api.get('/api/mentor/teams')
+    api.get('/mentor/teams')
       .then(res => { if (on) setTeams(res.data || []); })
       .catch(e => { if (on) setError(e.response?.data?.message || e.message); })
       .finally(() => { if (on) setLoading(false); });
