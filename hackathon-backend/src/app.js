@@ -9,6 +9,7 @@ import judgeRoutes from './routes/judgeRoutes.js';
 import mentorRoutes from './routes/mentorRoutes.js';
 import coordinatorRoutes from './routes/coordinatorRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 
 // Load environment variables
@@ -84,11 +85,7 @@ app.use('/judge', judgeRoutes);
 app.use('/mentor', mentorRoutes);
 app.use('/coordinator', coordinatorRoutes);
 app.use('/users', userRoutes);
-
-// Notifications endpoint (TODO: implement proper notifications system)
-app.get('/notifications', (req, res) => {
-  res.json([]);
-});
+app.use('/notifications', notificationRoutes);
 
 // 404 handler
 app.use(notFound);
