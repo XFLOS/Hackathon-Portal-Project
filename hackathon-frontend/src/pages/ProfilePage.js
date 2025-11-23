@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { auth, firebaseEnabled } from '../firebase/config';
 import { updateProfile as fbUpdateProfile, updatePassword as fbUpdatePassword } from 'firebase/auth';
 import api from '../services/api';
+import AppShell from '../components/layout/AppShell';
 import './ProfilePage.css';
 
 export default function ProfilePage() {
@@ -202,25 +203,30 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="profile-container">
-        <div className="loading-state">
-          <div className="spinner"></div>
-          <p>Loading profile...</p>
+      <AppShell>
+        <div className="profile-container">
+          <div className="loading-state">
+            <div className="spinner"></div>
+            <p>Loading profile...</p>
+          </div>
         </div>
-      </div>
+      </AppShell>
     );
   }
 
   if (!profileData) {
     return (
-      <div className="profile-container">
-        <p className="error-message">Please log in to view your profile.</p>
-      </div>
+      <AppShell>
+        <div className="profile-container">
+          <p className="error-message">Please log in to view your profile.</p>
+        </div>
+      </AppShell>
     );
   }
 
   return (
-    <div className="profile-container">
+    <AppShell>
+      <div className="profile-container">
       <div className="profile-card">
         <div className="profile-header">
           <h1 className="profile-title">My Profile</h1>
@@ -440,5 +446,6 @@ export default function ProfilePage() {
         </div>
       </div>
     </div>
+    </AppShell>
   );
 }
