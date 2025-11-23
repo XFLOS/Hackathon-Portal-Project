@@ -44,7 +44,7 @@ export default function TeamSelectionPage() {
     };
 
     try {
-      const res = await api.post('/api/teams', teamData);
+      const res = await api.post('/teams', teamData);
       console.log('Team created:', res.data);
       // Persist teamId for TeamPage to load
       if (res?.data?.id) localStorage.setItem('teamId', res.data.id);
@@ -63,7 +63,7 @@ export default function TeamSelectionPage() {
     }
 
     try {
-      const res = await api.post('/api/teams/join', { code: joinCode.trim() });
+      const res = await api.post('/teams/join', { code: joinCode.trim() });
       console.log('Joined team:', res.data);
       // backend returns id (DB) or id (in-memory)
       if (res?.data?.id) localStorage.setItem('teamId', res.data.id);

@@ -20,9 +20,8 @@ export default function RegisterPage() {
     let mounted = true;
     (async () => {
       try {
-        const res = await api.get('/auth/demo-info');
-        if (!mounted) return;
-        setDemoInfo(res.data);
+        // Backend doesn't have /auth/demo-info, disable demo for now
+        if (mounted) setDemoInfo({ enabled: false });
       } catch (err) {
         if (mounted) setDemoInfo({ enabled: false });
       }
@@ -43,15 +42,7 @@ export default function RegisterPage() {
         // create firebase user (centralized)
         const created = await signupWithFirebase(name, email, password);
 
-        // api will attach the Firebase ID token automatically
-        try {
-          await api.post('/users', { name, email, role: selectedRole });
-        } catch (err) {
-          // Backend might not be running yet; proceed with Firebase-only flow
-          console.warn('Backend /users upsert failed (continuing with Firebase only):', err.message || err);
-        }
-
-        // store minimal user in localStorage for frontend-only flows
+        // Store user in localStorage
         const minimalUser = { id: created.id, email: created.email, name: created.name, role: selectedRole };
         localStorage.setItem('user', JSON.stringify(minimalUser));
 
@@ -68,9 +59,9 @@ export default function RegisterPage() {
         }
       } else {
         // Backend auth register + login flow (no Firebase)
-        await api.post('/auth/register', { name, email, password });
+        await api.post('/register', { name, email, password, role: selectedRole });
         // Auto-login after register
-        const res = await api.post('/auth/login', { email, password });
+        const res = await api.post('/login', { email, password });
         const { token, user } = res.data;
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));

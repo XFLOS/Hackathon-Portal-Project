@@ -24,9 +24,9 @@ export default function ProfilePage() {
       if (firebaseEnabled && auth && auth.currentUser) {
         await fbUpdateProfile(auth.currentUser, { displayName: name });
       }
-      // Upsert to backend (backend will read Firebase token if available)
+      // Update backend profile
       try {
-        await api.post('/users', { name, email: user?.email });
+        await api.put('/users/me', { name });
       } catch (err) {
         // ignore backend failure
       }

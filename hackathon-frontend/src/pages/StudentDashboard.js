@@ -32,8 +32,8 @@ export default function StudentDashboard() {
     async function loadDashboard() {
       try {
         const [teamRes, subsRes, scheduleRes] = await Promise.all([
-          api.get("/team/me").catch(() => ({ data: null })),
-          api.get("/submission/me").catch(() => ({ data: [] })),
+          api.get("/teams/me").catch(() => ({ data: null })),
+          api.get("/submission").catch(() => ({ data: [] })),
           api.get("/users/schedule").catch(() => ({ data: [] })),
         ]);
 

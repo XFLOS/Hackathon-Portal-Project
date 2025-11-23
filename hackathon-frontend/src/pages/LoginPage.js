@@ -46,7 +46,7 @@ export default function LoginPage() {
         navigate(dashboardRoutes[userRole] || '/student-dashboard');
       } else {
         // Backend JWT login
-        const res = await api.post('/auth/login', { email, password });
+        const res = await api.post('/login', { email, password });
         const { token, user } = res.data;
         // store token and user for api wrapper and UI
         localStorage.setItem('token', token);
@@ -110,9 +110,8 @@ export default function LoginPage() {
     let mounted = true;
     (async () => {
       try {
-        const res = await api.get('/auth/demo-info');
-        if (!mounted) return;
-        setDemoInfo(res.data);
+        // Backend doesn't have /auth/demo-info, disable demo for now
+        if (mounted) setDemoInfo({ enabled: false });
       } catch (err) {
         // ignore — absence of endpoint simply means demo not available
         if (mounted) setDemoInfo({ enabled: false });

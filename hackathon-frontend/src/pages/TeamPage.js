@@ -23,7 +23,7 @@ export default function TeamPage() {
         }
         setUser(loggedUser);
 
-        const res = await api.get("/team/me");
+        const res = await api.get("/teams/me");
         if (res.data) {
           setTeam(res.data);
           setUpdates(res.data.updates || []);
@@ -81,7 +81,7 @@ export default function TeamPage() {
     setUpdates(updatedUpdates);
 
     try {
-      await api.post(`/team/${team.id}/update`, { message: newUpdate });
+      await api.post(`/teams/${team.id}/update`, { message: newUpdate });
     } catch (err) {
       console.error("Failed to send update:", err);
       // Revert on error

@@ -40,7 +40,7 @@ async function router(method, url, body) {
   if (method === 'GET' && path === '/') return { data: { status: 'ok', mode: 'mock' } };
 
   // Auth (mock)
-  if (path === '/auth/register' && method === 'POST') {
+  if (path === '/register' && method === 'POST') {
     const users = load('mock_users', []);
     if (users.find((u) => u.email === body.email)) {
       return { data: { message: 'Already registered' } };
@@ -49,7 +49,7 @@ async function router(method, url, body) {
     users.push(user); save('mock_users', users);
     return { data: { ok: true } };
   }
-  if (path === '/auth/login' && method === 'POST') {
+  if (path === '/login' && method === 'POST') {
     const users = load('mock_users', []);
     const user = users.find((u) => u.email === body.email) || { id: 'mock', email: body.email, role: 'student' };
     save('mock_current_user', user);
@@ -57,18 +57,23 @@ async function router(method, url, body) {
     return { data: { token: 'mock-token', user } };
   }
 
-  // Users
-  if (path === '/users' && method === 'POST') {
-    const users = load('mock_users', []);
-    const idx = users.findIndex((u) => u.email === body.email);
-    if (idx >= 0) users[idx] = { ...users[idx], ...body };
-    else users.push({ id: String(Date.now()), ...body });
-    save('mock_users', users);
-    return { data: users[idx >= 0 ? idx : users.length - 1] };
-  }
+  // Users - GET /users/me
   if (path === '/users/me' && method === 'GET') {
     const u = currentUser();
     return { data: u || null };
+  }
+  if (path === '/users/me' && method === 'PUT') {
+    const u = currentUser();
+    if (u) {
+      const updated = { ...u, ...body };
+      const users = load('mock_users', []);
+      const idx = users.findIndex((user) => user.id === u.id);
+      if (idx >= 0) users[idx] = updated;
+      save('mock_users', users);
+      save('mock_current_user', updated);
+      return { data: updated };
+    }
+    return { data: null };
   }
   if (path === '/users/me/certificates' && method === 'GET') {
     const u = currentUser();
@@ -79,7 +84,13 @@ async function router(method, url, body) {
   if (path === '/teams' && method === 'GET') {
     return { data: load('mock_teams', []) };
   }
-  if (path === '/api/teams' && method === 'POST') {
+  if (path === '/teams/me' && method === 'GET') {
+    const u = currentUser();
+    const teams = load('mock_teams', []);
+    const team = teams.find((t) => t.members?.includes(u?.email) || t.leader === u?.email) || null;
+    return { data: team };
+  }
+  if (path === '/teams' && method === 'POST') {
     const teams = load('mock_teams', []);
     const u = currentUser();
     const team = { id: String(Date.now()), name: body.name || `Team-${teams.length + 1}`, description: body.description || '', leader: u?.email || 'leader@example.com', members: [u?.email].filter(Boolean), mentor: { name: 'Unassigned', email: 'mentor@example.com' }, mentorId: null, score: 0, updates: [], presentationTime: 'TBD' };
@@ -91,14 +102,28 @@ async function router(method, url, body) {
     } catch (_) {}
     return { data: team };
   }
-  if (path.startsWith('/api/teams/') && method === 'GET') {
-    const teamId = path.split('/')[3] || path.split('/')[2];
+  if (path === '/teams/join' && method === 'POST') {
+    const teams = load('mock_teams', []);
+    const u = currentUser();
+    const team = teams.find((t) => t.id === body.code || t.name === body.code) || teams[0];
+    if (team && u) {
+      team.members = [...(team.members || []), u.email];
+      save('mock_teams', teams);
+      const user = { ...u, teamId: team.id };
+      save('mock_current_user', user); save('user', user);
+      return { data: team };
+    }
+    return { data: null };
+  }
+  if (path.startsWith('/teams/') && method === 'GET' && !path.endsWith('/updates') && !path.endsWith('/update') && !path.endsWith('/leave') && path !== '/teams/me') {
+    const teamId = path.split('/')[2];
     const teams = load('mock_teams', []);
     const team = teams.find((t) => t.id === teamId) || null;
     return { data: team };
   }
-  if (path.startsWith('/api/teams/') && path.endsWith('/updates') && method === 'POST') {
-    const teamId = path.split('/')[3];
+  if (path.startsWith('/teams/') && (path.endsWith('/update') || path.endsWith('/updates')) && method === 'POST') {
+    const pathParts = path.split('/');
+    const teamId = pathParts[2];
     const teams = load('mock_teams', []);
     const idx = teams.findIndex((t) => t.id === teamId);
     if (idx >= 0) {
@@ -109,7 +134,7 @@ async function router(method, url, body) {
     }
     return { data: { ok: false } };
   }
-  if (path.startsWith('/api/teams/') && path.endsWith('/leave') && method === 'POST') {
+  if (path.startsWith('/teams/') && path.endsWith('/leave') && method === 'POST') {
     // This is a no-op in mock mode; front-end updates UI.
     return { data: { ok: true } };
   }

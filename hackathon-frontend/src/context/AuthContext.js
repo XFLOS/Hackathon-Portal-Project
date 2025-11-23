@@ -109,7 +109,7 @@ export function useAuth() {
 export async function loginWithEmail(email, password) {
   // If Firebase client isn't configured, fall back to backend JWT login
   if (!firebaseEnabled) {
-    const res = await api.post('/auth/login', { email, password });
+    const res = await api.post('/login', { email, password });
     // store token & user in localStorage for api wrapper to pick up
     if (res?.data?.token) localStorage.setItem('token', res.data.token);
     if (res?.data?.user) localStorage.setItem('user', JSON.stringify(res.data.user));
@@ -162,8 +162,8 @@ export async function loginWithEmail(email, password) {
 export async function registerWithEmail({ name, email, password, role = 'student' }) {
   if (!firebaseEnabled) {
     // Register via backend then login
-    await api.post('/auth/register', { name, email, password, role });
-    const res = await api.post('/auth/login', { email, password });
+    await api.post('/register', { name, email, password, role });
+    const res = await api.post('/login', { email, password });
     if (res?.data?.token) localStorage.setItem('token', res.data.token);
     if (res?.data?.user) localStorage.setItem('user', JSON.stringify(res.data.user));
     // notify any AuthProvider instances to reload local state
@@ -179,8 +179,6 @@ export async function registerWithEmail({ name, email, password, role = 'student
   // Send email verification (best-effort). Do not block registration if it fails.
   try { await sendEmailVerification(cred.user); } catch (e) { /* noop */ }
 
-  // Upsert user record in backend with selected role (best-effort)
-  try { await api.post('/users', { name, email, role }); } catch (_) {}
   // Persist a minimal normalized user for immediate UI responsiveness
   try {
     const minimal = { id: cred.user.uid, email: cred.user.email, name: cred.user.displayName || name, role };
