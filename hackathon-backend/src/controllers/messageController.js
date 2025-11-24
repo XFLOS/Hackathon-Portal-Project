@@ -122,7 +122,7 @@ export const getUserConversations = async (req, res) => {
         INNER JOIN team_members tm ON u.id = tm.user_id
         INNER JOIN teams t ON tm.team_id = t.id
         WHERE t.id IN (
-          SELECT team_id FROM team_mentors WHERE mentor_id = $1
+          SELECT team_id FROM mentor_assignments WHERE mentor_id = $1
         )
         ORDER BY last_message_time DESC NULLS LAST
       `;
@@ -147,8 +147,8 @@ export const getUserConversations = async (req, res) => {
            WHERE (sender_id = $1 AND receiver_id = u.id) OR (sender_id = u.id AND receiver_id = $1)
            ORDER BY created_at DESC LIMIT 1) as last_message_time
         FROM users u
-        INNER JOIN team_mentors tm ON u.id = tm.mentor_id
-        INNER JOIN teams t ON tm.team_id = t.id
+        INNER JOIN mentor_assignments ma ON u.id = ma.mentor_id
+        INNER JOIN teams t ON ma.team_id = t.id
         WHERE t.id IN (
           SELECT team_id FROM team_members WHERE user_id = $1
         )

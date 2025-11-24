@@ -8,6 +8,7 @@ export default function MentorSidebar() {
     { path: '/mentor/teams', label: 'Teams & Q&A', icon: '👥' },
     { path: '/mentor/feedback', label: 'Feedback', icon: '📝' },
     { path: '/mentor/chat', label: 'Chat', icon: '💬' },
+    { path: '/mentor/resources', label: 'Resources', icon: '📚' },
     { path: '/schedule', label: 'Schedule', icon: '📅' },
     { path: '/announcements', label: 'Announcements', icon: '📢' },
     { path: '/profile', label: 'Profile', icon: '👤' },

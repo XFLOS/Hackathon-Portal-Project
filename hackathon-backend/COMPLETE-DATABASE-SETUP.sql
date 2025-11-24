@@ -5,6 +5,7 @@
 -- =====================================================================
 
 -- Drop existing tables if they exist
+DROP TABLE IF EXISTS mentor_resources CASCADE;
 DROP TABLE IF EXISTS messages CASCADE;
 DROP TABLE IF EXISTS notifications CASCADE;
 DROP TABLE IF EXISTS announcements CASCADE;
@@ -167,6 +168,24 @@ CREATE TABLE messages (
 );
 
 -- =====================================================================
+-- CREATE MENTOR RESOURCES TABLE (for file uploads)
+-- =====================================================================
+CREATE TABLE mentor_resources (
+  id SERIAL PRIMARY KEY,
+  mentor_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  team_id INTEGER REFERENCES teams(id) ON DELETE CASCADE,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  file_url VARCHAR(500) NOT NULL,
+  file_type VARCHAR(100),
+  file_size INTEGER,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+COMMENT ON TABLE mentor_resources IS 'Stores files and resources uploaded by mentors for their teams';
+
+-- =====================================================================
 -- CREATE INDEXES
 -- =====================================================================
 CREATE INDEX idx_users_email ON users(email);
@@ -189,6 +208,9 @@ CREATE INDEX idx_messages_receiver ON messages(receiver_id);
 CREATE INDEX idx_messages_team ON messages(team_id);
 CREATE INDEX idx_messages_created_at ON messages(created_at);
 CREATE INDEX idx_messages_conversation ON messages(sender_id, receiver_id, created_at);
+CREATE INDEX idx_mentor_resources_mentor ON mentor_resources(mentor_id);
+CREATE INDEX idx_mentor_resources_team ON mentor_resources(team_id);
+CREATE INDEX idx_mentor_resources_created_at ON mentor_resources(created_at);
 
 -- =====================================================================
 -- INSERT DEMO USERS
