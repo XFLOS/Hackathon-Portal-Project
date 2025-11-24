@@ -303,6 +303,7 @@ POST /judge/evaluate/:submissionId       - Create or update evaluation (upsert)
 GET  /judge/history                      - Get evaluation history
 GET  /judge/evaluation/:submissionId     - Get specific evaluation
 GET  /judge/assignments/:judgeId         - Get teams assigned to a judge (submission & evaluation summary)
+GET  /judge/assignments/me               - Convenience: assignments for authenticated judge
 ```
 
 npm run dev## 5) Integração no Frontend (CRA)
@@ -915,10 +916,15 @@ app.post('/api/judge/evaluations/:id', authMiddleware, (req, res) => {
 
 ### Test Checklist (Judge Flow)
 Use these after deployment or local development:
-1. Dashboard loads `/judge/submissions` showing evaluated badges.
+1. Dashboard loads `/judge/assignments/:judgeId` (or `/judge/assignments/me`) showing only assigned teams.
 2. Evaluation page pre-fills existing scores if present.
 3. Submitting invalid scores (<0 or >10) returns 400.
 4. Updating scores changes `evaluated_at` timestamp and dashboard total.
-5. History page lists items in descending `evaluated_at` order with `total_score`.
+5. History page lists items in descending `evaluated_at` order with `total_score` when unpaginated.
+6. History pagination (`/judge/history?page=0&pageSize=10`) returns object with `{ page, pageSize, total, totalPages, items }`.
+7. Search/filter/sort on dashboard behave correctly (team name match, status filter, ordering by score/time/team).
+8. Expanding a history item reveals metric breakdown & comments.
+9. Inline edit from history updates local item without full refetch.
+10. `/judge/assignments/me` returns identical payload shape to `/judge/assignments/:judgeId` for the logged-in judge.
 
 **Happy Hacking!** 🎉
