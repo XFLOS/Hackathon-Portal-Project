@@ -1,14 +1,18 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from './App';
 
-test('renders app heading', () => {
+test('renders navigation after initial loading', async () => {
   render(
     <MemoryRouter>
       <App />
     </MemoryRouter>
   );
-  // App contains a hero title 'GUS Hackathon Portal'
-  const heading = screen.getByText(/GUS Hackathon Portal/i);
-  expect(heading).toBeInTheDocument();
+  // Wait for the loading placeholder to appear then disappear
+  expect(screen.getByText(/Loading/i)).toBeInTheDocument();
+  await waitFor(() => {
+    // Navbar brand should be present (alt text Hackathon Logo)
+    const logo = screen.getByAltText(/Hackathon Logo/i);
+    expect(logo).toBeInTheDocument();
+  });
 });

@@ -815,4 +815,114 @@ For issues or questions:
 
 ---
 
+## 🧪 Judge Evaluation Flow (Updated)
+
+This section supersedes older single-score evaluation notes and clarifies the current multi-rubric contract.
+
+### Endpoints
+
+```
+GET  /judge/submissions              # List submissions + any existing evaluation for this judge
+POST /judge/evaluate/:submissionId   # Create OR update evaluation (upsert)
+GET  /judge/history                  # List all evaluations by this judge (includes computed total_score)
+GET  /judge/evaluation/:submissionId # Fetch one evaluation for this judge & submission
+```
+
+### Request Payload (POST /judge/evaluate/:submissionId)
+
+```jsonc
+{
+  "innovation_score": 0-10,          // Required numeric (int/float) 0..10
+  "technical_score": 0-10,           // Required numeric 0..10
+  "presentation_score": 0-10,       // Required numeric 0..10
+  "comments": "Optional feedback"   // Optional string
+}
+```
+
+Validation: All three scores must be within [0,10]. Re-submitting updates the existing row (no duplicates). `total_score` is derived (innovation + technical + presentation). Use GET endpoints to retrieve computed totals; don’t attempt to send a `total_score` field.
+
+### Response Samples
+
+Create:
+```json
+{
+  "message": "Evaluation submitted successfully",
+  "evaluation": {
+    "id": 42,
+    "submission_id": 7,
+    "judge_id": 3,
+    "innovation_score": 8,
+    "technical_score": 9,
+    "presentation_score": 7,
+    "comments": "Great technical depth.",
+    "evaluated_at": "2025-11-24T15:05:12.345Z"
+  }
+}
+```
+
+Update:
+```json
+{
+  "message": "Evaluation updated successfully",
+  "evaluation": {
+    "id": 42,
+    "submission_id": 7,
+    "judge_id": 3,
+    "innovation_score": 9,
+    "technical_score": 9,
+    "presentation_score": 8,
+    "comments": "Refined after live demo.",
+    "evaluated_at": "2025-11-24T15:12:01.123Z"
+  }
+}
+```
+
+History item (GET /judge/history):
+```json
+{
+  "id": 42,
+  "submission_id": 7,
+  "judge_id": 3,
+  "innovation_score": 9,
+  "technical_score": 9,
+  "presentation_score": 8,
+  "comments": "Refined after live demo.",
+  "evaluated_at": "2025-11-24T15:12:01.123Z",
+  "submission_title": "AI Study Assistant",
+  "team_name": "Team Phoenix",
+  "total_score": 26
+}
+```
+
+### Legacy Migration
+
+Older clients used `POST /api/judge/evaluations/:id` with a single `score` field. Migrate by:
+1. Renaming endpoint to `/judge/evaluate/:submissionId`.
+2. Replacing `score` with three fields: `innovation_score`, `technical_score`, `presentation_score`.
+3. Optionally derive all three from the legacy `score` if you must retain prior UI (not recommended).
+
+Optional adapter (for temporary backward compatibility):
+```js
+// NOT enabled by default; add only if you must support legacy clients.
+app.post('/api/judge/evaluations/:id', authMiddleware, (req, res) => {
+  const { score = 0, comments = '' } = req.body;
+  req.params.submissionId = req.params.id;
+  req.body = {
+    innovation_score: score,
+    technical_score: score,
+    presentation_score: score,
+    comments
+  };
+  evaluateSubmission(req, res);
+});
+```
+
+### Test Checklist (Judge Flow)
+Use these after deployment or local development:
+1. Dashboard loads `/judge/submissions` showing evaluated badges.
+2. Evaluation page pre-fills existing scores if present.
+3. Submitting invalid scores (<0 or >10) returns 400.
+4. Updating scores changes `evaluated_at` timestamp and dashboard total.
+5. History page lists items in descending `evaluated_at` order with `total_score`.
+
 **Happy Hacking!** 🎉
