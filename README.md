@@ -298,15 +298,11 @@ GET  /mentor/feedback/:teamId   - Get feedback history# Runs on http://localhost
 ### Judge Endpoints
 
 ```
-
 GET  /judge/submissions                  - Get all submissions
-
-POST /judge/evaluate/:submissionId       - Submit evaluation**Backend** (in `hackathon-backend/` directory):- Firebase project for authentication
-
+POST /judge/evaluate/:submissionId       - Create or update evaluation (upsert)
 GET  /judge/history                      - Get evaluation history
-
-GET  /judge/evaluation/:submissionId     - Get specific evaluation```bash
-
+GET  /judge/evaluation/:submissionId     - Get specific evaluation
+GET  /judge/assignments/:judgeId         - Get teams assigned to a judge (submission & evaluation summary)
 ```
 
 npm run dev## 5) Integração no Frontend (CRA)

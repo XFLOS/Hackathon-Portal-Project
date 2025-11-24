@@ -137,3 +137,36 @@ export const getEvaluationBySubmission = async (req, res) => {
     res.status(500).json({ message: 'Error fetching evaluation' });
   }
 };
+
+// Get teams assigned to a judge with submission/evaluation summary
+export const getJudgeAssignments = async (req, res) => {
+  try {
+    const { judgeId } = req.params;
+    const authJudgeId = req.user.id;
+    const role = req.user.role;
+
+    // Security: judges can only view their own assignments unless admin/coordinator
+    if (parseInt(judgeId, 10) !== authJudgeId && !['admin','coordinator'].includes(role)) {
+      return res.status(403).json({ message: 'Not authorized to view other judge assignments' });
+    }
+
+    const result = await db.query(
+      `SELECT jta.team_id, t.name as team_name,
+              s.id as submission_id, s.submitted_at, s.title as submission_title,
+              e.id as evaluation_id, e.innovation_score, e.technical_score, e.presentation_score,
+              (CASE WHEN e.id IS NOT NULL THEN e.innovation_score + e.technical_score + e.presentation_score ELSE NULL END) as total_score
+       FROM judge_team_assignments jta
+       JOIN teams t ON jta.team_id = t.id
+       LEFT JOIN submissions s ON s.team_id = t.id
+       LEFT JOIN evaluations e ON e.submission_id = s.id AND e.judge_id = jta.judge_id
+       WHERE jta.judge_id = $1
+       ORDER BY t.name ASC`,
+      [judgeId]
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Get judge assignments error:', error);
+    res.status(500).json({ message: 'Error fetching judge assignments' });
+  }
+};

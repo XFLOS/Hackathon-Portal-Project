@@ -4,7 +4,8 @@ import {
   getSubmissions,
   evaluateSubmission,
   getEvaluationHistory,
-  getEvaluationBySubmission
+  getEvaluationBySubmission,
+  getJudgeAssignments
 } from '../controllers/judgeController.js';
 
 const router = express.Router();
@@ -14,5 +15,6 @@ router.get('/submissions', protect, getSubmissions);
 router.post('/evaluate/:submissionId', protect, evaluateSubmission);
 router.get('/history', protect, getEvaluationHistory);
 router.get('/evaluation/:submissionId', protect, getEvaluationBySubmission);
+router.get('/assignments/:judgeId', protect, getJudgeAssignments);
 
 export default router;

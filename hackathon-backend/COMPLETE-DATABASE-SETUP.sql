@@ -302,12 +302,33 @@ INSERT INTO evaluations (submission_id, judge_id, innovation_score, technical_sc
 INSERT INTO evaluations (submission_id, judge_id, innovation_score, technical_score, presentation_score, comments) VALUES
 (1, 3, 9, 8, 7, 'Highly innovative use of AI for education. Technical implementation is solid but could improve the NLP accuracy. Presentation needs more live demo time.');
 
--- =====================================================================
--- ASSIGN MENTOR TO TEAMS
--- =====================================================================
 INSERT INTO mentor_assignments (mentor_id, team_id) VALUES
 (2, 1),  -- Demo Mentor assigned to Team Phoenix
 (2, 2);  -- Demo Mentor assigned to Team Dragons
+
+-- =============================================
+-- JUDGE TEAM ASSIGNMENTS (Phase 2 Dashboard Enhancements)
+-- =============================================
+-- New table to track which teams a judge is responsible for.
+-- Allows dashboard to show only assigned teams, filter submission status,
+-- and display evaluation progress.
+
+DROP TABLE IF EXISTS judge_team_assignments CASCADE;
+CREATE TABLE judge_team_assignments (
+  id SERIAL PRIMARY KEY,
+  judge_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  team_id INTEGER NOT NULL REFERENCES teams(id) ON DELETE CASCADE,
+  assigned_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  UNIQUE(judge_id, team_id)
+);
+CREATE INDEX idx_judge_team_assignments_judge ON judge_team_assignments(judge_id);
+CREATE INDEX idx_judge_team_assignments_team ON judge_team_assignments(team_id);
+
+-- Demo judge assignments (judge@demo.com assumes id 6 if consistent with existing seed ordering)
+-- Adjust judge_id if different in your dataset.
+INSERT INTO judge_team_assignments (judge_id, team_id) VALUES
+(6, 1),
+(6, 2);
 
 -- =====================================================================
 -- CREATE MENTOR FEEDBACK
