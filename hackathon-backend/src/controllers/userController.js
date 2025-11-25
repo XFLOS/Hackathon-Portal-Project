@@ -52,19 +52,17 @@ export const getCertificatesForUser = async (req, res) => {
       // Compose certificate data
       certs.push({
         id: `${team.team_id}-${submission.submission_id}`,
-          certs.push({
-            id: `${team.team_id}-${submission.submission_id}`,
-            student_name: req.user.full_name,
-            team_name: team.team_name,
-            project_title: submission.title,
-            submission_date: submission.submitted_at,
-            avg_innovation: avg.innovation,
-            avg_technical: avg.technical,
-            avg_presentation: avg.presentation,
-            avg_total: avg.total,
-            judges: evalRes.rows.map(e => e.judge_name),
-            url: `/api/users/me/certificates/${team.team_id}-${submission.submission_id}/download`
-          });
+        student_name: req.user.full_name,
+        team_name: team.team_name,
+        project_title: submission.title,
+        submission_date: submission.submitted_at,
+        avg_innovation: avg.innovation,
+        avg_technical: avg.technical,
+        avg_presentation: avg.presentation,
+        avg_total: avg.total,
+        judges: evalRes.rows.map(e => e.judge_name),
+        url: `/api/users/me/certificates/${team.team_id}-${submission.submission_id}/download`
+      });
     res.json(certs);
   } catch (error) {
     console.error('Get certificates error:', error);
