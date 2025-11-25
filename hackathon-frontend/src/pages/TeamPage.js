@@ -457,6 +457,10 @@ export default function TeamPage() {
           <h3>Presentation Schedule</h3>
           <p>{team?.presentationTime || "No schedule assigned"}</p>
         </div>
+        <div className="team-section">
+          <h3>Debug Info</h3>
+          <p style={{fontSize:'12px', opacity:0.8}}>API Base: {api?.defaults?.baseURL || 'N/A'} | Token: {localStorage.getItem('token') ? 'present' : 'none'}</p>
+        </div>
       </div>
     </div>
   );
