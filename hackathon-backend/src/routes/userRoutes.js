@@ -6,7 +6,8 @@ import {
   getSchedule,
   getAnnouncements,
   getLeaderboard,
-  getCertificatesForUser
+  getCertificatesForUser,
+  downloadCertificatePDF
 } from '../controllers/userController.js';
 import {
   getProfile,
