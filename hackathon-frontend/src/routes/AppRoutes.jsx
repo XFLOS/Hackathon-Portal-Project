@@ -207,8 +207,25 @@ function AppRoutesInner() {
           </RoleRoute>
         }
       />
+      {/* Judge legacy/alias routes to prevent 404s from old sidebar links */}
+      <Route
+        path="/judge-submissions"
+        element={
+          <RoleRoute allow={["judge", "admin"]}>
+            <JudgeDashboard />
+          </RoleRoute>
+        }
+      />
       <Route
         path="/judge/evaluation"
+        element={
+          <RoleRoute allow={["judge", "admin"]}>
+            <JudgeEvaluationPage />
+          </RoleRoute>
+        }
+      />
+      <Route
+        path="/judge-grading"
         element={
           <RoleRoute allow={["judge", "admin"]}>
             <JudgeEvaluationPage />
@@ -224,10 +241,26 @@ function AppRoutesInner() {
         }
       />
       <Route
+        path="/judge-history"
+        element={
+          <RoleRoute allow={["judge", "admin"]}>
+            <JudgeFeedbackHistoryPage />
+          </RoleRoute>
+        }
+      />
+      <Route
         path="/judge/schedule"
         element={
           <RoleRoute allow={["judge", "admin"]}>
             <JudgeSchedulePage />
+          </RoleRoute>
+        }
+      />
+      <Route
+        path="/judge-rubric"
+        element={
+          <RoleRoute allow={["judge", "admin"]}>
+            <Navigate to="/judge/evaluation" replace />
           </RoleRoute>
         }
       />

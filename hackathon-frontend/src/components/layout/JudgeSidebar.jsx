@@ -3,14 +3,13 @@ import { NavLink } from 'react-router-dom';
 import './sidebar.css';
 
 export default function JudgeSidebar() {
+  // Updated to only include implemented routes; legacy paths now aliased in AppRoutes
   const navItems = [
     { path: '/judge-dashboard', label: 'Dashboard', icon: '📊' },
-    { path: '/judge-submissions', label: 'Submissions', icon: '📤' },
-    { path: '/judge-grading', label: 'Grading', icon: '✅' },
-    { path: '/judge-rubric', label: 'Rubric Editor', icon: '📝' },
-    { path: '/judge-history', label: 'Team History', icon: '📜' },
+    { path: '/judge/evaluation', label: 'Evaluation', icon: '✅' },
+    { path: '/judge/feedback', label: 'Feedback History', icon: '📜' },
+    { path: '/judge/schedule', label: 'Schedule', icon: '📅' },
     { path: '/leaderboard', label: 'Leaderboard', icon: '🏆' },
-    { path: '/schedule', label: 'Schedule', icon: '📅' },
   ];
 
   return (
