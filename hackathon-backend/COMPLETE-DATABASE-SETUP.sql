@@ -309,15 +309,6 @@ INSERT INTO submissions (team_id, title, description, file_url, github_url, demo
 'https://campus-events-demo.herokuapp.com',
 9);
 
--- Submission from Team Nova (NOT EVALUATED YET - for judge demo)
-INSERT INTO submissions (team_id, title, description, file_url, github_url, demo_url, submitted_by) VALUES
-(3, 'Fitness Tracker Pro - Final Submission',
-'A mobile-first gamified fitness app with social challenges, personalized workout plans, and achievement badges. Built with React Native and Firebase. Features: real-time workout tracking, friend leaderboards, and AI-powered form correction.',
-'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-'https://github.com/demo/fitness-tracker-pro',
-'https://fitness-tracker-demo.vercel.app',
-14);
-
 -- =====================================================================
 -- CREATE JUDGE EVALUATIONS
 -- =====================================================================

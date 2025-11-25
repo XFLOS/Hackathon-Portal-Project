@@ -385,9 +385,10 @@ export default function SubmissionPage() {
             
             <div className="upload-section">
               <div className="form-group">
-                <label>Upload Project File</label>
+                <label htmlFor="file-upload">Upload Project File</label>
                 <div className="file-upload-group">
                   <input
+                    id="file-upload"
                     type="file"
                     onChange={handleFileChange}
                     disabled={isDeadlinePassed || uploading}
@@ -403,6 +404,11 @@ export default function SubmissionPage() {
                     {uploading ? 'Uploading...' : 'Upload File'}
                   </button>
                 </div>
+                {file && (
+                  <span className="field-hint" style={{ color: '#00d9ff', fontWeight: 'bold' }}>
+                    Selected: {file.name} ({(file.size / 1024).toFixed(2)} KB)
+                  </span>
+                )}
                 <span className="field-hint">
                   Supported: Images, Videos, PDF, Documents, Archives (Max 10MB)
                 </span>
