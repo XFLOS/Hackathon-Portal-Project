@@ -129,7 +129,6 @@ export default function Navbar() {
                 
                 {role === 'judge' && (
                   <>
-                    <Link to="/judge-dashboard">Judge Dashboard</Link>
                     <Link to="/judge/evaluation">Evaluation</Link>
                     <Link to="/judge/feedback">Feedback History</Link>
                   </>
