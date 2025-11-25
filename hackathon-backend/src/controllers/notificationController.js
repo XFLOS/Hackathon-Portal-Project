@@ -23,7 +23,14 @@ export const getNotifications = async (req, res) => {
 // Get unread notification count
 export const getUnreadCount = async (req, res) => {
   try {
-    const userId = req.user.id;
+    // TEMP: fallback for demo/testing if auth is disabled
+    let userId;
+    if (req.user && req.user.id) {
+      userId = req.user.id;
+    } else {
+      // Use a test user or return 0 if not present
+      userId = 1; // or any valid user id in your notifications table
+    }
 
     const result = await db.query(
       'SELECT COUNT(*) as unread_count FROM notifications WHERE user_id = $1 AND read = false',
