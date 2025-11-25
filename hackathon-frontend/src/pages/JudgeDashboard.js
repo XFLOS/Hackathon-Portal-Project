@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import api from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
-import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
 import AppShell from '../components/layout/AppShell';
 import { Link } from 'react-router-dom';
 
@@ -19,16 +17,29 @@ export default function JudgeDashboard() {
     let mounted = true;
     (async () => {
       try {
-        const resProfile = await api.get('/auth/profile').catch(()=>({ data: {} }));
-        const judgeId = resProfile?.data?.id;
-        const route = judgeId ? `/judge/assignments/${judgeId}` : '/judge/submissions';
-        const res = await api.get(route);
-        if (mounted && res?.data) {
-          setAssignments(Array.isArray(res.data) ? res.data : []);
+        // Prefer convenience endpoint; avoids needing profile call & works with auth token
+        const res = await api.get('/judge/assignments/me');
+        if (mounted && Array.isArray(res.data)) {
+          setAssignments(res.data);
         }
-      } catch (err) {
-        console.error('Failed to load judge assignments:', err);
-        if (mounted) setError('Failed to load assignments');
+      } catch (primaryErr) {
+        console.warn('Primary assignments fetch failed, attempting fallback:', primaryErr?.message);
+        try {
+          // Fallback: attempt profile → id-specific route (legacy environments)
+            const prof = await api.get('/users/me').catch(()=>({ data:{} }));
+            const judgeId = prof?.data?.id;
+            if (judgeId) {
+              const res2 = await api.get(`/judge/assignments/${judgeId}`);
+              if (mounted && Array.isArray(res2.data)) setAssignments(res2.data);
+            } else {
+              // Final fallback: submissions list (will omit teams w/out submission)
+              const subRes = await api.get('/judge/submissions');
+              if (mounted && Array.isArray(subRes.data)) setAssignments(subRes.data);
+            }
+        } catch (fallbackErr) {
+          console.error('Failed all judge assignment fetch strategies:', fallbackErr);
+          if (mounted) setError('Failed to load assignments');
+        }
       } finally {
         if (mounted) setLoading(false);
       }
@@ -38,9 +49,15 @@ export default function JudgeDashboard() {
 
   const stats = useMemo(() => {
     let evaluated = 0;
-    let total = assignments.length;
-    assignments.forEach(a => { if (a.evaluation_id) evaluated++; });
-    return { evaluated, total, pending: total - evaluated };
+    let pending = 0;
+    let withSubmission = 0;
+    assignments.forEach(a => {
+      const hasSub = !!a.submission_id;
+      if (hasSub) withSubmission++;
+      if (hasSub && a.evaluation_id) evaluated++;
+      else if (hasSub && !a.evaluation_id) pending++;
+    });
+    return { evaluated, pending, total: assignments.length, withSubmission };
   }, [assignments]);
 
   const filtered = useMemo(() => {
@@ -82,91 +99,90 @@ export default function JudgeDashboard() {
   }, [assignments, search, statusFilter, sortBy]);
 
   const renderScoreBadge = (s) => {
-    if (!s.submission_id) return <span className="badge badge-secondary">No Submission</span>;
-    if (!s.evaluation_id) return <span className="badge badge-warning">Pending Eval</span>;
+    if (!s.submission_id) return <span className="judge-badge judge-badge-soft">No Submission</span>;
+    if (!s.evaluation_id) return <span className="judge-badge judge-badge-warning">Pending Eval</span>;
     const scores = [s.innovation_score, s.technical_score, s.presentation_score];
     const validScores = scores.filter(v => typeof v === 'number');
     const total = validScores.reduce((a,b) => a + b, 0);
-    return <span className="badge badge-success">Score: {total}</span>;
+    return <span className="judge-badge judge-badge-success">Score: {total}</span>;
   };
 
   return (
     <AppShell>
-      <div className="container section">
-        <div className="stack">
-          <h2 className="h2">Judge Dashboard</h2>
-          <p className="subtitle">Evaluate submissions and review feedback history.</p>
-          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <Link to="/judge/evaluation"><Button variant="primary">Go to Evaluation Page</Button></Link>
-            <Link to="/judge/feedback"><Button variant="secondary">View Feedback History</Button></Link>
-            <Link to="/judge/schedule"><Button variant="outline">Presentation Schedule</Button></Link>
-          </div>
-
-          {loading && <LoadingSpinner />}
-          {error && !loading && <p className="error" style={{ color: 'var(--danger)' }}>{error}</p>}
-
-          <Card title="Assigned Teams" subtitle={`${stats.evaluated} evaluated · ${stats.pending} pending · ${stats.total} total`}>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.75rem' }}>
+      <div className="judge-page">
+        <header className="judge-page-header">
+          <h1 className="judge-title">Judge Dashboard</h1>
+          <p className="judge-subtitle">Evaluate submissions, monitor progress, and review feedback history.</p>
+        </header>
+        <div className="judge-row-actions" style={{ flexWrap:'wrap', marginBottom:'1rem' }}>
+          <Link to="/judge/evaluation" className="judge-btn judge-btn-primary">Evaluation</Link>
+          <Link to="/judge/feedback" className="judge-btn judge-btn-secondary">Feedback History</Link>
+          <Link to="/judge/schedule" className="judge-btn judge-btn-outline">Presentation Schedule</Link>
+        </div>
+        {loading && <LoadingSpinner />}
+        {error && !loading && <p style={{ color: 'var(--judge-danger)', fontSize:'var(--judge-font-sm)' }}>{error}</p>}
+        <section className="judge-card" aria-label="Assigned Teams">
+          <div className="judge-card-header">
+            <div>
+              <div className="judge-card-title">Assigned Teams</div>
+              <div className="judge-card-meta">{stats.evaluated} evaluated • {stats.pending} pending • {stats.withSubmission}/{stats.total} submitted</div>
+            </div>
+            <div style={{ display:'flex', gap:'.5rem', flexWrap:'wrap', alignItems:'center' }}>
               <input
+                className="judge-input"
                 type="text"
                 placeholder="Search team..."
                 value={search}
                 onChange={e=>setSearch(e.target.value)}
-                style={filterInputStyle}
                 aria-label="Search team by name"
+                style={{ flex:'1 1 180px', minWidth:160 }}
               />
-              <select value={statusFilter} onChange={e=>setStatusFilter(e.target.value)} style={filterSelectStyle} aria-label="Filter by submission status">
+              <select className="judge-select" value={statusFilter} onChange={e=>setStatusFilter(e.target.value)} aria-label="Filter by submission status" style={{ flex:'0 0 140px' }}>
                 <option value="all">All</option>
                 <option value="submitted">Submitted</option>
                 <option value="not-submitted">Not Submitted</option>
               </select>
-              <select value={sortBy} onChange={e=>setSortBy(e.target.value)} style={filterSelectStyle} aria-label="Sort list">
-                <option value="team">Sort: Team</option>
-                <option value="time">Sort: Time</option>
-                <option value="score">Sort: Score</option>
+              <select className="judge-select" value={sortBy} onChange={e=>setSortBy(e.target.value)} aria-label="Sort list" style={{ flex:'0 0 140px' }}>
+                <option value="team">Team</option>
+                <option value="time">Time</option>
+                <option value="score">Score</option>
               </select>
             </div>
-            {loading ? <p>Loading...</p> : (
-              filtered.length === 0 ? <p className="muted">No teams match current filters.</p> : (
-                <ul className="list" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                  {filtered.map(row => (
-                    <li key={row.team_id} style={{ padding: '0.75rem 0', borderBottom: '1px solid var(--border)' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-                        <div>
-                          <strong>{row.team_name || `Team #${row.team_id}`}</strong>
-                          <p className="muted" style={{ margin: '0.25rem 0 0', fontSize: '0.75rem' }}>
-                            {row.submission_id ? `Submitted ${new Date(row.submitted_at).toLocaleDateString()}` : 'Not Submitted'}
-                          </p>
+          </div>
+          {loading ? <p style={{ color:'var(--judge-text-muted)', fontSize:'var(--judge-font-sm)' }}>Loading…</p> : (
+            filtered.length === 0 ? <p style={{ color:'var(--judge-text-muted)', fontSize:'var(--judge-font-sm)' }}>No teams match current filters.</p> : (
+              <ul className="judge-list" aria-label="Teams list">
+                {filtered.map(row => {
+                  const submitted = !!row.submission_id;
+                  const evaluated = !!row.evaluation_id;
+                  return (
+                    <li key={row.team_id} className="judge-list-item">
+                      <div className="judge-row-top">
+                        <div style={{ flex:1 }}>
+                          <strong style={{ fontSize:'var(--judge-font-md)' }}>{row.team_name || `Team #${row.team_id}`}</strong>
+                          <div style={{ fontSize:'var(--judge-font-xs)', color:'var(--judge-text-muted)', marginTop:4 }}>
+                            {submitted ? `Submitted ${row.submitted_at ? new Date(row.submitted_at).toLocaleDateString() : ''}` : 'Not Submitted'}
+                          </div>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <div className="judge-row-actions">
                           {renderScoreBadge(row)}
-                          <Link to="/judge/evaluation"><Button size="sm" variant={row.evaluation_id ? 'outline' : 'primary'}>{row.evaluation_id ? 'Update' : (row.submission_id ? 'Evaluate' : 'Awaiting')}</Button></Link>
+                          <Link
+                            to="/judge/evaluation"
+                            className={`judge-btn ${evaluated ? 'judge-btn-outline' : submitted ? 'judge-btn-primary' : 'judge-btn-secondary'}`}
+                            style={{ fontSize:'var(--judge-font-xs)' }}
+                          >{evaluated ? 'Update' : submitted ? 'Evaluate' : 'Awaiting'}</Link>
                         </div>
                       </div>
                     </li>
-                  ))}
-                </ul>
-              )
-            )}
-          </Card>
-        </div>
+                  );
+                })}
+              </ul>
+            )
+          )}
+        </section>
       </div>
     </AppShell>
   );
 }
 
-const filterInputStyle = {
-  flex: '1 1 180px',
-  minWidth: 160,
-  padding: '8px 10px',
-  border: '1px solid var(--border)',
-  borderRadius: 6
-};
-
-const filterSelectStyle = {
-  flex: '0 0 150px',
-  padding: '8px 10px',
-  border: '1px solid var(--border)',
-  borderRadius: 6,
-  background: 'var(--surface)'
-};
+// Removed inline filter styles in favor of shared judge-input / judge-select classes
