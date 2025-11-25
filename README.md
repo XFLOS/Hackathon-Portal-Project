@@ -18,9 +18,9 @@ A full-stack hackathon management system with role-based dashboards for Students
 
 | Role | Email | Dashboard Features |
 |------|-------|-------------------|
-| 👤 Student | `student@demo.com` | Team "Phoenix Rising", 5 members, file upload |
-| 🧑‍🏫 Mentor | `mentor@demo.com` | Assigned teams, progress monitoring |
-| ⚖️ Judge | `judge@demo.com` | 2 submissions to evaluate, scores 85 & 92 |
+| 👤 Student | `student@demo.com` | Team Phoenix (5 members), submitted AI Study Assistant project |
+| 🧑‍🏫 Mentor | `mentor@demo.com` | Assigned to Teams Phoenix & Dragons, feedback history |
+| ⚖️ Judge | `judge@demo.com` | 3 assigned teams: Phoenix (evaluated 25/30), Dragons (evaluated 25/30), Nova (ready to evaluate) |
 | 🛠 Coordinator | `coordinator@demo.com` | Platform stats, leaderboard, admin tools |
 
 **Quick Demo:** Login → See role-specific dashboard → Explore features  
@@ -44,10 +44,23 @@ A full-stack hackathon management system with role-based dashboards for Students
 - ✅ Review team submissions
 
 ### ⚖️ Judge Role
-- ✅ View all submissions
-- ✅ Evaluate projects with detailed rubrics
-- ✅ Score teams and provide feedback
-- ✅ View evaluation history
+- ✅ View assigned team submissions
+- ✅ Evaluate projects with multi-score rubric (innovation, technical, presentation)
+- ✅ Score teams (0-10 per metric) and provide detailed feedback
+- ✅ View evaluation history with pagination
+- ✅ Search, filter, and sort assigned teams
+- ✅ Edit past evaluations inline with optimistic updates
+- ✅ View judge-specific presentation schedule with live slot highlighting
+- ✅ Receive notifications with real-time badge updates
+
+**Judge Demo Flow (`judge@demo.com`):**
+1. **Dashboard** shows 3 assigned teams with search/filter/sort
+2. **Team Phoenix** (evaluated): Innovation 9, Technical 8, Presentation 7 = 24/30
+3. **Team Dragons** (evaluated): Innovation 8, Technical 9, Presentation 8 = 25/30
+4. **Team Nova** (not evaluated): Ready for fresh evaluation demo
+5. **Feedback History** displays past evaluations with expand/collapse and inline editing
+6. **Schedule Page** shows presentation time slots derived from aggregate event
+7. **Notifications** page with mark read/delete actions and navbar badge polling
 
 ### 🛠 Coordinator Role
 - ✅ Dashboard with real-time statistics

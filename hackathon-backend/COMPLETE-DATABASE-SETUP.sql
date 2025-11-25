@@ -240,6 +240,13 @@ INSERT INTO users (full_name, email, password, role) VALUES
 ('Aisha Patel', 'aisha.p@fake.com', '$2b$10$iew2XFUt1bGzv43DyybZ5.dcshW.Rsq.VPB1UIaunPhpEM6vmvWJm', 'student'),
 ('Dmitri Ivanov', 'dmitri.i@fake.com', '$2b$10$iew2XFUt1bGzv43DyybZ5.dcshW.Rsq.VPB1UIaunPhpEM6vmvWJm', 'student');
 
+-- Additional fake students for third team (Team Nova)
+INSERT INTO users (full_name, email, password, role) VALUES
+('Olivia Thompson', 'olivia.t@fake.com', '$2b$10$iew2XFUt1bGzv43DyybZ5.dcshW.Rsq.VPB1UIaunPhpEM6vmvWJm', 'student'),
+('Marcus Williams', 'marcus.w@fake.com', '$2b$10$iew2XFUt1bGzv43DyybZ5.dcshW.Rsq.VPB1UIaunPhpEM6vmvWJm', 'student'),
+('Sofia Garcia', 'sofia.g@fake.com', '$2b$10$iew2XFUt1bGzv43DyybZ5.dcshW.Rsq.VPB1UIaunPhpEM6vmvWJm', 'student'),
+('Liam Zhang', 'liam.z@fake.com', '$2b$10$iew2XFUt1bGzv43DyybZ5.dcshW.Rsq.VPB1UIaunPhpEM6vmvWJm', 'student');
+
 -- =====================================================================
 -- CREATE DEMO TEAMS
 -- =====================================================================
@@ -250,6 +257,10 @@ INSERT INTO teams (name, description, created_by, project_name, project_descript
 -- Team Dragons (already has submission)
 INSERT INTO teams (name, description, created_by, project_name, project_description) VALUES
 ('Team Dragons', 'Full-stack development team', 5, 'Campus Event Manager', 'A comprehensive platform for managing university events, RSVPs, and notifications.');
+
+-- Team Nova (will have submission but no evaluation - ready for judge demo)
+INSERT INTO teams (name, description, created_by, project_name, project_description) VALUES
+('Team Nova', 'Mobile-first development team', 9, 'Fitness Tracker Pro', 'A gamified fitness tracking app with social challenges and personalized workout plans.');
 
 -- =====================================================================
 -- ADD TEAM MEMBERS
@@ -269,6 +280,13 @@ INSERT INTO team_members (team_id, user_id, role) VALUES
 (2, 11, 'member'),   -- Carlos Rodriguez
 (2, 12, 'member'),   -- Aisha Patel
 (2, 13, 'member');   -- Dmitri Ivanov
+
+-- Team Nova members (team_id=3)
+INSERT INTO team_members (team_id, user_id, role) VALUES
+(3, 14, 'leader'),   -- Olivia Thompson (leader)
+(3, 15, 'member'),   -- Marcus Williams
+(3, 16, 'member'),   -- Sofia Garcia
+(3, 17, 'member');   -- Liam Zhang
 
 -- =====================================================================
 -- CREATE SUBMISSIONS
@@ -290,6 +308,15 @@ INSERT INTO submissions (team_id, title, description, file_url, github_url, demo
 'https://github.com/demo/campus-events',
 'https://campus-events-demo.herokuapp.com',
 9);
+
+-- Submission from Team Nova (NOT EVALUATED YET - for judge demo)
+INSERT INTO submissions (team_id, title, description, file_url, github_url, demo_url, submitted_by) VALUES
+(3, 'Fitness Tracker Pro - Final Submission',
+'A mobile-first gamified fitness app with social challenges, personalized workout plans, and achievement badges. Built with React Native and Firebase. Features: real-time workout tracking, friend leaderboards, and AI-powered form correction.',
+'https://res.cloudinary.com/dxjum86lp/raw/upload/demo/team-nova-presentation.pdf',
+'https://github.com/demo/fitness-tracker-pro',
+'https://fitness-tracker-demo.vercel.app',
+14);
 
 -- =====================================================================
 -- CREATE JUDGE EVALUATIONS
@@ -324,11 +351,11 @@ CREATE TABLE judge_team_assignments (
 CREATE INDEX idx_judge_team_assignments_judge ON judge_team_assignments(judge_id);
 CREATE INDEX idx_judge_team_assignments_team ON judge_team_assignments(team_id);
 
--- Demo judge assignments (judge@demo.com assumes id 6 if consistent with existing seed ordering)
--- Adjust judge_id if different in your dataset.
+-- Demo judge assignments (judge@demo.com is id=3)
 INSERT INTO judge_team_assignments (judge_id, team_id) VALUES
-(6, 1),
-(6, 2);
+(3, 1),  -- Team Phoenix (has evaluation)
+(3, 2),  -- Team Dragons (has evaluation)
+(3, 3);  -- Team Nova (ready to evaluate - no evaluation yet)
 
 -- =====================================================================
 -- CREATE MENTOR FEEDBACK
