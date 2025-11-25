@@ -99,6 +99,7 @@ export default function JudgeDashboard() {
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
             <Link to="/judge/evaluation"><Button variant="primary">Go to Evaluation Page</Button></Link>
             <Link to="/judge/feedback"><Button variant="secondary">View Feedback History</Button></Link>
+            <Link to="/judge/schedule"><Button variant="outline">Presentation Schedule</Button></Link>
           </div>
 
           {loading && <LoadingSpinner />}

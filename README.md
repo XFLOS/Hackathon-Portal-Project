@@ -926,5 +926,7 @@ Use these after deployment or local development:
 8. Expanding a history item reveals metric breakdown & comments.
 9. Inline edit from history updates local item without full refetch.
 10. `/judge/assignments/me` returns identical payload shape to `/judge/assignments/:judgeId` for the logged-in judge.
+11. **Phase 4:** Judge schedule page (`/judge/schedule`) toggles between "All Events" and "My Assigned Presentations". The latter derives per-team presentation slots from the aggregate "Presentations & Judging" event using assigned teams and parses slot duration from event description (defaults to 10 minutes). Current live slot is highlighted with gradient background and "Live Slot" badge.
+12. **Phase 4:** Slot derivation correctly splits total window evenly among assigned teams if description doesn't specify duration or if specified duration exceeds window capacity.
 
 **Happy Hacking!** 🎉

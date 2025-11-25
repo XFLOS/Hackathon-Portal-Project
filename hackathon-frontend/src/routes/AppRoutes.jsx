@@ -30,6 +30,7 @@ import MentorResourcesPage from "../pages/MentorResourcesPage";
 import StudentResourcesPage from "../pages/StudentResourcesPage";
 import JudgeEvaluationPage from "../pages/JudgeEvaluationPage";
 import JudgeFeedbackHistoryPage from "../pages/JudgeFeedbackHistoryPage";
+import JudgeSchedulePage from "../pages/JudgeSchedulePage";
 import CoordinatorManagePage from "../pages/CoordinatorManagePage";
 import CoordinatorReportsPage from "../pages/CoordinatorReportsPage";
 import VerifyEmail from "../pages/VerifyEmail";
@@ -219,6 +220,14 @@ function AppRoutesInner() {
         element={
           <RoleRoute allow={["judge", "admin"]}>
             <JudgeFeedbackHistoryPage />
+          </RoleRoute>
+        }
+      />
+      <Route
+        path="/judge/schedule"
+        element={
+          <RoleRoute allow={["judge", "admin"]}>
+            <JudgeSchedulePage />
           </RoleRoute>
         }
       />
