@@ -1,6 +1,7 @@
 // Generate/download certificates for a user
 export const getCertificatesForUser = async (req, res) => {
   try {
+    console.log('CERTIFICATE DEBUG req.user:', req.user);
     const userId = req.user.id;
     // Find all teams this user is a member of
     const teamsResult = await db.query(
