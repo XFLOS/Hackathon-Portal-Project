@@ -34,9 +34,46 @@ export default function CertificatePage() {
               <div style={{ fontSize: 15, marginBottom: 8 }}>Judges: {c.judges && c.judges.length > 0 ? c.judges.join(', ') : '—'}</div>
               <div>
                 {c.url ? (
-                  <a href={c.url} className="certificate-download-btn" target="_blank" rel="noreferrer">Download Certificate</a>
+                  <a
+                    href={c.url}
+                    className="certificate-download-btn"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      display: 'inline-block',
+                      background: 'linear-gradient(90deg,#1a73e8,#003d8a)',
+                      color: '#fff',
+                      fontWeight: 700,
+                      fontSize: 16,
+                      border: 'none',
+                      borderRadius: 8,
+                      padding: '10px 28px',
+                      marginTop: 8,
+                      textDecoration: 'none',
+                      boxShadow: '0 2px 8px #003d8a33',
+                      transition: 'background 0.2s',
+                    }}
+                  >
+                    Download Certificate
+                  </a>
                 ) : (
-                  <button className="certificate-download-btn" disabled style={{ opacity: 0.6 }}>Download (Coming Soon)</button>
+                  <button
+                    className="certificate-download-btn"
+                    disabled
+                    style={{
+                      opacity: 0.6,
+                      background: '#888',
+                      color: '#fff',
+                      fontWeight: 700,
+                      fontSize: 16,
+                      border: 'none',
+                      borderRadius: 8,
+                      padding: '10px 28px',
+                      marginTop: 8,
+                    }}
+                  >
+                    Download (Coming Soon)
+                  </button>
                 )}
               </div>
             </div>

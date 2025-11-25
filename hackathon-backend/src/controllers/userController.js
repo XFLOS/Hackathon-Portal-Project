@@ -52,19 +52,19 @@ export const getCertificatesForUser = async (req, res) => {
       // Compose certificate data
       certs.push({
         id: `${team.team_id}-${submission.submission_id}`,
-        student_name: req.user.full_name,
-        team_name: team.team_name,
-        project_title: submission.title,
-        submission_date: submission.submitted_at,
-        avg_innovation: avg.innovation,
-        avg_technical: avg.technical,
-        avg_presentation: avg.presentation,
-        avg_total: avg.total,
-        judges: evalRes.rows.map(e => e.judge_name),
-        // Optionally, you could generate a PDF and provide a URL here
-        url: null // Placeholder for download link if implemented
-      });
-    }
+          certs.push({
+            id: `${team.team_id}-${submission.submission_id}`,
+            student_name: req.user.full_name,
+            team_name: team.team_name,
+            project_title: submission.title,
+            submission_date: submission.submitted_at,
+            avg_innovation: avg.innovation,
+            avg_technical: avg.technical,
+            avg_presentation: avg.presentation,
+            avg_total: avg.total,
+            judges: evalRes.rows.map(e => e.judge_name),
+            url: `/api/users/me/certificates/${team.team_id}-${submission.submission_id}/download`
+          });
     res.json(certs);
   } catch (error) {
     console.error('Get certificates error:', error);
@@ -73,6 +73,71 @@ export const getCertificatesForUser = async (req, res) => {
 };
 import db from '../config/database.js';
 
+    // Serve PDF certificate for a specific team-submission
+    export const downloadCertificatePDF = async (req, res) => {
+      try {
+        const userId = req.user.id;
+        const { certId } = req.params;
+        // certId format: teamId-submissionId
+        const [teamId, submissionId] = certId.split('-');
+        // Find team and submission info
+        const teamRes = await db.query(
+          `SELECT t.name as team_name, t.project_name, tm.user_id, u.full_name
+           FROM teams t
+           JOIN team_members tm ON tm.team_id = t.id
+           JOIN users u ON u.id = tm.user_id
+           WHERE t.id = $1 AND tm.user_id = $2`,
+          [teamId, userId]
+        );
+        if (teamRes.rows.length === 0) return res.status(404).send('Not found');
+        const team = teamRes.rows[0];
+        const subRes = await db.query(
+          `SELECT id, title FROM submissions WHERE id = $1 AND team_id = $2`,
+          [submissionId, teamId]
+        );
+        if (subRes.rows.length === 0) return res.status(404).send('Not found');
+        const submission = subRes.rows[0];
+        // Get all evaluations for this submission
+        const evalRes = await db.query(
+          `SELECT e.*, u.full_name as judge_name
+           FROM evaluations e
+           JOIN users u ON e.judge_id = u.id
+           WHERE e.submission_id = $1`,
+          [submissionId]
+        );
+        if (evalRes.rows.length === 0) return res.status(404).send('No evaluations');
+        // Calculate average scores
+        const avg = { innovation: 0, technical: 0, presentation: 0, total: 0 };
+        for (const e of evalRes.rows) {
+          avg.innovation += e.innovation_score;
+          avg.technical += e.technical_score;
+          avg.presentation += e.presentation_score;
+        }
+        avg.innovation = +(avg.innovation / evalRes.rows.length).toFixed(2);
+        avg.technical = +(avg.technical / evalRes.rows.length).toFixed(2);
+        avg.presentation = +(avg.presentation / evalRes.rows.length).toFixed(2);
+        avg.total = +(avg.innovation + avg.technical + avg.presentation).toFixed(2);
+        // Judges
+        const judges = evalRes.rows.map(e => e.judge_name);
+        // Generate PDF
+        const pdfStream = generateCertificatePDF({
+          student_name: team.full_name,
+          team_name: team.team_name,
+          project_title: submission.title,
+          avg_innovation: avg.innovation,
+          avg_technical: avg.technical,
+          avg_presentation: avg.presentation,
+          avg_total: avg.total,
+          judges
+        });
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="certificate-${team.team_name}.pdf"`);
+        pdfStream.pipe(res);
+      } catch (error) {
+        console.error('Download certificate PDF error:', error);
+        res.status(500).send('Error generating certificate PDF');
+      }
+    };
 // Get user profile
 export const getProfile = async (req, res) => {
   try {
