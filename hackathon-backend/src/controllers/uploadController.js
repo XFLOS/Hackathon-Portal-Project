@@ -18,20 +18,29 @@ export const uploadMultiple = upload.array('files', 5);
 // Handle file upload
 export const handleFileUpload = async (req, res) => {
   try {
-    console.log('Upload request received');
-    console.log('req.file:', req.file);
-    console.log('req.body:', req.body);
+    console.log('=== UPLOAD REQUEST START ===');
+    console.log('Method:', req.method);
+    console.log('Headers:', JSON.stringify(req.headers, null, 2));
+    console.log('Body:', req.body);
+    console.log('File:', req.file);
+    console.log('User:', req.user ? req.user.id : 'No user');
     
     if (!req.file) {
-      console.error('No file in request');
-      return res.status(400).json({ error: 'No file uploaded' });
+      console.error('❌ No file in request');
+      console.log('Request keys:', Object.keys(req));
+      return res.status(400).json({ 
+        error: 'No file uploaded',
+        details: 'File was not received by server. Check multipart/form-data encoding.'
+      });
     }
 
-    console.log('File details:', {
+    console.log('✅ File received:', {
       fieldname: req.file.fieldname,
       originalname: req.file.originalname,
       size: req.file.size,
-      mimetype: req.file.mimetype
+      mimetype: req.file.mimetype,
+      path: req.file.path,
+      filename: req.file.filename
     });
 
     res.json({
@@ -43,12 +52,14 @@ export const handleFileUpload = async (req, res) => {
         format: req.file.format
       }
     });
+    console.log('=== UPLOAD REQUEST END ===');
   } catch (error) {
-    console.error('Upload error:', error);
+    console.error('❌ Upload error:', error);
     console.error('Error stack:', error.stack);
     res.status(500).json({ 
       error: 'Failed to upload file',
-      message: error.message 
+      message: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 };

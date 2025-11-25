@@ -19,19 +19,33 @@ dotenv.config();
 // Initialize Express app
 const app = express();
 
-// Simplified CORS: allow any origin (no credentials cookies used, token in Authorization header)
-app.use(cors({ origin: true }));
-app.options('*', cors({ origin: true }));
+// Enhanced CORS: allow any origin with credentials support
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    callback(null, true);
+  },
+  credentials: true,
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
+};
 
-// Force CORS headers (belt-and-suspenders) for all responses including error paths
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+
+// Additional CORS headers for preflight and direct responses
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
+  const origin = req.headers.origin || '*';
+  res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
-  // No cookies needed; omit credentials unless required
+  
   if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
+    return res.status(200).end();
   }
   next();
 });
