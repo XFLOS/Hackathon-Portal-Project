@@ -37,6 +37,7 @@ export default function StudentSidebar() {
           </li>
         ))}
       </ul>
+      {process.env.NODE_ENV !== 'production' && <div style={{padding:'6px'}}><small style={{opacity:0.8}}>DEV MODE</small></div>}
     </nav>
   );
 }
