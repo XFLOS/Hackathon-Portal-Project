@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import api from '../services/api';
 
-// JudgeSchedulePage (Phase 4)
+// JudgeSchedulePage
 // Provides per-team presentation slot breakdown derived from the aggregate 'Presentations & Judging' event.
 // Features:
 //  - Toggle filter: show all events vs only my assigned presentation slots
@@ -105,65 +105,61 @@ export default function JudgeSchedulePage() {
   const displayItems = showMine ? mineView : allView;
 
   return (
-    <div style={containerStyle}>
-      <h2 style={{ marginBottom: 4 }}>Judge — Presentation Schedule</h2>
-      <p style={subtitleStyle}>View the full hackathon timeline or just your assigned presentation slots. Live slot is highlighted.</p>
-      <div style={toolbarStyle}>
-        <button onClick={()=>setShowMine(false)} style={toggleBtn(!showMine)}>All Events</button>
-        <button onClick={()=>setShowMine(true)} style={toggleBtn(showMine)} disabled={assignments.length===0 || !presentationEvent}>
-          My Assigned Presentations
-        </button>
+    <div className="judge-page">
+      <header className="judge-page-header">
+        <h1 className="judge-title">Presentation Schedule</h1>
+        <p className="judge-subtitle">View the full timeline or only your assigned team presentation slots. Live slots highlight & pulse.</p>
+      </header>
+      <div className="judge-toolbar">
+        <button onClick={()=>setShowMine(false)} className={`judge-btn ${!showMine ? 'judge-btn-primary':'judge-btn-outline'}`}>All Events</button>
+        <button onClick={()=>setShowMine(true)} className={`judge-btn ${showMine ? 'judge-btn-primary':'judge-btn-outline'}`} disabled={assignments.length===0 || !presentationEvent}>My Presentations</button>
       </div>
-      {loading && <p>Loading schedule…</p>}
-      {error && !loading && <p style={{ color: 'var(--danger, #dc2626)' }}>{error}</p>}
-
+      {loading && <p style={{ color:'var(--judge-text-muted)' }}>Loading schedule…</p>}
+      {error && !loading && <p style={{ color:'var(--judge-danger)' }}>{error}</p>}
       {!loading && displayItems.length === 0 && (
-        <div style={emptyStyle}>
+        <div className="judge-empty">
           {showMine ? (
             <>
               <strong>No derived presentation slots.</strong>
-              <span style={{ fontSize: 12, color: '#64748b' }}>Ensure a presentation event exists and you have team assignments.</span>
+              <span style={{ fontSize:'var(--judge-font-xs)', color:'var(--judge-text-muted)' }}>Ensure a presentation event exists and you have team assignments.</span>
             </>
           ) : (
             <>
               <strong>No schedule events.</strong>
-              <span style={{ fontSize: 12, color: '#64748b' }}>Coordinator may not have published them yet.</span>
+              <span style={{ fontSize:'var(--judge-font-xs)', color:'var(--judge-text-muted)' }}>Coordinator may not have published them yet.</span>
             </>
           )}
         </div>
       )}
-
       {!loading && displayItems.length > 0 && (
-        <ul style={listStyle}>
+        <ul className="judge-list">
           {displayItems.map(item => {
             const live = isWithin(item.start_time, item.end_time);
             if (item.kind === 'event') {
-              const ongoing = live;
               return (
-                <li key={`ev-${item.id}`} style={rowStyle(live)}>
-                  <div style={headerRow}>
+                <li key={`ev-${item.id}`} className={`judge-list-item ${live?'judge-live-row':''}`}>
+                  <div className="judge-row-top">
                     <strong>{item.event_name}</strong>
-                    {ongoing && <span style={liveBadge}>Live Now</span>}
+                    {live && <span className="judge-badge judge-badge-live">Live Now</span>}
                   </div>
-                  <div style={metaRow}>
-                    <span style={timeStyle}>{new Date(item.start_time).toLocaleString([], { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' })}</span>
-                    <span style={durationStyle}>{formatRange(item.start_time, item.end_time)}</span>
-                    {item.location && <span style={locStyle}>{item.location}</span>}
+                  <div className="judge-row-actions" style={{ flexWrap:'wrap' }}>
+                    <span className="judge-badge judge-badge-soft">{new Date(item.start_time).toLocaleString([], { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' })}</span>
+                    <span className="judge-badge judge-badge-info">{formatRange(item.start_time, item.end_time)}</span>
+                    {item.location && <span className="judge-location">{item.location}</span>}
                   </div>
-                  {item.description && <p style={descStyle}>{item.description}</p>}
+                  {item.description && <p style={{ fontSize:'var(--judge-font-sm)', color:'var(--judge-text-bright)', margin:0 }}>{item.description}</p>}
                 </li>
               );
             }
-            // slot
             return (
-              <li key={item.id} style={rowStyle(live)}>
-                <div style={headerRow}>
+              <li key={item.id} className={`judge-list-item ${live?'judge-live-row':''}`}>
+                <div className="judge-row-top">
                   <strong>{item.team_name}</strong>
-                  {live && <span style={liveBadge}>Live Slot</span>}
+                  {live && <span className="judge-badge judge-badge-live">Live Slot</span>}
                 </div>
-                <div style={metaRow}>
-                  <span style={durationStyle}>{formatRange(item.start_time, item.end_time)}</span>
-                  {item.submission_id ? <span style={submissionStyle}>Submission #{item.submission_id}</span> : <span style={pendingStyle}>No Submission</span>}
+                <div className="judge-row-actions" style={{ flexWrap:'wrap' }}>
+                  <span className="judge-badge judge-badge-info">{formatRange(item.start_time, item.end_time)}</span>
+                  {item.submission_id ? <span className="judge-badge judge-badge-success">Submission #{item.submission_id}</span> : <span className="judge-badge judge-badge-soft">No Submission</span>}
                 </div>
               </li>
             );
@@ -171,7 +167,7 @@ export default function JudgeSchedulePage() {
         </ul>
       )}
       {showMine && presentationEvent && derivedSlots.length > 0 && (
-        <div style={{ marginTop: 18, fontSize: 12, color:'#64748b' }}>
+        <div className="judge-info-line">
           Slot length: {Math.round((new Date(derivedSlots[0].end_time) - new Date(derivedSlots[0].start_time))/60000)}m · Source event: “{presentationEvent.event_name}”
         </div>
       )}
@@ -179,29 +175,5 @@ export default function JudgeSchedulePage() {
   );
 }
 
-const containerStyle = { maxWidth: 900, margin: '0 auto', padding: '1rem 0' };
-const subtitleStyle = { color: '#64748b', marginTop: -2, marginBottom: 12, fontSize: 14 };
-const toolbarStyle = { display: 'flex', gap: 12, marginBottom: 16, flexWrap: 'wrap' };
-const listStyle = { listStyle: 'none', padding: 0, margin: 0, display:'flex', flexDirection:'column', gap:12 };
-const headerRow = { display:'flex', justifyContent:'space-between', alignItems:'center', gap:12 };
-const metaRow = { display:'flex', flexWrap:'wrap', gap:12, fontSize:12, marginTop:6, alignItems:'center' };
-const rowStyle = (live) => ({ background: live ? 'linear-gradient(90deg,#0f766e,#0d9488)' : '#0f172a', color:'#f8fafc', border:'1px solid #334155', padding:'12px 16px', borderRadius:10, boxShadow: live ? '0 0 0 2px #0d9488, 0 4px 16px rgba(13,148,136,0.4)' : '0 2px 8px rgba(0,0,0,0.4)', position:'relative', transition:'background .3s, box-shadow .3s' });
-const timeStyle = { fontWeight:500 };
-const durationStyle = { fontWeight:500 };
-const locStyle = { background:'#1e293b', padding:'2px 6px', borderRadius:4 };
-const descStyle = { fontSize:13, lineHeight:1.4, marginTop:8, color:'#cbd5e1' };
-const liveBadge = { background:'#dc2626', color:'#fff', fontSize:11, padding:'3px 8px', borderRadius:16, fontWeight:600, letterSpacing:.5, boxShadow:'0 0 0 2px #dc2626,0 2px 8px rgba(220,38,38,.4)' };
-const submissionStyle = { background:'#0f766e', padding:'2px 8px', borderRadius:12, fontSize:11 };
-const pendingStyle = { background:'#334155', padding:'2px 8px', borderRadius:12, fontSize:11 };
-const toggleBtn = (active) => ({
-  background: active ? 'linear-gradient(135deg,#00e5ff,#0891b2)' : '#1e293b',
-  color: active ? '#021b2b' : '#f1f5f9',
-  fontWeight:600,
-  border:'1px solid #334155',
-  padding:'8px 16px',
-  borderRadius:8,
-  cursor:'pointer',
-  boxShadow: active ? '0 4px 12px rgba(0,229,255,.3)' : 'none'
-});
-const emptyStyle = { background:'#0f172a', color:'#f1f5f9', border:'1px solid #334155', padding:'28px 24px', borderRadius:12, display:'flex', flexDirection:'column', gap:6, alignItems:'flex-start' };
+// All inline styles replaced by judge-theme utility classes above.
 

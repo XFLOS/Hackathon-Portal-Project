@@ -958,3 +958,80 @@ Use these after deployment or local development:
 16. **Phase 5:** All notification API endpoints enforce user-scoping via `req.user.id` from protect middleware, ensuring judges only see their own notifications.
 
 **Happy Hacking!** 🎉
+
+## 🖌 Judge UI Theme (Phase 6)
+
+Phase 6 introduced a consolidated styling system for all Judge-facing pages to eliminate drift from scattered inline styles and ad‑hoc gradients.
+
+### Theme Source
+`hackathon-frontend/src/styles/judge-theme.css`
+
+### Core Variables
+Color, radius, shadow, and typography tokens prefixed with `--judge-*` (e.g. `--judge-primary`, `--judge-radius-lg`, `--judge-font-sm`). These ensure consistent dark surface layers with accent highlights and accessible contrast.
+
+### Key Utility / Component Classes
+- `.judge-page` / `.judge-page-header` – Standard page container & header block with entrance fade.
+- `.judge-title`, `.judge-subtitle` – Page typography (title uses BebasNeue; subtitle muted tone).
+- `.judge-card` – Elevated surface for content blocks (evaluation items, dashboard panels). Hover elevation + smooth transform.
+- `.judge-card-header`, `.judge-card-title`, `.judge-card-meta` – Header layout, primary label, secondary meta text.
+- `.judge-list`, `.judge-list-item` – Vertical list styling for schedule/event rows.
+- `.judge-metrics-grid`, `.judge-metric-box` – Responsive grid for rubric score breakdown.
+- `.judge-btn` base + variants: `-primary`, `-outline`, `-secondary`, `-ghost` – Unified interactive affordances with focus-visible states.
+- `.judge-badge` base + variants: `-info`, `-success`, `-warning`, `-danger`, `-soft`, `-live` – Visual status chips; `-live` pulses for active presentation slot.
+- `.judge-live-row` – Animated glow ring and gradient background for current slot (schedule page).
+- `.judge-toolbar`, `.judge-location`, `.judge-empty`, `.judge-info-line`, `.judge-cards-grid` – Ancillary layout & status helpers.
+
+### Accessibility & Motion
+- Focus outlines applied to `.judge-btn`, `.judge-card-header`, focusable `.judge-card` for keyboard navigation.
+- `@media (prefers-reduced-motion: reduce)` disables animations (pulse, glow, fade) to respect user preferences.
+- High-contrast badge backgrounds and minimum font sizes maintain readability down to mobile breakpoints.
+
+### Responsive Behavior
+Mobile adjustments (≤720px): Title scales, row layouts stack, buttons span full width. Grids use `auto-fit` to wrap metric boxes cleanly.
+
+### Refactored Judge Pages
+| Page | Previous State | Current State |
+|------|----------------|---------------|
+| Dashboard | Mixed inline + component defaults | Uses `.judge-card`, unified badges & buttons |
+| Evaluation | Heavy inline container/input styles | Metrics & inputs use shared grid & form classes |
+| Feedback History | Inline box, per-element styles | Card + metrics + badge + button variants |
+| Schedule | Custom gradients & inline objects | List items + live row pulse + toolbar buttons |
+
+### Migration Notes
+1. Remove legacy inline style objects (`slotStyle`, `buttonStyle`, etc.).
+2. Replace badge spans with `.judge-badge judge-badge-*` variants.
+3. Use `.judge-input` / `.judge-textarea` for form fields; avoid per-field inline padding/border.
+4. Wrap content groups in `.judge-card` or `.judge-list-item` rather than bespoke borders.
+5. Apply `tabIndex="0"` to interactive cards if keyboard expansion is desired; focus outline now supported.
+
+### Adding New Elements
+Prefer extending existing semantic wrappers: e.g. new score category → add another `.judge-metric-box`; contextual status → use appropriate `.judge-badge-*` variant or create a new one following existing color token naming.
+
+### Example Snippet
+```jsx
+<div className="judge-card">
+  <div className="judge-card-header">
+    <div>
+      <div className="judge-card-title">Team Nova</div>
+      <div className="judge-card-meta">AI Study Assistant</div>
+    </div>
+    <span className="judge-badge judge-badge-info">Total: 26</span>
+  </div>
+  <div className="judge-metrics-grid">
+    <div className="judge-metric-box"><span>Innovation</span><span>9</span></div>
+    <div className="judge-metric-box"><span>Technical</span><span>9</span></div>
+    <div className="judge-metric-box"><span>Presentation</span><span>8</span></div>
+  </div>
+  <button className="judge-btn judge-btn-outline">Edit</button>
+  <button className="judge-btn judge-btn-ghost">Expand</button>
+</div>
+```
+
+### Checklist for New Judge UI Components
+- Use theme tokens (`var(--judge-*)`) only—avoid hard-coded hex values.
+- Provide keyboard focus (`tabIndex`) if element triggers expand/interaction.
+- Honor reduced motion: avoid adding non-guarded infinite animations.
+- Ensure font sizes ≥ `var(--judge-font-xs)` and maintain contrast ratio > 4.5:1 for text.
+
+Phase 6 completes visual consistency for judge tooling; subsequent enhancements should build on these utilities rather than reintroducing inline style blocks.
+
