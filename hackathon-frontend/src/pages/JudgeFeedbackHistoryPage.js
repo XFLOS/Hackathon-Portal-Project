@@ -87,8 +87,15 @@ export default function JudgeFeedbackHistoryPage() {
     }
   };
 
-  if (loading) return <div className="judge-page"><p style={{ color:'var(--judge-text-muted)' }}>Loading…</p></div>;
-  if (error) return <div className="judge-page"><p style={{ color:'var(--judge-danger)' }}>{error}</p></div>;
+  if (loading) return <div className="judge-page"><div className="judge-loading-container">Loading feedback history…</div></div>;
+  if (error) return (
+    <div className="judge-page">
+      <div className="judge-empty">
+        <strong style={{ color:'var(--judge-danger)' }}>Failed to Load History</strong>
+        <span style={{ fontSize:'var(--judge-font-xs)', color:'var(--judge-text-muted)' }}>{error}</span>
+      </div>
+    </div>
+  );
 
   return (
     <div className="judge-page">
@@ -96,7 +103,12 @@ export default function JudgeFeedbackHistoryPage() {
         <h1 className="judge-title">Feedback History</h1>
         <p className="judge-subtitle">Past evaluations you have submitted. Total score sums all rubric metrics.</p>
       </header>
-      {history.length === 0 && <p style={{ color:'var(--judge-text-muted)' }}>No past evaluations.</p>}
+      {history.length === 0 && (
+        <div className="judge-empty">
+          <strong>No Past Evaluations</strong>
+          <span style={{ fontSize:'var(--judge-font-xs)', color:'var(--judge-text-muted)' }}>You haven't submitted any evaluations yet.</span>
+        </div>
+      )}
       {history.map(ev => {
         const total = typeof ev.total_score === 'number'
           ? ev.total_score

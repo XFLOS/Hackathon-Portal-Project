@@ -20,7 +20,7 @@ A full-stack hackathon management system with role-based dashboards for Students
 |------|-------|-------------------|
 | 👤 Student | `student@demo.com` | Team Phoenix (5 members), submitted AI Study Assistant project |
 | 🧑‍🏫 Mentor | `mentor@demo.com` | Assigned to Teams Phoenix & Dragons, feedback history |
-| ⚖️ Judge | `judge@demo.com` | 3 assigned teams: Phoenix (evaluated 25/30), Dragons (evaluated 25/30), Nova (ready to evaluate) |
+| ⚖️ Judge | `judge@demo.com` | 3 assigned teams: Phoenix (evaluated 24/30), Dragons (evaluated 25/30), Nova (ready to evaluate) |
 | 🛠 Coordinator | `coordinator@demo.com` | Platform stats, leaderboard, admin tools |
 
 **Quick Demo:** Login → See role-specific dashboard → Explore features  
@@ -1034,4 +1034,65 @@ Prefer extending existing semantic wrappers: e.g. new score category → add ano
 - Ensure font sizes ≥ `var(--judge-font-xs)` and maintain contrast ratio > 4.5:1 for text.
 
 Phase 6 completes visual consistency for judge tooling; subsequent enhancements should build on these utilities rather than reintroducing inline style blocks.
+
+---
+
+## 🎨 UI Parity & Accessibility (Phase X)
+
+Following Phase 6's theme consolidation, Phase X establishes comprehensive parity across all judge pages with other role dashboards to ensure uniform layout, interaction patterns, and accessibility compliance.
+
+### Objectives
+1. **Eliminate Inline Styles**: Replace all ad-hoc `style={{...}}` with shared utility classes (`.judge-actions-bar`, `.judge-filters`, `.judge-team-name`, etc.)
+2. **Standardized Components**: Unified loading/empty/error states using `.judge-loading-container` and `.judge-empty` containers
+3. **Accessibility Enhancements**: 
+   - Added `aria-live="polite"` region to **Schedule Page** announcing live presentation slots for screen readers
+   - `.visually-hidden` utility class for accessible announcements
+   - Disabled state styling (`:disabled`) with reduced opacity and cursor updates
+4. **Consistent Button Variants**: `judge-btn-xs` for compact row actions, maintaining size/spacing harmony with Student/Mentor/Coordinator dashboards
+5. **Responsive Flex Utilities**: `.judge-flex-wrap` class applied to action bars and filters for mobile-friendly wrapping
+6. **Skeleton Loaders**: Optional `.judge-skeleton` animation for pending data states (background gradient pulse)
+
+### Key Changes
+
+**Theme Extensions (`judge-theme.css`):**
+- `.judge-actions-bar`: Replaces inline `style={{ flexWrap:'wrap', marginBottom:'1.25rem' }}`
+- `.judge-filters`: Container for search/filter/sort controls with consistent gap/wrap
+- `.judge-team-name`, `.judge-team-meta`: Typography utilities replacing inline font-size/color declarations
+- `.judge-btn-xs`: Compact button variant (reduced padding for row actions)
+- `:disabled` state: `.judge-btn:disabled` with opacity .55, grayscale filter, no-hover transforms
+- `.judge-loading-container`: Centered loading text with padding/muted color
+- `.judge-skeleton`, `.judge-skeleton-text`, `.judge-skeleton-title`: Animated placeholder loaders
+- `.visually-hidden`: Screen-reader-only content (absolute positioned off-screen)
+
+**Page Refactors:**
+- **JudgeDashboard**: Actions bar, filters, team name/meta now use utility classes; loading state standardized
+- **JudgeSchedulePage**: Added aria-live announcement for current live slots; removed inline flexWrap styles
+- **JudgeEvaluationPage**: Loading/error/empty states wrapped in `.judge-empty` containers; improved semantic structure
+- **JudgeFeedbackHistoryPage**: Consistent loading/error patterns; empty state messaging aligned with other pages
+
+### Accessibility Features
+- **Keyboard Navigation**: All interactive cards maintain `:focus-visible` outlines (2px solid accent with offset)
+- **Screen Reader Announcements**: Schedule page announces "Team X is now presenting" when slot goes live (polite aria-live)
+- **Reduced Motion Support**: All animations disabled under `prefers-reduced-motion: reduce`
+- **Semantic HTML**: Proper heading hierarchy (`<h1>` title, `<h2>` card headers), `<ul>`/`<li>` for lists with `aria-label`
+- **Form Labels**: All inputs have explicit `<label>` or `aria-label` attributes for clarity
+
+### Parity Achievements
+✅ **Layout Consistency**: All judge pages follow Student/Mentor grid patterns (max-width 1000px, responsive stacking)  
+✅ **Button Hierarchy**: Primary → Outline → Secondary order matches Coordinator quick actions  
+✅ **Empty States**: Styled containers with icon/message (vs. plain text `<p>`)—aligns with Student "No team yet" pattern  
+✅ **Loading Feedback**: Centralized spinner container—mirroring Mentor dashboard loading behavior  
+✅ **Badge Terminology**: Status badges (Success/Warning/Info/Soft) consistent with submission status tokens  
+✅ **Responsive Breakpoints**: All pages stack at ≤720px with full-width buttons—same threshold as other dashboards  
+
+### Usage Guidelines
+When adding new judge features:
+1. **Never** add inline styles—extend theme with new utility classes if needed
+2. Use `.judge-empty` for all empty/error states (not bare `<p>` tags)
+3. Wrap loading states in `.judge-loading-container` for consistency
+4. Apply `.judge-btn-xs` to compact row actions; `.judge-btn-primary`/`outline`/`secondary` for main CTAs
+5. Add `aria-label` to all form controls and interactive regions
+6. Test with keyboard navigation and screen readers before commit
+
+Phase X ensures judge interface reaches FR-level compliance with unified styling, accessible interactions, and maintainable component patterns.
 

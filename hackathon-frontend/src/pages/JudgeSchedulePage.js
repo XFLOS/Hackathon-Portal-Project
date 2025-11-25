@@ -114,8 +114,18 @@ export default function JudgeSchedulePage() {
         <button onClick={()=>setShowMine(false)} className={`judge-btn ${!showMine ? 'judge-btn-primary':'judge-btn-outline'}`}>All Events</button>
         <button onClick={()=>setShowMine(true)} className={`judge-btn ${showMine ? 'judge-btn-primary':'judge-btn-outline'}`} disabled={assignments.length===0 || !presentationEvent}>My Presentations</button>
       </div>
-      {loading && <p style={{ color:'var(--judge-text-muted)' }}>Loading schedule…</p>}
-      {error && !loading && <p style={{ color:'var(--judge-danger)' }}>{error}</p>}
+      <div aria-live="polite" aria-atomic="true" className="visually-hidden">
+        {displayItems.filter(item => isWithin(item.start_time, item.end_time)).map(item => 
+          `${item.kind === 'slot' ? item.team_name : item.event_name} is now presenting`
+        ).join(', ')}
+      </div>
+      {loading && <div className="judge-loading-container">Loading schedule…</div>}
+      {error && !loading && (
+        <div className="judge-empty">
+          <strong style={{ color:'var(--judge-danger)' }}>Error Loading Schedule</strong>
+          <span style={{ fontSize:'var(--judge-font-xs)', color:'var(--judge-text-muted)' }}>{error}</span>
+        </div>
+      )}
       {!loading && displayItems.length === 0 && (
         <div className="judge-empty">
           {showMine ? (
@@ -142,7 +152,7 @@ export default function JudgeSchedulePage() {
                     <strong>{item.event_name}</strong>
                     {live && <span className="judge-badge judge-badge-live">Live Now</span>}
                   </div>
-                  <div className="judge-row-actions" style={{ flexWrap:'wrap' }}>
+                  <div className="judge-row-actions judge-flex-wrap">
                     <span className="judge-badge judge-badge-soft">{new Date(item.start_time).toLocaleString([], { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' })}</span>
                     <span className="judge-badge judge-badge-info">{formatRange(item.start_time, item.end_time)}</span>
                     {item.location && <span className="judge-location">{item.location}</span>}
@@ -157,7 +167,7 @@ export default function JudgeSchedulePage() {
                   <strong>{item.team_name}</strong>
                   {live && <span className="judge-badge judge-badge-live">Live Slot</span>}
                 </div>
-                <div className="judge-row-actions" style={{ flexWrap:'wrap' }}>
+                <div className="judge-row-actions judge-flex-wrap">
                   <span className="judge-badge judge-badge-info">{formatRange(item.start_time, item.end_time)}</span>
                   {item.submission_id ? <span className="judge-badge judge-badge-success">Submission #{item.submission_id}</span> : <span className="judge-badge judge-badge-soft">No Submission</span>}
                 </div>

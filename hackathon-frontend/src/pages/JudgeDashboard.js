@@ -114,7 +114,7 @@ export default function JudgeDashboard() {
           <h1 className="judge-title">Judge Dashboard</h1>
           <p className="judge-subtitle">Evaluate assigned team submissions, monitor scoring progress, and review feedback history.</p>
         </header>
-        <div className="judge-row-actions" style={{ flexWrap:'wrap', marginBottom:'1.25rem' }}>
+        <div className="judge-actions-bar">
           <Link to="/judge/evaluation" className="judge-btn judge-btn-primary">Go To Evaluation</Link>
           <Link to="/judge/feedback" className="judge-btn judge-btn-secondary">Feedback History</Link>
           <Link to="/judge/schedule" className="judge-btn judge-btn-outline">Presentation Schedule</Link>
@@ -125,7 +125,7 @@ export default function JudgeDashboard() {
               <div className="judge-card-title">Assigned Teams</div>
               <div className="judge-card-meta">{stats.evaluated} evaluated • {stats.pending} pending • {stats.withSubmission}/{stats.total} submitted</div>
             </div>
-            <div style={{ display:'flex', gap:'.5rem', flexWrap:'wrap', alignItems:'center' }}>
+            <div className="judge-filters">
               <input
                 className="judge-input"
                 type="text"
@@ -147,7 +147,7 @@ export default function JudgeDashboard() {
               </select>
             </div>
           </div>
-          {loading && <p style={{ color:'var(--judge-text-muted)', fontSize:'var(--judge-font-sm)' }}>Loading assignments…</p>}
+          {loading && <div className="judge-loading-container">Loading assignments…</div>}
           {!loading && error && (
             <div className="judge-empty" style={{ marginTop:'.5rem' }}>
               <strong style={{ color:'var(--judge-danger)' }}>Failed to load assignments</strong>
@@ -169,8 +169,8 @@ export default function JudgeDashboard() {
                   <li key={row.team_id} className={`judge-list-item ${evaluated ? 'judge-list-item-evaluated' : ''}`}>
                     <div className="judge-row-top">
                       <div style={{ flex:1 }}>
-                        <strong style={{ fontSize:'var(--judge-font-md)' }}>{row.team_name || `Team #${row.team_id}`}</strong>
-                        <div style={{ fontSize:'var(--judge-font-xs)', color:'var(--judge-text-muted)', marginTop:4 }}>
+                        <strong className="judge-team-name">{row.team_name || `Team #${row.team_id}`}</strong>
+                        <div className="judge-team-meta">
                           {submitted ? `Submitted ${row.submitted_at ? new Date(row.submitted_at).toLocaleDateString() : ''}` : 'Not Submitted'}
                         </div>
                       </div>
@@ -178,8 +178,7 @@ export default function JudgeDashboard() {
                         {renderScoreBadge(row)}
                         <Link
                           to="/judge/evaluation"
-                          className={`judge-btn ${evaluated ? 'judge-btn-outline' : submitted ? 'judge-btn-primary' : 'judge-btn-secondary'}`}
-                          style={{ fontSize:'var(--judge-font-xs)' }}
+                          className={`judge-btn judge-btn-xs ${evaluated ? 'judge-btn-outline' : submitted ? 'judge-btn-primary' : 'judge-btn-secondary'}`}
                         >{evaluated ? 'Update' : submitted ? 'Evaluate' : 'Awaiting'}</Link>
                       </div>
                     </div>

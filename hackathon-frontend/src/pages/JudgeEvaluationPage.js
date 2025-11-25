@@ -90,14 +90,28 @@ export default function JudgeEvaluationPage() {
     }
   };
 
-  if (loading) return <p>Loading…</p>;
-  if (error) return <p style={{ color: 'red' }}>{error}</p>;
+  if (loading) return <div className="judge-page"><div className="judge-loading-container">Loading submissions…</div></div>;
+  if (error) return (
+    <div className="judge-page">
+      <div className="judge-empty">
+        <strong style={{ color:'var(--judge-danger)' }}>Failed to Load Submissions</strong>
+        <span style={{ fontSize:'var(--judge-font-xs)', color:'var(--judge-text-muted)' }}>{error}</span>
+      </div>
+    </div>
+  );
 
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto' }}>
-      <h2>Judge — Evaluation</h2>
-      <p style={{ color: '#666', marginTop: -4 }}>Provide scores (0–10) for each rubric category. You can update an evaluation at any time.</p>
-      {submissions.length === 0 && <p>No submissions available.</p>}
+    <div className="judge-page">
+      <header className="judge-page-header">
+        <h1 className="judge-title">Evaluation</h1>
+        <p className="judge-subtitle">Provide scores (0–10) for each rubric category. You can update at any time.</p>
+      </header>
+      {submissions.length === 0 && (
+        <div className="judge-empty">
+          <strong>No Submissions Available</strong>
+          <span style={{ fontSize:'var(--judge-font-xs)', color:'var(--judge-text-muted)' }}>You have no assigned submissions to evaluate at this time.</span>
+        </div>
+      )}
       {submissions.map(sub => {
         const evaluated = !!sub.evaluation_id;
         const fs = formState[sub.id] || {};
@@ -105,43 +119,46 @@ export default function JudgeEvaluationPage() {
           .filter(v => typeof v === 'number')
           .reduce((a, b) => a + b, 0);
         return (
-          <div key={sub.id} style={{ border: '1px solid #ddd', padding: 16, borderRadius: 8, marginBottom: 14, background: '#0f172a', color: '#f8fafc' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 8 }}>
-              <strong style={{ fontSize: 16 }}>{sub.team_name || `Team #${sub.team_id}`}</strong>
-              {evaluated && <span style={{ background: '#059669', padding: '2px 8px', borderRadius: 4, fontSize: 12 }}>Evaluated • Total {total}</span>}
-            </div>
-            <div style={{ fontSize: 12, marginTop: 4, color: '#94a3b8' }}>Submission ID: {sub.id}</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 12, marginTop: 12 }}>
+          <div key={sub.id} className="judge-card" style={{ marginBottom:'1rem' }}>
+            <div className="judge-card-header">
               <div>
-                <label style={{ display: 'block', fontSize: 12, marginBottom: 4 }}>Innovation (0–10)</label>
+                <div className="judge-card-title">{sub.team_name || `Team #${sub.team_id}`}</div>
+                <div className="judge-card-meta">Submission #{sub.id}</div>
+              </div>
+              {evaluated && <span className="judge-badge judge-badge-success">Evaluated • {total}</span>}
+            </div>
+            <div className="judge-metrics-grid" style={{ marginTop: '.25rem' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: 'var(--judge-font-xs)', marginBottom: 4 }}>Innovation (0–10)</label>
                 <input type="number" min={0} max={10} value={fs.innovation_score}
                   onChange={e => updateField(sub.id, 'innovation_score', e.target.value)}
-                  style={inputStyle} />
+                  className="judge-input" />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: 12, marginBottom: 4 }}>Technical (0–10)</label>
+                <label style={{ display: 'block', fontSize: 'var(--judge-font-xs)', marginBottom: 4 }}>Technical (0–10)</label>
                 <input type="number" min={0} max={10} value={fs.technical_score}
                   onChange={e => updateField(sub.id, 'technical_score', e.target.value)}
-                  style={inputStyle} />
+                  className="judge-input" />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: 12, marginBottom: 4 }}>Presentation (0–10)</label>
+                <label style={{ display: 'block', fontSize: 'var(--judge-font-xs)', marginBottom: 4 }}>Presentation (0–10)</label>
                 <input type="number" min={0} max={10} value={fs.presentation_score}
                   onChange={e => updateField(sub.id, 'presentation_score', e.target.value)}
-                  style={inputStyle} />
+                  className="judge-input" />
               </div>
             </div>
-            <div style={{ marginTop: 12 }}>
-              <label style={{ display: 'block', fontSize: 12, marginBottom: 4 }}>Comments</label>
+            <div style={{ marginTop: '.75rem' }}>
+              <label style={{ display: 'block', fontSize: 'var(--judge-font-xs)', marginBottom: 4 }}>Comments</label>
               <textarea rows={3} value={fs.comments}
                 onChange={e => updateField(sub.id, 'comments', e.target.value)}
-                style={{ ...inputStyle, resize: 'vertical', width: '100%' }} placeholder="Optional qualitative feedback" />
+                className="judge-textarea" placeholder="Optional qualitative feedback" />
             </div>
-            <div style={{ marginTop: 12, display: 'flex', gap: 12 }}>
+            <div style={{ marginTop: '.75rem', display: 'flex', gap: '.75rem', flexWrap:'wrap' }}>
               <button
                 onClick={() => submitEvaluation(sub.id)}
                 disabled={submitting[sub.id]}
-                style={buttonStyle(submitting[sub.id])}
+                className={`judge-btn ${evaluated ? 'judge-btn-outline' : 'judge-btn-primary'}`}
+                style={{ minWidth:170 }}
               >{evaluated ? (submitting[sub.id] ? 'Updating…' : 'Update Evaluation') : (submitting[sub.id] ? 'Submitting…' : 'Submit Evaluation')}</button>
             </div>
           </div>
@@ -151,24 +168,4 @@ export default function JudgeEvaluationPage() {
   );
 }
 
-const inputStyle = {
-  width: '100%',
-  padding: '8px 10px',
-  background: '#1e293b',
-  border: '1px solid #334155',
-  borderRadius: 6,
-  color: '#f8fafc',
-  fontSize: 14
-};
-
-const buttonStyle = (busy) => ({
-  background: busy ? '#475569' : 'linear-gradient(135deg,#00e5ff,#0891b2)',
-  color: '#020617',
-  fontWeight: 600,
-  padding: '10px 18px',
-  border: 'none',
-  borderRadius: 8,
-  cursor: busy ? 'not-allowed' : 'pointer',
-  boxShadow: '0 4px 12px rgba(0,229,255,0.3)',
-  transition: 'all .25s'
-});
+// Migrated inline input/button styles to shared judge theme classes
