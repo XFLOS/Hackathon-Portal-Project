@@ -112,15 +112,13 @@ export default function JudgeDashboard() {
       <div className="judge-page">
         <header className="judge-page-header">
           <h1 className="judge-title">Judge Dashboard</h1>
-          <p className="judge-subtitle">Evaluate submissions, monitor progress, and review feedback history.</p>
+          <p className="judge-subtitle">Evaluate assigned team submissions, monitor scoring progress, and review feedback history.</p>
         </header>
-        <div className="judge-row-actions" style={{ flexWrap:'wrap', marginBottom:'1rem' }}>
-          <Link to="/judge/evaluation" className="judge-btn judge-btn-primary">Evaluation</Link>
+        <div className="judge-row-actions" style={{ flexWrap:'wrap', marginBottom:'1.25rem' }}>
+          <Link to="/judge/evaluation" className="judge-btn judge-btn-primary">Go To Evaluation</Link>
           <Link to="/judge/feedback" className="judge-btn judge-btn-secondary">Feedback History</Link>
           <Link to="/judge/schedule" className="judge-btn judge-btn-outline">Presentation Schedule</Link>
         </div>
-        {loading && <LoadingSpinner />}
-        {error && !loading && <p style={{ color: 'var(--judge-danger)', fontSize:'var(--judge-font-sm)' }}>{error}</p>}
         <section className="judge-card" aria-label="Assigned Teams">
           <div className="judge-card-header">
             <div>
@@ -149,35 +147,46 @@ export default function JudgeDashboard() {
               </select>
             </div>
           </div>
-          {loading ? <p style={{ color:'var(--judge-text-muted)', fontSize:'var(--judge-font-sm)' }}>Loading…</p> : (
-            filtered.length === 0 ? <p style={{ color:'var(--judge-text-muted)', fontSize:'var(--judge-font-sm)' }}>No teams match current filters.</p> : (
-              <ul className="judge-list" aria-label="Teams list">
-                {filtered.map(row => {
-                  const submitted = !!row.submission_id;
-                  const evaluated = !!row.evaluation_id;
-                  return (
-                    <li key={row.team_id} className="judge-list-item">
-                      <div className="judge-row-top">
-                        <div style={{ flex:1 }}>
-                          <strong style={{ fontSize:'var(--judge-font-md)' }}>{row.team_name || `Team #${row.team_id}`}</strong>
-                          <div style={{ fontSize:'var(--judge-font-xs)', color:'var(--judge-text-muted)', marginTop:4 }}>
-                            {submitted ? `Submitted ${row.submitted_at ? new Date(row.submitted_at).toLocaleDateString() : ''}` : 'Not Submitted'}
-                          </div>
-                        </div>
-                        <div className="judge-row-actions">
-                          {renderScoreBadge(row)}
-                          <Link
-                            to="/judge/evaluation"
-                            className={`judge-btn ${evaluated ? 'judge-btn-outline' : submitted ? 'judge-btn-primary' : 'judge-btn-secondary'}`}
-                            style={{ fontSize:'var(--judge-font-xs)' }}
-                          >{evaluated ? 'Update' : submitted ? 'Evaluate' : 'Awaiting'}</Link>
+          {loading && <p style={{ color:'var(--judge-text-muted)', fontSize:'var(--judge-font-sm)' }}>Loading assignments…</p>}
+          {!loading && error && (
+            <div className="judge-empty" style={{ marginTop:'.5rem' }}>
+              <strong style={{ color:'var(--judge-danger)' }}>Failed to load assignments</strong>
+              <span style={{ fontSize:'var(--judge-font-xs)', color:'var(--judge-text-muted)' }}>Please refresh or check network connectivity.</span>
+            </div>
+          )}
+          {!loading && !error && filtered.length === 0 && (
+            <div className="judge-empty" style={{ marginTop:'.5rem' }}>
+              <strong>No teams match current filters.</strong>
+              <span style={{ fontSize:'var(--judge-font-xs)', color:'var(--judge-text-muted)' }}>Adjust search text or status filter to view other teams.</span>
+            </div>
+          )}
+          {!loading && !error && filtered.length > 0 && (
+            <ul className="judge-list" aria-label="Teams list">
+              {filtered.map(row => {
+                const submitted = !!row.submission_id;
+                const evaluated = !!row.evaluation_id;
+                return (
+                  <li key={row.team_id} className={`judge-list-item ${evaluated ? 'judge-list-item-evaluated' : ''}`}>
+                    <div className="judge-row-top">
+                      <div style={{ flex:1 }}>
+                        <strong style={{ fontSize:'var(--judge-font-md)' }}>{row.team_name || `Team #${row.team_id}`}</strong>
+                        <div style={{ fontSize:'var(--judge-font-xs)', color:'var(--judge-text-muted)', marginTop:4 }}>
+                          {submitted ? `Submitted ${row.submitted_at ? new Date(row.submitted_at).toLocaleDateString() : ''}` : 'Not Submitted'}
                         </div>
                       </div>
-                    </li>
-                  );
-                })}
-              </ul>
-            )
+                      <div className="judge-row-actions">
+                        {renderScoreBadge(row)}
+                        <Link
+                          to="/judge/evaluation"
+                          className={`judge-btn ${evaluated ? 'judge-btn-outline' : submitted ? 'judge-btn-primary' : 'judge-btn-secondary'}`}
+                          style={{ fontSize:'var(--judge-font-xs)' }}
+                        >{evaluated ? 'Update' : submitted ? 'Evaluate' : 'Awaiting'}</Link>
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
           )}
         </section>
       </div>
