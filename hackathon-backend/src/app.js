@@ -19,7 +19,7 @@ dotenv.config();
 // Initialize Express app
 const app = express();
 
-// Enhanced CORS: allow any origin with credentials support
+// CORS Configuration - MUST be before body parsers and routes
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
@@ -32,10 +32,13 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
 };
 
+// Enable CORS for all routes
 app.use(cors(corsOptions));
+
+// Handle preflight requests
 app.options('*', cors(corsOptions));
 
-// Additional CORS headers for preflight and direct responses
+// Additional CORS headers middleware (belt and suspenders approach)
 app.use((req, res, next) => {
   const origin = req.headers.origin || '*';
   res.setHeader('Access-Control-Allow-Origin', origin);
@@ -44,11 +47,14 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
   
+  // Handle preflight
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
   next();
 });
+
+// Body parsers - AFTER CORS
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
