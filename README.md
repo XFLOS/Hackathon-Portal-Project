@@ -306,6 +306,17 @@ GET  /judge/assignments/:judgeId         - Get teams assigned to a judge (submis
 GET  /judge/assignments/me               - Convenience: assignments for authenticated judge
 ```
 
+### Notification Endpoints (All Authenticated Users)
+
+```
+GET  /notifications                      - Get all notifications for logged-in user
+GET  /notifications/unread-count         - Get count of unread notifications
+POST /notifications/:id/read             - Mark single notification as read
+POST /notifications/mark-all-read        - Mark all user's notifications as read
+DELETE /notifications/:id                - Delete notification (user-scoped)
+POST /notifications/create               - Create notification (admin/system use)
+```
+
 npm run dev## 5) Integração no Frontend (CRA)
 
 ### Coordinator Endpoints
@@ -928,5 +939,9 @@ Use these after deployment or local development:
 10. `/judge/assignments/me` returns identical payload shape to `/judge/assignments/:judgeId` for the logged-in judge.
 11. **Phase 4:** Judge schedule page (`/judge/schedule`) toggles between "All Events" and "My Assigned Presentations". The latter derives per-team presentation slots from the aggregate "Presentations & Judging" event using assigned teams and parses slot duration from event description (defaults to 10 minutes). Current live slot is highlighted with gradient background and "Live Slot" badge.
 12. **Phase 4:** Slot derivation correctly splits total window evenly among assigned teams if description doesn't specify duration or if specified duration exceeds window capacity.
+13. **Phase 5:** Notifications page (`/notifications`) is accessible to judges and fetches user-scoped notifications from `/notifications` API endpoint on mount. The page displays unread count, allows marking individual or all notifications as read, and supports deleting notifications with confirmation.
+14. **Phase 5:** Navbar displays unread notification count badge next to "Notifications" link. Badge updates automatically via 30-second polling interval using `/notifications/unread-count` endpoint.
+15. **Phase 5:** Notification operations (mark as read, mark all as read, delete) perform optimistic UI updates, immediately reflecting changes in local state without requiring full refetch.
+16. **Phase 5:** All notification API endpoints enforce user-scoping via `req.user.id` from protect middleware, ensuring judges only see their own notifications.
 
 **Happy Hacking!** 🎉
