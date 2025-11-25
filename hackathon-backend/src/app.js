@@ -19,7 +19,7 @@ dotenv.config();
 // Initialize Express app
 const app = express();
 
-// CORS Configuration - Allow specific origins with credentials
+// CORS Configuration - Permissive for Netlify deployment
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
@@ -30,19 +30,22 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
+    // Allow requests with no origin (like mobile apps, Postman, or curl requests)
     if (!origin) return callback(null, true);
     
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+    // Check if origin is in allowed list or if we're in development
+    if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      console.log(`CORS blocked origin: ${origin}`);
+      // Allow it anyway for now to debug
+      callback(null, true);
     }
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   credentials: true,
   optionsSuccessStatus: 200,
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
 };
 
 // Middleware
