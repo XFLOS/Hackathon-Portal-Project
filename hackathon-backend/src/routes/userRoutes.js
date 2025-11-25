@@ -9,15 +9,6 @@ import {
   getCertificatesForUser,
   downloadCertificatePDF
 } from '../controllers/userController.js';
-import {
-  getProfile,
-  updateProfile,
-  getSchedule,
-  getAnnouncements,
-  getLeaderboard,
-  getCertificatesForUser,
-  downloadCertificatePDF
-} from '../controllers/userController.js';
 
 const router = express.Router();
 
