@@ -7,7 +7,6 @@ import BaseLogin from "../pages/BaseLogin";
 import BaseRegister from "../pages/BaseRegister";
 import HomePage from "../pages/HomePage";
 import TeamPage from "../pages/TeamPage";
-import TeamSelectionPage from "../pages/TeamSelectionPage";
 import LeaderboardPage from "../pages/LeaderboardPage";
 
 import StudentDashboard from "../pages/StudentDashboard";
@@ -107,14 +106,14 @@ function AppRoutesInner() {
           </RoleRoute>
         }
       />
-      <Route
+      {/* <Route
         path="/team-selection"
         element={
           <RoleRoute allow={["student", "admin"]}>
             <TeamSelectionPage />
           </RoleRoute>
         }
-      />
+      /> */}
       <Route
         path="/submission"
         element={
