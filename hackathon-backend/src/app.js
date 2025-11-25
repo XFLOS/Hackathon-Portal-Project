@@ -22,6 +22,19 @@ const app = express();
 // Simplified CORS: allow any origin (no credentials cookies used, token in Authorization header)
 app.use(cors({ origin: true }));
 app.options('*', cors({ origin: true }));
+
+// Force CORS headers (belt-and-suspenders) for all responses including error paths
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.setHeader('Vary', 'Origin');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
+  // No cookies needed; omit credentials unless required
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
