@@ -89,43 +89,51 @@ export const evaluateSubmission = async (req, res) => {
   }
 };
 
-// Get judge's evaluation history
+// Get judge's evaluation history (all assigned submissions, with evaluation if present)
 export const getEvaluationHistory = async (req, res) => {
   try {
     const judgeId = req.user.id;
     const page = parseInt(req.query.page || '0', 10); // 0-based page index
     const pageSize = parseInt(req.query.pageSize || '0', 10); // if 0 treat as no pagination
 
-    // If no pagination requested, return legacy array
+    // Unified query: all assigned submissions, with evaluation if present
+    const baseQuery = `
+      SELECT
+        s.id as submission_id,
+        s.title as submission_title,
+        t.name as team_name,
+        s.submitted_at,
+        e.id as evaluation_id,
+        e.innovation_score,
+        e.technical_score,
+        e.presentation_score,
+        e.comments,
+        e.evaluated_at,
+        (CASE WHEN e.id IS NOT NULL THEN e.innovation_score + e.technical_score + e.presentation_score ELSE NULL END) as total_score
+      FROM judge_team_assignments jta
+      JOIN teams t ON jta.team_id = t.id
+      LEFT JOIN submissions s ON s.team_id = t.id
+      LEFT JOIN evaluations e ON e.submission_id = s.id AND e.judge_id = jta.judge_id
+      WHERE jta.judge_id = $1
+      ORDER BY s.submitted_at DESC NULLS LAST, t.name ASC
+    `;
+
     if (!pageSize || pageSize < 1) {
-      const legacy = await db.query(
-        `SELECT e.*, s.title as submission_title, t.name as team_name,
-         e.innovation_score + e.technical_score + e.presentation_score as total_score
-         FROM evaluations e
-         JOIN submissions s ON e.submission_id = s.id
-         JOIN teams t ON s.team_id = t.id
-         WHERE e.judge_id = $1
-         ORDER BY e.evaluated_at DESC`,
-        [judgeId]
-      );
+      const legacy = await db.query(baseQuery, [judgeId]);
       return res.json(legacy.rows);
     }
 
     // Paginated response
     const offset = page * pageSize;
-    const itemsResult = await db.query(
-      `SELECT e.*, s.title as submission_title, t.name as team_name,
-       e.innovation_score + e.technical_score + e.presentation_score as total_score
-       FROM evaluations e
-       JOIN submissions s ON e.submission_id = s.id
-       JOIN teams t ON s.team_id = t.id
-       WHERE e.judge_id = $1
-       ORDER BY e.evaluated_at DESC
-       LIMIT $2 OFFSET $3`,
-      [judgeId, pageSize, offset]
-    );
+    const paginatedQuery = baseQuery + '\nLIMIT $2 OFFSET $3';
+    const itemsResult = await db.query(paginatedQuery, [judgeId, pageSize, offset]);
+    // Count total assigned submissions (not just evaluated)
     const countResult = await db.query(
-      'SELECT COUNT(*)::int AS count FROM evaluations WHERE judge_id = $1',
+      `SELECT COUNT(*)::int AS count
+       FROM judge_team_assignments jta
+       JOIN teams t ON jta.team_id = t.id
+       LEFT JOIN submissions s ON s.team_id = t.id
+       WHERE jta.judge_id = $1`,
       [judgeId]
     );
     const total = countResult.rows[0].count;
