@@ -5,7 +5,8 @@ import {
   updateProfile,
   getSchedule,
   getAnnouncements,
-  getLeaderboard
+  getLeaderboard,
+  getCertificatesForUser
 } from '../controllers/userController.js';
 
 const router = express.Router();
@@ -13,10 +14,7 @@ const router = express.Router();
 // Protected routes (require authentication)
 router.get('/me', protect, getProfile);
 router.put('/me', protect, updateProfile);
-router.get('/me/certificates', protect, (req, res) => {
-  // TODO: Implement certificate generation/retrieval
-  res.json([]);
-});
+router.get('/me/certificates', protect, getCertificatesForUser);
 
 // Public routes (available to all authenticated users)
 router.get('/schedule', protect, getSchedule);

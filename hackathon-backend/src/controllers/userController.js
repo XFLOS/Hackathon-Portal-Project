@@ -1,3 +1,75 @@
+// Generate/download certificates for a user
+export const getCertificatesForUser = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    // Find all teams this user is a member of
+    const teamsResult = await db.query(
+      `SELECT t.id as team_id, t.name as team_name, t.project_name
+       FROM team_members tm
+       JOIN teams t ON tm.team_id = t.id
+       WHERE tm.user_id = $1`,
+      [userId]
+    );
+    if (teamsResult.rows.length === 0) return res.json([]);
+
+    // For each team, check if there is a submission and at least one evaluation
+    const certs = [];
+    for (const team of teamsResult.rows) {
+      // Get latest submission for the team
+      const subRes = await db.query(
+        `SELECT s.id as submission_id, s.title, s.file_url, s.submitted_at
+         FROM submissions s
+         WHERE s.team_id = $1
+         ORDER BY s.submitted_at DESC LIMIT 1`,
+        [team.team_id]
+      );
+      if (subRes.rows.length === 0) continue;
+      const submission = subRes.rows[0];
+
+      // Get all evaluations for this submission
+      const evalRes = await db.query(
+        `SELECT e.*, u.full_name as judge_name
+         FROM evaluations e
+         JOIN users u ON e.judge_id = u.id
+         WHERE e.submission_id = $1`,
+        [submission.submission_id]
+      );
+      if (evalRes.rows.length === 0) continue;
+
+      // Calculate average scores
+      const avg = { innovation: 0, technical: 0, presentation: 0, total: 0 };
+      for (const e of evalRes.rows) {
+        avg.innovation += e.innovation_score;
+        avg.technical += e.technical_score;
+        avg.presentation += e.presentation_score;
+      }
+      avg.innovation = +(avg.innovation / evalRes.rows.length).toFixed(2);
+      avg.technical = +(avg.technical / evalRes.rows.length).toFixed(2);
+      avg.presentation = +(avg.presentation / evalRes.rows.length).toFixed(2);
+      avg.total = +(avg.innovation + avg.technical + avg.presentation).toFixed(2);
+
+      // Compose certificate data
+      certs.push({
+        id: `${team.team_id}-${submission.submission_id}`,
+        student_name: req.user.full_name,
+        team_name: team.team_name,
+        project_title: submission.title,
+        submission_date: submission.submitted_at,
+        avg_innovation: avg.innovation,
+        avg_technical: avg.technical,
+        avg_presentation: avg.presentation,
+        avg_total: avg.total,
+        judges: evalRes.rows.map(e => e.judge_name),
+        // Optionally, you could generate a PDF and provide a URL here
+        url: null // Placeholder for download link if implemented
+      });
+    }
+    res.json(certs);
+  } catch (error) {
+    console.error('Get certificates error:', error);
+    res.status(500).json({ message: 'Error generating certificates' });
+  }
+};
 import db from '../config/database.js';
 
 // Get user profile

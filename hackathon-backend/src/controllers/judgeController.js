@@ -147,7 +147,10 @@ export const getEvaluationHistory = async (req, res) => {
     });
   } catch (error) {
     console.error('Get evaluation history error:', error);
-    res.status(500).json({ message: 'Error fetching evaluation history' });
+    if (error && error.stack) {
+      console.error(error.stack);
+    }
+    res.status(500).json({ message: 'Error fetching evaluation history', error: error?.message, stack: error?.stack });
   }
 };
 
