@@ -116,11 +116,15 @@ export default function SubmissionPage() {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      if (response.data && response.data.url) {
-        setFileUrl(response.data.url);
-        setFileType(response.data.format || file.type);
+      // Backend returns response.data.file.url
+      if (response.data && response.data.file && response.data.file.url) {
+        setFileUrl(response.data.file.url);
+        setFileType(response.data.file.format || file.type);
         setMessage('File uploaded successfully!');
         setMessageType('success');
+      } else {
+        setMessage('Upload succeeded but no file URL returned');
+        setMessageType('error');
       }
     } catch (err) {
       console.error('File upload failed:', err);
@@ -214,7 +218,14 @@ export default function SubmissionPage() {
     if (isImage) {
       return (
         <div className="file-preview">
-          <img src={fileUrl} alt="Uploaded file preview" />
+          <img 
+            src={fileUrl} 
+            alt="Uploaded file preview"
+            onError={(e) => {
+              e.target.style.display = 'none';
+              e.target.parentElement.innerHTML = '<div class="file-preview document"><span class="file-icon">🖼️</span><p>Image preview unavailable</p><a href="' + fileUrl + '" target="_blank" rel="noopener noreferrer">Try opening file directly</a></div>';
+            }}
+          />
         </div>
       );
     } else if (isVideo) {
@@ -230,18 +241,24 @@ export default function SubmissionPage() {
       return (
         <div className="file-preview document">
           <span className="file-icon">📄</span>
-          <a href={fileUrl} target="_blank" rel="noopener noreferrer">
-            View PDF Document
-          </a>
+          <div className="file-info">
+            <p className="file-name">{fileUrl.split('/').pop() || 'Document'}</p>
+            <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="file-link">
+              View PDF Document →
+            </a>
+          </div>
         </div>
       );
     } else {
       return (
         <div className="file-preview document">
           <span className="file-icon">📎</span>
-          <a href={fileUrl} target="_blank" rel="noopener noreferrer">
-            View Uploaded File
-          </a>
+          <div className="file-info">
+            <p className="file-name">{fileUrl.split('/').pop() || 'File'}</p>
+            <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="file-link">
+              View Uploaded File →
+            </a>
+          </div>
         </div>
       );
     }
