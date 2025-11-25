@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import multer from 'multer';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -23,18 +24,28 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET || 'demo'
 });
 
-// Create Cloudinary storage for multer
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'hackathon-uploads', // Folder name in Cloudinary
-    allowed_formats: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'zip'],
-    resource_type: 'auto', // Automatically detect file type
-  },
-});
+// Create storage for multer
+// If Cloudinary is not configured on the server (e.g., Render env vars missing),
+// fall back to in-memory storage so uploads won't 500. The API will still return
+// a dummy URL so the frontend flow can proceed during demos.
+let storage;
+if (isConfigured) {
+  storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+      folder: 'hackathon-uploads', // Folder name in Cloudinary
+      allowed_formats: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'zip'],
+      resource_type: 'auto', // Automatically detect file type
+    },
+  });
+} else {
+  storage = multer.memoryStorage();
+}
 
 if (isConfigured) {
   console.log('SUCCESS: Cloudinary configured');
+} else {
+  console.log('INFO: Using in-memory storage for uploads (no Cloudinary config)');
 }
 
 export { cloudinary, storage };
