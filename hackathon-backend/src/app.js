@@ -19,38 +19,9 @@ dotenv.config();
 // Initialize Express app
 const app = express();
 
-// CORS Configuration - Permissive for Netlify deployment
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:5173',
-  'https://iridescent-cajeta-45d15b.netlify.app',
-  'https://hackathonportalproject4g5.netlify.app',
-  process.env.FRONTEND_URL
-].filter(Boolean);
-
-const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, Postman, or curl requests)
-    if (!origin) return callback(null, true);
-    
-    // Check if origin is in allowed list or if we're in development
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      console.log(`CORS blocked origin: ${origin}`);
-      // Allow it anyway for now to debug
-      callback(null, true);
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  credentials: true,
-  optionsSuccessStatus: 200,
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
-};
-
-// Middleware
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Enable pre-flight for all routes
+// Simplified CORS: allow any origin (no credentials cookies used, token in Authorization header)
+app.use(cors({ origin: true }));
+app.options('*', cors({ origin: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
