@@ -114,7 +114,6 @@ export default function Navbar() {
                 {role === 'student' && (
                   <>
                     <Link to="/team">Team</Link>
-                    <Link to="/team-selection">Create/Join Team</Link>
                     <Link to="/submission">Submission</Link>
                     <Link to="/certificate">Certificate</Link>
                   </>
