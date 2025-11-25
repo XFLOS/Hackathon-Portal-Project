@@ -18,9 +18,21 @@ export const uploadMultiple = upload.array('files', 5);
 // Handle file upload
 export const handleFileUpload = async (req, res) => {
   try {
+    console.log('Upload request received');
+    console.log('req.file:', req.file);
+    console.log('req.body:', req.body);
+    
     if (!req.file) {
+      console.error('No file in request');
       return res.status(400).json({ error: 'No file uploaded' });
     }
+
+    console.log('File details:', {
+      fieldname: req.file.fieldname,
+      originalname: req.file.originalname,
+      size: req.file.size,
+      mimetype: req.file.mimetype
+    });
 
     res.json({
       message: 'File uploaded successfully',
@@ -33,7 +45,11 @@ export const handleFileUpload = async (req, res) => {
     });
   } catch (error) {
     console.error('Upload error:', error);
-    res.status(500).json({ error: 'Failed to upload file' });
+    console.error('Error stack:', error.stack);
+    res.status(500).json({ 
+      error: 'Failed to upload file',
+      message: error.message 
+    });
   }
 };
 
