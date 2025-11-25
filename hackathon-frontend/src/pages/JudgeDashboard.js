@@ -16,32 +16,34 @@ export default function JudgeDashboard() {
   useEffect(() => {
     let mounted = true;
     (async () => {
-      try {
-        // Prefer convenience endpoint; avoids needing profile call & works with auth token
-        const res = await api.get('/judge/assignments/me');
-        if (mounted && Array.isArray(res.data)) {
-          setAssignments(res.data);
+      const tryFetch = async (fn) => {
+        try { return await fn(); } catch (e) { return { error: e }; }
+      };
+      let data = null;
+      // 1) Preferred convenience endpoint
+      const r1 = await tryFetch(()=> api.get('/judge/assignments/me'));
+      if (!r1.error && Array.isArray(r1.data)) data = r1.data;
+      // 2) Legacy profile + id-specific route
+      if (!data) {
+        const prof = await tryFetch(()=> api.get('/auth/profile'));
+        const judgeId = prof.error ? null : prof.data?.id;
+        if (judgeId) {
+          const r2 = await tryFetch(()=> api.get(`/judge/assignments/${judgeId}`));
+          if (!r2.error && Array.isArray(r2.data)) data = r2.data;
         }
-      } catch (primaryErr) {
-        console.warn('Primary assignments fetch failed, attempting fallback:', primaryErr?.message);
-        try {
-          // Fallback: attempt profile → id-specific route (legacy environments)
-            const prof = await api.get('/users/me').catch(()=>({ data:{} }));
-            const judgeId = prof?.data?.id;
-            if (judgeId) {
-              const res2 = await api.get(`/judge/assignments/${judgeId}`);
-              if (mounted && Array.isArray(res2.data)) setAssignments(res2.data);
-            } else {
-              // Final fallback: submissions list (will omit teams w/out submission)
-              const subRes = await api.get('/judge/submissions');
-              if (mounted && Array.isArray(subRes.data)) setAssignments(subRes.data);
-            }
-        } catch (fallbackErr) {
-          console.error('Failed all judge assignment fetch strategies:', fallbackErr);
-          if (mounted) setError('Failed to load assignments');
+      }
+      // 3) Fallback to submissions list (only teams with submissions)
+      if (!data) {
+        const r3 = await tryFetch(()=> api.get('/judge/submissions'));
+        if (!r3.error && Array.isArray(r3.data)) data = r3.data;
+      }
+      if (mounted) {
+        if (data) {
+          setAssignments(data);
+        } else {
+          setError('Failed to load assignments');
         }
-      } finally {
-        if (mounted) setLoading(false);
+        setLoading(false);
       }
     })();
     return () => { mounted = false; };
