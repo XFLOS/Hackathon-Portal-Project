@@ -63,6 +63,7 @@ export const getCertificatesForUser = async (req, res) => {
         judges: evalRes.rows.map(e => e.judge_name),
         url: `/api/users/me/certificates/${team.team_id}-${submission.submission_id}/download`
       });
+    }
     res.json(certs);
   } catch (error) {
     console.error('Get certificates error:', error);
