@@ -1,7 +1,6 @@
 import express from 'express';
 import { protect } from '../middleware/auth.js';
 import {
-  getProfile,
   updateProfile,
   getSchedule,
   getAnnouncements,
@@ -9,6 +8,7 @@ import {
   getCertificatesForUser,
   downloadCertificatePDF
 } from '../controllers/userController.js';
+import { getProfile } from '../controllers/authController.js';
 
 const router = express.Router();
 
