@@ -16,34 +16,19 @@ export default function JudgeDashboard() {
   useEffect(() => {
     let mounted = true;
     (async () => {
-      const tryFetch = async (fn) => {
-        try { return await fn(); } catch (e) { return { error: e }; }
-      };
-      let data = null;
-      // 1) Preferred convenience endpoint
-      const r1 = await tryFetch(()=> api.get('/judge/assignments/me'));
-      if (!r1.error && Array.isArray(r1.data)) data = r1.data;
-      // 2) Legacy profile + id-specific route
-      if (!data) {
-        const prof = await tryFetch(()=> api.get('/auth/profile'));
-        const judgeId = prof.error ? null : prof.data?.id;
-        if (judgeId) {
-          const r2 = await tryFetch(()=> api.get(`/judge/assignments/${judgeId}`));
-          if (!r2.error && Array.isArray(r2.data)) data = r2.data;
+      try {
+        const resProfile = await api.get('/auth/profile').catch(()=>({ data: {} }));
+        const judgeId = resProfile?.data?.id;
+        const route = judgeId ? `/judge/assignments/${judgeId}` : '/judge/submissions';
+        const res = await api.get(route);
+        if (mounted && res?.data) {
+          setAssignments(Array.isArray(res.data) ? res.data : []);
         }
-      }
-      // 3) Fallback to submissions list (only teams with submissions)
-      if (!data) {
-        const r3 = await tryFetch(()=> api.get('/judge/submissions'));
-        if (!r3.error && Array.isArray(r3.data)) data = r3.data;
-      }
-      if (mounted) {
-        if (data) {
-          setAssignments(data);
-        } else {
-          setError('Failed to load assignments');
-        }
-        setLoading(false);
+      } catch (err) {
+        console.error('Failed to load judge assignments:', err);
+        if (mounted) setError('Failed to load assignments');
+      } finally {
+        if (mounted) setLoading(false);
       }
     })();
     return () => { mounted = false; };
@@ -51,15 +36,9 @@ export default function JudgeDashboard() {
 
   const stats = useMemo(() => {
     let evaluated = 0;
-    let pending = 0;
-    let withSubmission = 0;
-    assignments.forEach(a => {
-      const hasSub = !!a.submission_id;
-      if (hasSub) withSubmission++;
-      if (hasSub && a.evaluation_id) evaluated++;
-      else if (hasSub && !a.evaluation_id) pending++;
-    });
-    return { evaluated, pending, total: assignments.length, withSubmission };
+    let total = assignments.length;
+    assignments.forEach(a => { if (a.evaluation_id) evaluated++; });
+    return { evaluated, total, pending: total - evaluated };
   }, [assignments]);
 
   const filtered = useMemo(() => {
@@ -114,20 +93,27 @@ export default function JudgeDashboard() {
       <div className="judge-page">
         <header className="judge-page-header">
           <h1 className="judge-title">Judge Dashboard</h1>
-          <p className="judge-subtitle">Evaluate assigned team submissions, monitor scoring progress, and review feedback history.</p>
+          <p className="judge-subtitle">Evaluate submissions, monitor progress, and review feedback history.</p>
         </header>
-        <div className="judge-actions-bar">
-          <Link to="/judge/evaluation" className="judge-btn judge-btn-primary">Go To Evaluation</Link>
+        <div className="judge-row-actions" style={{ flexWrap:'wrap', marginBottom:'1rem' }}>
+          <Link to="/judge/evaluation" className="judge-btn judge-btn-primary">Evaluation</Link>
           <Link to="/judge/feedback" className="judge-btn judge-btn-secondary">Feedback History</Link>
           <Link to="/judge/schedule" className="judge-btn judge-btn-outline">Presentation Schedule</Link>
         </div>
+        {/* Debug panel for assignment data */}
+        <details style={{ marginBottom: '1rem', background: '#1e293b', color: '#fff', borderRadius: 8, padding: '0.5rem 1rem' }}>
+          <summary style={{ cursor: 'pointer', fontWeight: 600 }}>Debug: Raw Assignments Data</summary>
+          <pre style={{ fontSize: 12, whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>{JSON.stringify(assignments, null, 2)}</pre>
+        </details>
+        {loading && <LoadingSpinner />}
+        {error && !loading && <p style={{ color: 'var(--judge-danger)', fontSize:'var(--judge-font-sm)' }}>{error}</p>}
         <section className="judge-card" aria-label="Assigned Teams">
           <div className="judge-card-header">
             <div>
               <div className="judge-card-title">Assigned Teams</div>
-              <div className="judge-card-meta">{stats.evaluated} evaluated • {stats.pending} pending • {stats.withSubmission}/{stats.total} submitted</div>
+              <div className="judge-card-meta">{stats.evaluated} evaluated • {stats.pending} pending • {stats.total} total</div>
             </div>
-            <div className="judge-filters">
+            <div style={{ display:'flex', gap:'.5rem', flexWrap:'wrap', alignItems:'center' }}>
               <input
                 className="judge-input"
                 type="text"
@@ -149,45 +135,36 @@ export default function JudgeDashboard() {
               </select>
             </div>
           </div>
-          {loading && <div className="judge-loading-container">Loading assignments…</div>}
-          {!loading && error && (
-            <div className="judge-empty" style={{ marginTop:'.5rem' }}>
-              <strong style={{ color:'var(--judge-danger)' }}>Failed to load assignments</strong>
-              <span style={{ fontSize:'var(--judge-font-xs)', color:'var(--judge-text-muted)' }}>Please refresh or check network connectivity.</span>
-            </div>
-          )}
-          {!loading && !error && filtered.length === 0 && (
-            <div className="judge-empty" style={{ marginTop:'.5rem' }}>
-              <strong>No teams match current filters.</strong>
-              <span style={{ fontSize:'var(--judge-font-xs)', color:'var(--judge-text-muted)' }}>Adjust search text or status filter to view other teams.</span>
-            </div>
-          )}
-          {!loading && !error && filtered.length > 0 && (
-            <ul className="judge-list" aria-label="Teams list">
-              {filtered.map(row => {
-                const submitted = !!row.submission_id;
-                const evaluated = !!row.evaluation_id;
-                return (
-                  <li key={row.team_id} className={`judge-list-item ${evaluated ? 'judge-list-item-evaluated' : ''}`}>
-                    <div className="judge-row-top">
-                      <div style={{ flex:1 }}>
-                        <strong className="judge-team-name">{row.team_name || `Team #${row.team_id}`}</strong>
-                        <div className="judge-team-meta">
-                          {submitted ? `Submitted ${row.submitted_at ? new Date(row.submitted_at).toLocaleDateString() : ''}` : 'Not Submitted'}
+          {loading ? <p style={{ color:'var(--judge-text-muted)', fontSize:'var(--judge-font-sm)' }}>Loading…</p> : (
+            filtered.length === 0 ? <p style={{ color:'var(--judge-text-muted)', fontSize:'var(--judge-font-sm)' }}>No teams match current filters.</p> : (
+              <ul className="judge-list" aria-label="Teams list">
+                {filtered.map(row => {
+                  // Treat any team with a submission (including demo/evaluated) as 'Submitted'
+                  const hasSubmission = !!row.submission_id || !!row.evaluation_id || !!row.submitted_at;
+                  const evaluated = !!row.evaluation_id;
+                  return (
+                    <li key={row.team_id} className="judge-list-item">
+                      <div className="judge-row-top">
+                        <div style={{ flex:1 }}>
+                          <strong style={{ fontSize:'var(--judge-font-md)' }}>{row.team_name || `Team #${row.team_id}`}</strong>
+                          <div style={{ fontSize:'var(--judge-font-xs)', color:'var(--judge-text-muted)', marginTop:4 }}>
+                            {hasSubmission ? `Submitted${row.submitted_at ? ' ' + new Date(row.submitted_at).toLocaleDateString() : ''}` : 'Not Submitted'}
+                          </div>
+                        </div>
+                        <div className="judge-row-actions">
+                          {renderScoreBadge(row)}
+                          <Link
+                            to="/judge/evaluation"
+                            className={`judge-btn ${evaluated ? 'judge-btn-outline' : hasSubmission ? 'judge-btn-primary' : 'judge-btn-secondary'}`}
+                            style={{ fontSize:'var(--judge-font-xs)' }}
+                          >{evaluated ? 'Update' : hasSubmission ? 'Evaluate' : 'Awaiting'}</Link>
                         </div>
                       </div>
-                      <div className="judge-row-actions">
-                        {renderScoreBadge(row)}
-                        <Link
-                          to="/judge/evaluation"
-                          className={`judge-btn judge-btn-xs ${evaluated ? 'judge-btn-outline' : submitted ? 'judge-btn-primary' : 'judge-btn-secondary'}`}
-                        >{evaluated ? 'Update' : submitted ? 'Evaluate' : 'Awaiting'}</Link>
-                      </div>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
+                    </li>
+                  );
+                })}
+              </ul>
+            )
           )}
         </section>
       </div>
