@@ -1,6 +1,8 @@
 
+
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import api from '../services/api';
 import './SurveysPage.css';
 
 export default function SurveysPage() {
@@ -9,10 +11,18 @@ export default function SurveysPage() {
   const [comments, setComments] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    // Here you would send the feedback to the backend
+    try {
+      await api.post('/surveys', {
+        experience: Number(experience),
+        comments,
+        // Optionally, add user_id if available from auth context
+      });
+      setSubmitted(true);
+    } catch (err) {
+      alert('Failed to submit feedback. Please try again.');
+    }
   };
 
   return (
