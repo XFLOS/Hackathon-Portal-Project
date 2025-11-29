@@ -37,10 +37,10 @@ export default function CoordinatorDashboard() {
             {loading ? <p>Loading...</p> : (
               stats ? (
                 <ul>
-                  <li>Total Teams: {stats.totalTeams || 0}</li>
-                  <li>Total Submissions: {stats.totalSubmissions || 0}</li>
-                  <li>Total Users: {stats.totalUsers || 0}</li>
-                  <li>Evaluated Submissions: {stats.evaluatedSubmissions || 0}</li>
+                  <li>Total Teams: {stats.total_teams ?? 0}</li>
+                  <li>Total Submissions: {stats.total_submissions ?? 0}</li>
+                  <li>Total Students: {stats.total_students ?? 0}</li>
+                  <li>Evaluated Submissions: {stats.total_evaluations ?? 0}</li>
                 </ul>
               ) : <p className="muted">No stats available.</p>
             )}
