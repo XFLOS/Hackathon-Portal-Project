@@ -105,118 +105,20 @@ export default function TeamPage() {
     );
   }
 
-  // If no team, show create/join UI (merged from TeamSelectionPage)
+  // If no team, show the original message
   if (!team) {
-    // --- Begin create/join team logic ---
-    const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
-    const [memberEmails, setMemberEmails] = useState(["", "", "", ""]);
-    const [message, setMessage] = useState("");
-    const [joinCode, setJoinCode] = useState("");
-    const [joinMessage, setJoinMessage] = useState("");
-    const [creating, setCreating] = useState(false);
-    const [joining, setJoining] = useState(false);
-    const [errors, setErrors] = useState({});
-
-    // Validation helpers (copied from TeamSelectionPage)
-    const validateTeamName = (teamName) => {
-      if (!teamName.trim()) return "Team name is required";
-      if (teamName.trim().length < 3) return "Team name must be at least 3 characters";
-      if (teamName.trim().length > 50) return "Team name must be less than 50 characters";
-      const validPattern = /^[a-zA-Z0-9\s\-_]+$/;
-      if (!validPattern.test(teamName.trim())) return "Team name can only contain letters, numbers, spaces, hyphens, and underscores";
-      return null;
-    };
-    const validateDescription = (desc) => desc.trim().length > 200 ? "Description must be less than 200 characters" : null;
-    const validateEmail = (email) => {
-      if (!email.trim()) return null;
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailPattern.test(email.trim())) return "Invalid email format";
-      return null;
-    };
-    const validateJoinCode = (code) => {
-      if (!code.trim()) return "Join code is required";
-      if (code.trim().length < 4) return "Join code must be at least 4 characters";
-      return null;
-    };
-
-    const handleCreateTeam = async () => {
-      setMessage(""); setErrors({});
-      const nameError = validateTeamName(name);
-      if (nameError) { setErrors({ name: nameError }); setMessage(nameError); return; }
-      const descError = validateDescription(description);
-      if (descError) { setErrors({ description: descError }); setMessage(descError); return; }
-      const emailErrors = [];
-      memberEmails.forEach((email, idx) => {
-        if (email.trim()) {
-          const emailError = validateEmail(email);
-          if (emailError) emailErrors.push(`Member ${idx + 1}: ${emailError}`);
-        }
-      });
-      if (emailErrors.length > 0) { setMessage(emailErrors.join(", ")); return; }
-      let user = null;
-      try { user = JSON.parse(localStorage.getItem('user')) || null; } catch (err) { user = null; }
-      if (!user) { setMessage('You must be logged in to create a team.'); return; }
-      const teamData = {
-        name: name.trim(),
-        description: description.trim(),
-        leaderId: user.uid,
-        memberEmails: memberEmails.filter((email) => email.trim() !== ''),
-      };
-      setCreating(true);
-      try {
-        const res = await api.post('/teams', teamData);
-        if (res?.data?.id) localStorage.setItem('teamId', res.data.id);
-        setMessage('Team created successfully! Redirecting...');
-        setTimeout(() => window.location.reload(), 1000);
-      } catch (err) {
-        const errorMsg = err?.response?.data?.error || err.message || 'Failed to create team. Try again.';
-        setMessage(errorMsg);
-      } finally { setCreating(false); }
-    };
-    const handleJoinByCode = async () => {
-      setJoinMessage(''); setErrors({});
-      const codeError = validateJoinCode(joinCode);
-      if (codeError) { setErrors({ joinCode: codeError }); setJoinMessage(codeError); return; }
-      setJoining(true);
-      try {
-        const res = await api.post('/teams/join', { code: joinCode.trim() });
-        if (res?.data?.id) localStorage.setItem('teamId', res.data.id);
-        setJoinMessage('Joined successfully! Redirecting...');
-        setTimeout(() => window.location.reload(), 1000);
-      } catch (err) {
-        const msg = err?.response?.data?.error || err.message || 'Failed to join team';
-        setJoinMessage(msg);
-      } finally { setJoining(false); }
-    };
-
     return (
       <div className="team-container">
-        <h2>Create Team</h2>
-        {message && (
-          <p className={`message ${message.includes('successfully') ? 'success' : 'error'}`}>{message}</p>
-        )}
-        <input type="text" placeholder="Team Name" value={name} onChange={(e) => setName(e.target.value)} className={errors.name ? 'input-error' : ''} disabled={creating} />
-        <input type="text" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} className={errors.description ? 'input-error' : ''} disabled={creating} />
-        {memberEmails.map((email, idx) => (
-          <input key={idx} type="email" placeholder={`Member ${idx + 1} Email (Optional)`} value={email} onChange={(e) => { const newMembers = [...memberEmails]; newMembers[idx] = e.target.value; setMemberEmails(newMembers); }} disabled={creating} />
-        ))}
-        <button onClick={handleCreateTeam} disabled={creating}>{creating ? 'Creating...' : 'Create Team'}</button>
-        <div style={{ marginTop: '1rem' }}>
-          <h3>Or join an existing team</h3>
-          {joinMessage && (
-            <p className={`message ${joinMessage.includes('successfully') ? 'success' : 'error'}`}>{joinMessage}</p>
-          )}
-          <input type="text" placeholder="Enter join code" value={joinCode} onChange={(e) => setJoinCode(e.target.value)} className={errors.joinCode ? 'input-error' : ''} disabled={joining} />
-          <button onClick={handleJoinByCode} disabled={joining}>{joining ? 'Joining...' : 'Join Team'}</button>
-        </div>
-        <a href="/" className="back-link">Back to Home</a>
+        <p className="team-message">
+          You are not part of a team.
+        </p>
       </div>
     );
-    // --- End create/join team logic ---
   }
 
-  const mentor = team.mentor || { name: "No mentor assigned", email: "" };
+  // Use mentor_name and mentor_id from backend, fallback to old mentor object if present
+  const mentorName = team.mentor_name || team.mentor?.name || null;
+  const mentorEmail = team.mentor?.email || null;
   const members = team.members || team.memberEmails || [];
 
   const handleAddUpdate = async () => {
@@ -509,12 +411,16 @@ export default function TeamPage() {
         <div className="team-section">
           <h3>Mentor</h3>
           <p>
-            <strong>{mentor.name}</strong>
-            {mentor.email && (
+            {mentorName ? (
+              <strong>{mentorName}</strong>
+            ) : (
+              <span>No mentor assigned</span>
+            )}
+            {mentorEmail && mentorName && (
               <>
                 {" - "}
-                <a href={`mailto:${mentor.email}`} className="mentor-link">
-                  {mentor.email}
+                <a href={`mailto:${mentorEmail}`} className="mentor-link">
+                  {mentorEmail}
                 </a>
               </>
             )}
