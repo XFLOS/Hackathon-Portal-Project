@@ -1,40 +1,56 @@
-import React from 'react';
-import { useAuth } from '../context/AuthContext';
 
-// Simple placeholder UI for post-event surveys/feedback
+import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import './SurveysPage.css';
+
 export default function SurveysPage() {
   const { role } = useAuth();
+  const [experience, setExperience] = useState('5');
+  const [comments, setComments] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSubmitted(true);
+    // Here you would send the feedback to the backend
+  };
 
   return (
-    <section>
+    <section className="surveys-section">
       <h1>Surveys & Feedback</h1>
       {role === 'admin' ? (
         <>
           <p>Create and review surveys, export results.</p>
-          <button disabled>Create Survey (placeholder)</button>
+          <button className="surveys-form-btn" disabled>Create Survey (placeholder)</button>
         </>
       ) : (
         <>
           <p>Please share your feedback about the event.</p>
-          <form onSubmit={(e) => e.preventDefault()}>
-            <label>
-              Overall experience
-              <select defaultValue="5">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-              </select>
-            </label>
-            <br />
-            <label>
-              Comments
-              <br />
-              <textarea rows={4} cols={50} placeholder="Your thoughts..." />
-            </label>
-            <br />
-            <button type="submit" disabled>Submit (placeholder)</button>
+          <form className="surveys-form" onSubmit={handleSubmit}>
+            <label htmlFor="experience">Overall experience</label>
+            <select
+              id="experience"
+              value={experience}
+              onChange={e => setExperience(e.target.value)}
+              required
+            >
+              <option value="">Select…</option>
+              <option value="1">1 - Poor</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5 - Excellent</option>
+            </select>
+            <label htmlFor="comments">Comments</label>
+            <textarea
+              id="comments"
+              rows={4}
+              placeholder="Your thoughts..."
+              value={comments}
+              onChange={e => setComments(e.target.value)}
+            />
+            <button type="submit" disabled={submitted || !experience}>Submit</button>
+            {submitted && <div className="surveys-success">Thank you for your feedback!</div>}
           </form>
         </>
       )}

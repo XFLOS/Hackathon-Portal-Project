@@ -1,0 +1,64 @@
+/* SurveysPage.css - Modern, clean, and visually appealing survey form */
+.surveys-section {
+  max-width: 480px;
+  margin: 3rem auto;
+  background: #181f2a;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px 0 rgba(0,0,0,0.18);
+  padding: 2.5rem 2rem 2rem 2rem;
+  color: #fff;
+  text-align: center;
+}
+.surveys-section h1 {
+  font-family: 'BebasNeue', 'OpenSans', sans-serif;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 1px;
+}
+.surveys-section p {
+  color: #bfc9db;
+  margin-bottom: 2rem;
+}
+.surveys-form label {
+  display: block;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+}
+.surveys-form select, .surveys-form textarea {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+  background: #232b3e;
+  color: #fff;
+  resize: vertical;
+}
+.surveys-form select:focus, .surveys-form textarea:focus {
+  outline: 2px solid #00e0ff;
+}
+.surveys-form button {
+  background: linear-gradient(90deg, #00e0ff 0%, #0077ff 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 2.5rem;
+  font-size: 1.1rem;
+  font-family: 'OpenSans', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 0.5rem;
+}
+.surveys-form button:disabled {
+  background: #3a4256;
+  color: #bfc9db;
+  cursor: not-allowed;
+}
+.surveys-form .surveys-success {
+  color: #00e0ff;
+  margin-top: 1rem;
+  font-weight: 600;
+}
