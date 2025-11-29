@@ -80,7 +80,8 @@ export default function JudgeDashboard() {
   }, [assignments, search, statusFilter, sortBy]);
 
   const renderScoreBadge = (s) => {
-    if (!s.submission_id) return <span className="judge-badge judge-badge-soft">No Submission</span>;
+    const hasSubmission = !!s.submission_id || !!s.evaluation_id || !!s.submitted_at;
+    if (!hasSubmission) return <span className="judge-badge judge-badge-soft">No Submission</span>;
     if (!s.evaluation_id) return <span className="judge-badge judge-badge-warning">Pending Eval</span>;
     const scores = [s.innovation_score, s.technical_score, s.presentation_score];
     const validScores = scores.filter(v => typeof v === 'number');
