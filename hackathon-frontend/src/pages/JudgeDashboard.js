@@ -52,8 +52,8 @@ export default function JudgeDashboard() {
     }
     if (statusFilter !== 'all') {
       rows = rows.filter(r => {
-        const submitted = !!r.submitted_at;
-        return statusFilter === 'submitted' ? submitted : !submitted;
+        const hasSubmission = !!r.submission_id || !!r.evaluation_id || !!r.submitted_at;
+        return statusFilter === 'submitted' ? hasSubmission : !hasSubmission;
       });
     }
     switch (sortBy) {
