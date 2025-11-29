@@ -3,11 +3,103 @@
    Matching portal design system
    =============================== */
 
-.mentor-dashboard {
+
+/* Animated background */
+.mentor-dashboard-bg {
   min-height: 100vh;
-  background: radial-gradient(circle at top left, #020617 0%, #0f172a 60%, #1e293b 100%);
-  padding: 2rem 1.5rem;
-  color: #e0e0e0;
+  background: linear-gradient(120deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glassmorphism effect */
+.glass {
+  background: rgba(24, 31, 42, 0.7);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 18px;
+  border: 1.5px solid rgba(255,255,255,0.08);
+}
+
+.mentor-dashboard {
+  max-width: 1100px;
+  margin: 3.5rem auto;
+  padding: 2.5rem 2rem 2rem 2rem;
+  color: #fff;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.mentor-dashboard-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  justify-content: center;
+}
+.mentor-dashboard-icon {
+  background: rgba(0,224,255,0.10);
+  border-radius: 50%;
+  padding: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 12px 0 rgba(0,224,255,0.10);
+}
+.mentor-dashboard-title {
+  font-family: 'BebasNeue', 'OpenSans', sans-serif;
+  font-size: 2.5rem;
+  margin-bottom: 0.3rem;
+  letter-spacing: 1.5px;
+  text-shadow: 0 2px 8px #00e0ff33;
+}
+.mentor-dashboard-subtitle {
+  color: #bfc9db;
+  margin-bottom: 0.2rem;
+  font-size: 1.1rem;
+}
+
+/* Stat widgets row */
+.mentor-dashboard-stats-row {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+.mentor-dashboard-stat-widget {
+  min-width: 120px;
+  background: rgba(35, 43, 62, 0.85);
+  border-radius: 14px;
+  padding: 1.2rem 1.1rem 1rem 1.1rem;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.10);
+  border: 2.5px solid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.15s;
+}
+.mentor-dashboard-stat-widget:hover {
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: 0 6px 24px 0 rgba(0,224,255,0.10);
+}
+.stat-icon {
+  font-size: 2.1rem;
+  margin-bottom: 0.3rem;
+}
+.stat-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.2rem;
+  text-shadow: 0 2px 8px #00e0ff22;
+}
+.stat-label {
+  font-size: 1.05rem;
+  color: #bfc9db;
+  letter-spacing: 0.5px;
 }
 
 /* ===============================

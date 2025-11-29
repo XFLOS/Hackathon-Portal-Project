@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
-import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
 import AppShell from '../components/layout/AppShell';
 import './MentorDashboard.css';
 
@@ -133,8 +131,10 @@ export default function MentorDashboard() {
   if (loading) {
     return (
       <AppShell>
-        <div className="mentor-dashboard">
-          <LoadingSpinner />
+        <div className="mentor-dashboard-bg">
+          <div className="mentor-dashboard glass">
+            <LoadingSpinner />
+          </div>
         </div>
       </AppShell>
     );
@@ -142,233 +142,240 @@ export default function MentorDashboard() {
 
   return (
     <AppShell>
-      <div className="mentor-dashboard">
-        {/* Header */}
-        <div className="dashboard-header">
-          <h2>Mentor Dashboard</h2>
-          <p className="subtitle">Guide and support your assigned teams throughout the hackathon</p>
-        </div>
-
-        {/* Quick Stats */}
-        <div className="mentor-stats">
-          <div className="stat-card">
-            <div className="stat-value">{teams.length}</div>
-            <div className="stat-label">Assigned Teams</div>
+      <div className="mentor-dashboard-bg">
+        <div className="mentor-dashboard glass">
+          {/* Header */}
+          <div className="mentor-dashboard-header">
+            <div className="mentor-dashboard-icon">
+              <svg width="44" height="44" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="24" cy="24" r="24" fill="#00e0ff33"/>
+                <path d="M12 36V20H36V36" stroke="#00e0ff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <rect x="20" y="24" width="8" height="8" rx="2" fill="#00e0ff"/>
+              </svg>
+            </div>
+            <div>
+              <div className="mentor-dashboard-title">Mentor Dashboard</div>
+              <div className="mentor-dashboard-subtitle">Guide and support your assigned teams throughout the hackathon</div>
+            </div>
           </div>
-          <div className="stat-card">
-            <div className="stat-value">
-              {teams.reduce((sum, t) => sum + (parseInt(t.member_count) || 0), 0)}
-            </div>
-            <div className="stat-label">Total Students</div>
+
+          {/* Stat Widgets */}
+          <div className="mentor-dashboard-stats-row">
+            <StatWidget label="Teams" value={teams.length} icon="👥" color="#00e0ff" />
+            <StatWidget label="Students" value={teams.reduce((sum, t) => sum + (parseInt(t.member_count) || 0), 0)} icon="🎓" color="#7cffb2" />
           </div>
-        </div>
 
-        {/* Quick Actions */}
-        <div className="quick-actions">
-          <Link to="/mentor/teams" className="action-btn">
-            <span className="action-icon">💬</span>
-            <div>
-              <div className="action-title">Team Q&A</div>
-              <div className="action-desc">View team updates and discussions</div>
-            </div>
-          </Link>
-          <Link to="/mentor/feedback" className="action-btn">
-            <span className="action-icon">📝</span>
-            <div>
-              <div className="action-title">Provide Feedback</div>
-              <div className="action-desc">Give guidance and suggestions</div>
-            </div>
-          </Link>
-          <Link to="/schedule" className="action-btn">
-            <span className="action-icon">📅</span>
-            <div>
-              <div className="action-title">Event Schedule</div>
-              <div className="action-desc">View workshops and check-ins</div>
-            </div>
-          </Link>
-          <Link to="/announcements" className="action-btn">
-            <span className="action-icon">📢</span>
-            <div>
-              <div className="action-title">Announcements</div>
-              <div className="action-desc">View coordinator updates</div>
-            </div>
-          </Link>
-        </div>
-
-        {/* Schedule Preview */}
-        {nextEvent && (
-          <div className="schedule-preview">
-            <div className="schedule-preview-header">
-              <h3>
-                <span className="schedule-icon">⏰</span>
-                Next Event
-              </h3>
-              <Link to="/schedule" className="view-full-schedule">
-                View Full Schedule →
-              </Link>
-            </div>
-            <div className="next-event-card">
-              <div className="event-main-info">
-                <h4 className="event-name">{nextEvent.event_name}</h4>
-                {nextEvent.description && (
-                  <p className="event-description">{nextEvent.description}</p>
-                )}
+          {/* Quick Actions */}
+          <div className="quick-actions">
+            <Link to="/mentor/teams" className="action-btn">
+              <span className="action-icon">💬</span>
+              <div>
+                <div className="action-title">Team Q&A</div>
+                <div className="action-desc">View team updates and discussions</div>
               </div>
-              <div className="event-details-grid">
-                <div className="event-detail-item">
-                  <span className="detail-icon">🕒</span>
-                  <span className="detail-label">Time:</span>
-                  <span className="detail-value">{formatEventTime(nextEvent.start_time)}</span>
+            </Link>
+            <Link to="/mentor/feedback" className="action-btn">
+              <span className="action-icon">📝</span>
+              <div>
+                <div className="action-title">Provide Feedback</div>
+                <div className="action-desc">Give guidance and suggestions</div>
+              </div>
+            </Link>
+            <Link to="/schedule" className="action-btn">
+              <span className="action-icon">📅</span>
+              <div>
+                <div className="action-title">Event Schedule</div>
+                <div className="action-desc">View workshops and check-ins</div>
+              </div>
+            </Link>
+            <Link to="/announcements" className="action-btn">
+              <span className="action-icon">📢</span>
+              <div>
+                <div className="action-title">Announcements</div>
+                <div className="action-desc">View coordinator updates</div>
+              </div>
+            </Link>
+          </div>
+
+          {/* Schedule Preview */}
+          {nextEvent && (
+            <div className="schedule-preview">
+              <div className="schedule-preview-header">
+                <h3>
+                  <span className="schedule-icon">⏰</span>
+                  Next Event
+                </h3>
+                <Link to="/schedule" className="view-full-schedule">
+                  View Full Schedule →
+                </Link>
+              </div>
+              <div className="next-event-card">
+                <div className="event-main-info">
+                  <h4 className="event-name">{nextEvent.event_name}</h4>
+                  {nextEvent.description && (
+                    <p className="event-description">{nextEvent.description}</p>
+                  )}
                 </div>
-                {nextEvent.location && (
+                <div className="event-details-grid">
                   <div className="event-detail-item">
-                    <span className="detail-icon">📍</span>
-                    <span className="detail-label">Location:</span>
-                    <span className="detail-value">{nextEvent.location}</span>
+                    <span className="detail-icon">🕒</span>
+                    <span className="detail-label">Time:</span>
+                    <span className="detail-value">{formatEventTime(nextEvent.start_time)}</span>
                   </div>
-                )}
-                <div className="event-detail-item">
-                  <span className="detail-icon">⏳</span>
-                  <span className="detail-label">Starts:</span>
-                  <span className="detail-value countdown">{formatTimeUntil(nextEvent.start_time)}</span>
+                  {nextEvent.location && (
+                    <div className="event-detail-item">
+                      <span className="detail-icon">📍</span>
+                      <span className="detail-label">Location:</span>
+                      <span className="detail-value">{nextEvent.location}</span>
+                    </div>
+                  )}
+                  <div className="event-detail-item">
+                    <span className="detail-icon">⏳</span>
+                    <span className="detail-label">Starts:</span>
+                    <span className="detail-value countdown">{formatTimeUntil(nextEvent.start_time)}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        )}
-
-        {/* Teams List */}
-        <div className="teams-section">
-          <h3>Your Assigned Teams</h3>
-          
-          {teams.length === 0 ? (
-            <div className="empty-state">
-              <p className="empty-icon">📋</p>
-              <p className="empty-title">No Teams Assigned Yet</p>
-              <p className="empty-desc">You'll see your assigned teams here once they're allocated.</p>
-            </div>
-          ) : (
-            <div className="teams-grid">
-              {teams.map((team) => {
-                const isExpanded = expandedTeams[team.id];
-                const details = teamDetails[team.id];
-                const isLoadingDetails = loadingDetails[team.id];
-
-                return (
-                  <div key={team.id} className={`team-card ${isExpanded ? 'expanded' : ''}`}>
-                    <div className="team-card-header" onClick={() => toggleTeamExpand(team.id)}>
-                      <div className="team-info">
-                        <h4 className="team-name">{team.name}</h4>
-                        <p className="team-meta">
-                          {team.member_count || 0} members • Assigned {formatDate(team.assigned_at)}
-                        </p>
-                      </div>
-                      <button className="expand-btn">
-                        {isExpanded ? '▼' : '▶'}
-                      </button>
-                    </div>
-
-                    {isExpanded && (
-                      <div className="team-card-body">
-                        {isLoadingDetails ? (
-                          <div className="loading-details">Loading details...</div>
-                        ) : details ? (
-                          <>
-                            {/* Project Info */}
-                            <div className="detail-section">
-                              <h5>Project Details</h5>
-                              <div className="project-info">
-                                <div className="info-row">
-                                  <span className="label">Project Name:</span>
-                                  <span className="value">{details.project_name || 'Not specified'}</span>
-                                </div>
-                                <div className="info-row">
-                                  <span className="label">Description:</span>
-                                  <span className="value">{details.project_description || 'No description provided'}</span>
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Team Members */}
-                            <div className="detail-section">
-                              <h5>Team Members ({details.members?.length || 0})</h5>
-                              {details.members && details.members.length > 0 ? (
-                                <div className="members-list">
-                                  {details.members.map((member) => (
-                                    <div key={member.id} className="member-item">
-                                      <div className="member-info">
-                                        <span className="member-name">{member.full_name}</span>
-                                        {member.role === 'leader' && (
-                                          <span className="leader-badge">Leader</span>
-                                        )}
-                                      </div>
-                                      <a href={`mailto:${member.email}`} className="member-email">
-                                        {member.email}
-                                      </a>
-                                    </div>
-                                  ))}
-                                </div>
-                              ) : (
-                                <p className="empty-text">No members yet</p>
-                              )}
-                            </div>
-
-                            {/* Submission Status */}
-                            <div className="detail-section">
-                              <h5>Submission Status</h5>
-                              {details.submission ? (
-                                <div className="submission-info">
-                                  <div className="status-badge submitted">✓ Submitted</div>
-                                  <div className="submission-details">
-                                    <p><strong>{details.submission.title}</strong></p>
-                                    <p className="submission-desc">{details.submission.description}</p>
-                                    {details.submission.github_url && (
-                                      <a href={details.submission.github_url} target="_blank" rel="noopener noreferrer" className="submission-link">
-                                        View on GitHub
-                                      </a>
-                                    )}
-                                    {details.submission.demo_url && (
-                                      <a href={details.submission.demo_url} target="_blank" rel="noopener noreferrer" className="submission-link">
-                                        View Demo
-                                      </a>
-                                    )}
-                                  </div>
-                                </div>
-                              ) : (
-                                <div className="submission-info">
-                                  <div className="status-badge pending">⏳ Not Submitted</div>
-                                  <p className="empty-text">Team hasn't submitted their project yet</p>
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Action Buttons */}
-                            <div className="team-actions">
-                              {details.submission && (
-                                <Link to={`/mentor/submission/${team.id}`} className="btn-primary">
-                                  View Full Submission
-                                </Link>
-                              )}
-                              <Link to={`/mentor/teams?team=${team.id}`} className="btn-secondary">
-                                View Updates
-                              </Link>
-                              <Link to={`/mentor/feedback?team=${team.id}`} className="btn-secondary">
-                                Give Feedback
-                              </Link>
-                            </div>
-                          </>
-                        ) : (
-                          <p className="error-text">Failed to load team details</p>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
             </div>
           )}
+
+          {/* Teams List */}
+          <div className="teams-section">
+            <h3>Your Assigned Teams</h3>
+            {teams.length === 0 ? (
+              <div className="empty-state">
+                <p className="empty-icon">📋</p>
+                <p className="empty-title">No Teams Assigned Yet</p>
+                <p className="empty-desc">You'll see your assigned teams here once they're allocated.</p>
+              </div>
+            ) : (
+              <div className="teams-grid">
+                {teams.map((team) => {
+                  const isExpanded = expandedTeams[team.id];
+                  const details = teamDetails[team.id];
+                  const isLoadingDetails = loadingDetails[team.id];
+                  return (
+                    <div key={team.id} className={`team-card ${isExpanded ? 'expanded' : ''}`}>
+                      <div className="team-card-header" onClick={() => toggleTeamExpand(team.id)}>
+                        <div className="team-info">
+                          <h4 className="team-name">{team.name}</h4>
+                          <p className="team-meta">
+                            {team.member_count || 0} members • Assigned {formatDate(team.assigned_at)}
+                          </p>
+                        </div>
+                        <button className="expand-btn">
+                          {isExpanded ? '▼' : '▶'}
+                        </button>
+                      </div>
+                      {isExpanded && (
+                        <div className="team-card-body">
+                          {isLoadingDetails ? (
+                            <div className="loading-details">Loading details...</div>
+                          ) : details ? (
+                            <>
+                              {/* Project Info */}
+                              <div className="detail-section">
+                                <h5>Project Details</h5>
+                                <div className="project-info">
+                                  <div className="info-row">
+                                    <span className="label">Project Name:</span>
+                                    <span className="value">{details.project_name || 'Not specified'}</span>
+                                  </div>
+                                  <div className="info-row">
+                                    <span className="label">Description:</span>
+                                    <span className="value">{details.project_description || 'No description provided'}</span>
+                                  </div>
+                                </div>
+                              </div>
+                              {/* Team Members */}
+                              <div className="detail-section">
+                                <h5>Team Members ({details.members?.length || 0})</h5>
+                                {details.members && details.members.length > 0 ? (
+                                  <div className="members-list">
+                                    {details.members.map((member) => (
+                                      <div key={member.id} className="member-item">
+                                        <div className="member-info">
+                                          <span className="member-name">{member.full_name}</span>
+                                          {member.role === 'leader' && (
+                                            <span className="leader-badge">Leader</span>
+                                          )}
+                                        </div>
+                                        <a href={`mailto:${member.email}`} className="member-email">
+                                          {member.email}
+                                        </a>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <p className="empty-text">No members yet</p>
+                                )}
+                              </div>
+                              {/* Submission Status */}
+                              <div className="detail-section">
+                                <h5>Submission Status</h5>
+                                {details.submission ? (
+                                  <div className="submission-info">
+                                    <div className="status-badge submitted">✓ Submitted</div>
+                                    <div className="submission-details">
+                                      <p><strong>{details.submission.title}</strong></p>
+                                      <p className="submission-desc">{details.submission.description}</p>
+                                      {details.submission.github_url && (
+                                        <a href={details.submission.github_url} target="_blank" rel="noopener noreferrer" className="submission-link">
+                                          View on GitHub
+                                        </a>
+                                      )}
+                                      {details.submission.demo_url && (
+                                        <a href={details.submission.demo_url} target="_blank" rel="noopener noreferrer" className="submission-link">
+                                          View Demo
+                                        </a>
+                                      )}
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div className="submission-info">
+                                    <div className="status-badge pending">⏳ Not Submitted</div>
+                                    <p className="empty-text">Team hasn't submitted their project yet</p>
+                                  </div>
+                                )}
+                              </div>
+                              {/* Action Buttons */}
+                              <div className="team-actions">
+                                {details.submission && (
+                                  <Link to={`/mentor/submission/${team.id}`} className="btn-primary">
+                                    View Full Submission
+                                  </Link>
+                                )}
+                                <Link to={`/mentor/teams?team=${team.id}`} className="btn-secondary">
+                                  View Updates
+                                </Link>
+                                <Link to={`/mentor/feedback?team=${team.id}`} className="btn-secondary">
+                                  Give Feedback
+                                </Link>
+                              </div>
+                            </>
+                          ) : (
+                            <p className="error-text">Failed to load team details</p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </AppShell>
   );
+
+  function StatWidget({ label, value, icon, color }) {
+    return (
+      <div className="mentor-dashboard-stat-widget glass" style={{ borderColor: color }}>
+        <div className="stat-icon" style={{ color }}>{icon}</div>
+        <div className="stat-value">{value}</div>
+        <div className="stat-label">{label}</div>
+      </div>
+    );
+  }
 }
