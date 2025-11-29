@@ -101,11 +101,7 @@ export default function JudgeDashboard() {
           <Link to="/judge/feedback" className="judge-btn judge-btn-secondary">Feedback History</Link>
           <Link to="/judge/schedule" className="judge-btn judge-btn-outline">Presentation Schedule</Link>
         </div>
-        {/* Debug panel for assignment data */}
-        <details style={{ marginBottom: '1rem', background: '#1e293b', color: '#fff', borderRadius: 8, padding: '0.5rem 1rem' }}>
-          <summary style={{ cursor: 'pointer', fontWeight: 600 }}>Debug: Raw Assignments Data</summary>
-          <pre style={{ fontSize: 12, whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>{JSON.stringify(assignments, null, 2)}</pre>
-        </details>
+        {/* Debug panel removed for production */}
         {loading && <LoadingSpinner />}
         {error && !loading && <p style={{ color: 'var(--judge-danger)', fontSize:'var(--judge-font-sm)' }}>{error}</p>}
         <section className="judge-card" aria-label="Assigned Teams">
