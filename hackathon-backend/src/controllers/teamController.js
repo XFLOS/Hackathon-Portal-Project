@@ -81,8 +81,24 @@ export const getMyTeam = async (req, res) => {
        ORDER BY tm.role DESC, tm.joined_at`,
       [team.id]
     );
-
     team.members = membersResult.rows;
+
+    // Get assigned mentor (if any)
+    const mentorResult = await db.query(
+      `SELECT u.id as mentor_id, u.full_name as mentor_name
+         FROM mentor_assignments ma
+         JOIN users u ON ma.mentor_id = u.id
+        WHERE ma.team_id = $1
+        LIMIT 1`,
+      [team.id]
+    );
+    if (mentorResult.rows.length > 0) {
+      team.mentor_id = mentorResult.rows[0].mentor_id;
+      team.mentor_name = mentorResult.rows[0].mentor_name;
+    } else {
+      team.mentor_id = null;
+      team.mentor_name = null;
+    }
 
     res.json(team);
   } catch (error) {
