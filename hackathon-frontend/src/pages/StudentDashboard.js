@@ -161,9 +161,9 @@ export default function StudentDashboard() {
                           <strong>Project:</strong> {team.project_name}
                         </div>
                       )}
-                      {team.mentor_id || team.mentor ? (
+                      {team.mentor_name || (team.mentor && team.mentor.name) ? (
                         <div className="team-detail">
-                          <strong>Mentor:</strong> {team.mentor_name || team.mentor?.name || "Assigned"}
+                          <strong>Mentor:</strong> {team.mentor_name || team.mentor?.name}
                         </div>
                       ) : (
                         <div className="team-detail mentor-unassigned">
