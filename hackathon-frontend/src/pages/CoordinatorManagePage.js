@@ -339,6 +339,6 @@ export default function CoordinatorManagePage() {
                           This feature requires backend support for judging lock/unlock.
                         </div>
                       </div>
-                    </div>
-                );
+                </div>
+            );
 
