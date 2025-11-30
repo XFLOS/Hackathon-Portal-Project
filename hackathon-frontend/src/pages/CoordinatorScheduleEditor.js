@@ -4,7 +4,6 @@ import Button from '../components/ui/Button';
 import Alert from '../components/ui/Alert';
 
 
-export default function CoordinatorScheduleEditor() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,6 +18,12 @@ export default function CoordinatorScheduleEditor() {
   const [formError, setFormError] = useState(null);
   const [formSuccess, setFormSuccess] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  // Edit state
+  const [editId, setEditId] = useState(null);
+  const [editForm, setEditForm] = useState(null);
+  const [editError, setEditError] = useState(null);
+  const [editSuccess, setEditSuccess] = useState(null);
+  const [editSubmitting, setEditSubmitting] = useState(false);
 
   // Fetch events
   useEffect(() => {
@@ -140,6 +145,7 @@ export default function CoordinatorScheduleEditor() {
 
       {loading && <p>Loading schedule...</p>}
       {error && <Alert type="error" message={error} />}
+      {editSuccess && <Alert type="success" message={editSuccess} style={{ marginBottom: 12 }} />}
       {!loading && !error && (
         <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 24 }}>
           <thead>
@@ -150,15 +156,69 @@ export default function CoordinatorScheduleEditor() {
               <th style={{ border: '1px solid #ccc', padding: 6 }}>Start Time</th>
               <th style={{ border: '1px solid #ccc', padding: 6 }}>End Time</th>
               <th style={{ border: '1px solid #ccc', padding: 6 }}>Location</th>
+              <th style={{ border: '1px solid #ccc', padding: 6 }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {events.length === 0 ? (
-              <tr><td colSpan={6} style={{ textAlign: 'center', color: '#888' }}>No events scheduled.</td></tr>
+              <tr><td colSpan={7} style={{ textAlign: 'center', color: '#888' }}>No events scheduled.</td></tr>
             ) : (
               events.map(ev => {
                 const start = new Date(ev.start_time);
                 const end = new Date(ev.end_time);
+                const isEditing = editId === ev.id;
+                if (isEditing && editForm) {
+                  return (
+                    <tr key={ev.id} style={{ background: '#f6faff' }}>
+                      <td colSpan={7}>
+                        <form onSubmit={async e => {
+                          e.preventDefault();
+                          setEditError(null);
+                          setEditSuccess(null);
+                          // Validate
+                          if (!editForm.event_name.trim()) return setEditError('Event name is required.');
+                          if (!editForm.date) return setEditError('Date is required.');
+                          if (!editForm.start_time) return setEditError('Start time is required.');
+                          if (!editForm.end_time) return setEditError('End time is required.');
+                          if (!editForm.location.trim()) return setEditError('Location is required.');
+                          const s = new Date(`${editForm.date}T${editForm.start_time}`);
+                          const en = new Date(`${editForm.date}T${editForm.end_time}`);
+                          if (en <= s) return setEditError('End time must be after start time.');
+                          setEditSubmitting(true);
+                          try {
+                            const payload = {
+                              event_name: editForm.event_name,
+                              description: editForm.description,
+                              start_time: `${editForm.date}T${editForm.start_time}`,
+                              end_time: `${editForm.date}T${editForm.end_time}`,
+                              location: editForm.location
+                            };
+                            const res = await api.put(`/coordinator/schedule/${ev.id}`, payload);
+                            setEvents(evts => evts.map(e => e.id === ev.id ? res.data.event : e));
+                            setEditSuccess('Event updated successfully!');
+                            setEditId(null);
+                            setEditForm(null);
+                          } catch (err) {
+                            setEditError(err?.response?.data?.message || 'Failed to update event.');
+                          } finally {
+                            setEditSubmitting(false);
+                          }
+                        }} style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+                          <input name="event_name" value={editForm.event_name} onChange={e => setEditForm(f => ({ ...f, event_name: e.target.value }))} required style={{ minWidth: 120 }} />
+                          <input name="description" value={editForm.description} onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))} style={{ minWidth: 120 }} />
+                          <input type="date" name="date" value={editForm.date} onChange={e => setEditForm(f => ({ ...f, date: e.target.value }))} required style={{ minWidth: 110 }} />
+                          <input type="time" name="start_time" value={editForm.start_time} onChange={e => setEditForm(f => ({ ...f, start_time: e.target.value }))} required style={{ minWidth: 90 }} />
+                          <input type="time" name="end_time" value={editForm.end_time} onChange={e => setEditForm(f => ({ ...f, end_time: e.target.value }))} required style={{ minWidth: 90 }} />
+                          <input name="location" value={editForm.location} onChange={e => setEditForm(f => ({ ...f, location: e.target.value }))} required style={{ minWidth: 120 }} />
+                          <Button type="submit" disabled={editSubmitting} size="sm">{editSubmitting ? 'Saving...' : 'Save'}</Button>
+                          <Button type="button" variant="secondary" size="sm" onClick={() => { setEditId(null); setEditForm(null); }}>Cancel</Button>
+                          {editError && <span style={{ color: 'red', marginLeft: 8 }}>{editError}</span>}
+                        </form>
+                      </td>
+                    </tr>
+                  );
+                }
+                // Normal row
                 return (
                   <tr key={ev.id}>
                     <td style={{ border: '1px solid #ccc', padding: 6 }}>{ev.event_name}</td>
@@ -167,6 +227,21 @@ export default function CoordinatorScheduleEditor() {
                     <td style={{ border: '1px solid #ccc', padding: 6 }}>{start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
                     <td style={{ border: '1px solid #ccc', padding: 6 }}>{end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
                     <td style={{ border: '1px solid #ccc', padding: 6 }}>{ev.location}</td>
+                    <td style={{ border: '1px solid #ccc', padding: 6 }}>
+                      <Button type="button" size="sm" onClick={() => {
+                        setEditId(ev.id);
+                        setEditError(null);
+                        setEditSuccess(null);
+                        setEditForm({
+                          event_name: ev.event_name,
+                          description: ev.description || '',
+                          date: ev.start_time ? new Date(ev.start_time).toISOString().slice(0, 10) : '',
+                          start_time: ev.start_time ? new Date(ev.start_time).toISOString().slice(11, 16) : '',
+                          end_time: ev.end_time ? new Date(ev.end_time).toISOString().slice(11, 16) : '',
+                          location: ev.location || ''
+                        });
+                      }}>Edit</Button>
+                    </td>
                   </tr>
                 );
               })
