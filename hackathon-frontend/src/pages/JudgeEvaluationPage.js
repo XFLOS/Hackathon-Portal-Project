@@ -12,18 +12,6 @@ export default function JudgeEvaluationPage() {
   // Local form state keyed by submission id
   const [formState, setFormState] = useState({});
   const [submitting, setSubmitting] = useState({}); // per-row submitting flag
-  // Submission details for view
-  const [viewDetails, setViewDetails] = useState({}); // { [id]: { loading, error, data } }
-  // Fetch submission details for a given submission id
-  const fetchSubmissionDetails = async (submissionId) => {
-    setViewDetails(prev => ({ ...prev, [submissionId]: { loading: true, error: '', data: null } }));
-    try {
-      const res = await api.get(`/submission/${submissionId}`);
-      setViewDetails(prev => ({ ...prev, [submissionId]: { loading: false, error: '', data: res.data } }));
-    } catch (e) {
-      setViewDetails(prev => ({ ...prev, [submissionId]: { loading: false, error: e.response?.data?.message || e.message || 'Failed to load submission', data: null } }));
-    }
-  };
 
   // Initialize form state with existing evaluation scores if present
   useEffect(() => {
@@ -102,28 +90,16 @@ export default function JudgeEvaluationPage() {
     }
   };
 
-  if (loading) return <div className="judge-page"><div className="judge-loading-container">Loading submissions…</div></div>;
-  if (error) return (
-    <div className="judge-page">
-      <div className="judge-empty">
-        <strong style={{ color:'var(--judge-danger)' }}>Failed to Load Submissions</strong>
-        <span style={{ fontSize:'var(--judge-font-xs)', color:'var(--judge-text-muted)' }}>{error}</span>
-      </div>
-    </div>
-  );
+  if (loading) return <div className="judge-page"><p style={{ color:'var(--judge-text-muted)' }}>Loading…</p></div>;
+  if (error) return <div className="judge-page"><p style={{ color: 'var(--judge-danger)' }}>{error}</p></div>;
 
   return (
     <div className="judge-page">
       <header className="judge-page-header">
-        <h1 className="judge-title">Evaluation</h1>
+        <h1 className="judge-title">Judge Evaluation</h1>
         <p className="judge-subtitle">Provide scores (0–10) for each rubric category. You can update at any time.</p>
       </header>
-      {submissions.length === 0 && (
-        <div className="judge-empty">
-          <strong>No Submissions Available</strong>
-          <span style={{ fontSize:'var(--judge-font-xs)', color:'var(--judge-text-muted)' }}>You have no assigned submissions to evaluate at this time.</span>
-        </div>
-      )}
+      {submissions.length === 0 && <p style={{ color:'var(--judge-text-muted)' }}>No submissions available.</p>}
       {submissions.map(sub => {
         const evaluated = !!sub.evaluation_id;
         const fs = formState[sub.id] || {};
@@ -138,36 +114,6 @@ export default function JudgeEvaluationPage() {
                 <div className="judge-card-meta">Submission #{sub.id}</div>
               </div>
               {evaluated && <span className="judge-badge judge-badge-success">Evaluated • {total}</span>}
-            </div>
-            {/* View Submission Section */}
-            <div style={{ margin: '0.5rem 0' }}>
-              <button
-                className="judge-btn judge-btn-outline"
-                style={{ minWidth: 150, marginBottom: 6 }}
-                onClick={() => fetchSubmissionDetails(sub.id)}
-                aria-expanded={!!viewDetails[sub.id]?.data}
-              >
-                {viewDetails[sub.id]?.data ? 'Hide Submission' : (viewDetails[sub.id]?.loading ? 'Loading…' : 'View Submission')}
-              </button>
-              {viewDetails[sub.id]?.loading && <span style={{ marginLeft: 8, fontSize: 12 }}>Loading…</span>}
-              {viewDetails[sub.id]?.error && <div style={{ color: 'var(--judge-danger)', fontSize: 13 }}>{viewDetails[sub.id].error}</div>}
-              {viewDetails[sub.id]?.data && (
-                <div className="judge-submission-view" style={{ background: '#181c2a', borderRadius: 8, padding: '0.75rem 1rem', marginTop: 8 }}>
-                  <div><strong>Title:</strong> {viewDetails[sub.id].data.title || viewDetails[sub.id].data.project_name || 'Untitled Submission'}</div>
-                  {viewDetails[sub.id].data.description && <div style={{ marginTop: 4 }}><strong>Description:</strong> {viewDetails[sub.id].data.description}</div>}
-                  {viewDetails[sub.id].data.file_url && (
-                    <div style={{ marginTop: 4 }}>
-                      <strong>File:</strong> <a href={viewDetails[sub.id].data.file_url} target="_blank" rel="noopener noreferrer">Download/View</a>
-                    </div>
-                  )}
-                  {viewDetails[sub.id].data.filename && (
-                    <div style={{ marginTop: 4 }}><strong>Filename:</strong> {viewDetails[sub.id].data.filename}</div>
-                  )}
-                  {viewDetails[sub.id].data.created_at && (
-                    <div style={{ marginTop: 4, fontSize: 12, color: '#aaa' }}><strong>Submitted:</strong> {new Date(viewDetails[sub.id].data.created_at).toLocaleString()}</div>
-                  )}
-                </div>
-              )}
             </div>
             <div className="judge-metrics-grid" style={{ marginTop: '.25rem' }}>
               <div>

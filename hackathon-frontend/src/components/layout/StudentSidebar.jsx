@@ -6,6 +6,7 @@ export default function StudentSidebar() {
   const navItems = [
     { path: '/student-dashboard', label: 'Dashboard', icon: '📊' },
     { path: '/team', label: 'Team', icon: '👥' },
+    { path: '/team-selection', label: 'Team Selection', icon: '🔍' },
     { path: '/submission', label: 'Submissions', icon: '📤' },
     { path: '/student/chat', label: 'Chat', icon: '💬' },
     { path: '/student/resources', label: 'Resources', icon: '📚' },
