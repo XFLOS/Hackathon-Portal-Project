@@ -199,46 +199,7 @@ export default function CoordinatorManagePage() {
                 <th style={{ border: '1px solid #ccc', padding: 4 }}>Team</th>
                 <th style={{ border: '1px solid #ccc', padding: 4 }}>Title</th>
 
-                import React, { useEffect, useState } from 'react';
-                import api from '../services/api';
-
-                export default function CoordinatorManagePage() {
-                  // State hooks
-                  const [teams, setTeams] = useState([]);
-                  const [users, setUsers] = useState([]);
-                  const [submissions, setSubmissions] = useState([]);
-                  const [roleFilter, setRoleFilter] = useState('all');
-                  const [loading, setLoading] = useState(true);
-                  const [evaluations, setEvaluations] = useState([]);
-                  const [submissionsLocked, setSubmissionsLocked] = useState(false);
-
-                  // Initial data load
-                  useEffect(() => {
-                    let mounted = true;
-                    Promise.all([
-                      api.get('/teams').catch(() => ({ data: [] })),
-                      api.get('/users').catch(() => ({ data: [] })),
-                      api.get('/submissions').catch(() => ({ data: [] }))
-                    ])
-                      .then(([t, u, s]) => {
-                        if (mounted) {
-                          setTeams(t.data || []);
-                          setUsers(u.data || []);
-                          setSubmissions(s.data || []);
-                        }
-                      })
-                      .finally(() => { if (mounted) setLoading(false); });
-                    return () => { mounted = false; };
-                  }, []);
-
-                  // Load evaluations for judge progress tracking
-                  useEffect(() => {
-                    let mounted = true;
-                    api.get('/evaluations').then(res => {
-                      if (mounted) setEvaluations(res.data || []);
-                    }).catch(() => {});
-                    return () => { mounted = false; };
-                  }, []);
+                // ...existing code...
 
                   // Filter users by role
                   const filteredUsers = roleFilter === 'all' ? users : users.filter(u => u.role === roleFilter);
