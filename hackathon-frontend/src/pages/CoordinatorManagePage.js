@@ -1,78 +1,17 @@
-                <div style={{ marginTop: 32 }}>
-                  <h3>Judging Control</h3>
-                  <button disabled title="Backend support required for judging lock">
-                    Lock Judging (backend required)
-                  </button>
-                  <div style={{ color: '#888', fontSize: 13, marginTop: 4 }}>
-                    This feature requires backend support for judging lock/unlock.
-                  </div>
-                </div>
-          // Judge progress tracking
-          const [evaluations, setEvaluations] = useState([]);
-          useEffect(() => {
-            let mounted = true;
-            api.get('/evaluations').then(res => {
-              if (mounted) setEvaluations(res.data || []);
-            }).catch(() => {});
-            return () => { mounted = false; };
-          }, []);
-
-          // Helper: get judges who scored a submission
-          const getJudgesForSubmission = (submissionId) => {
-            return evaluations.filter(e => e.submission_id === submissionId).map(e => e.judge_name || e.judge_id);
-          };
-        // Lock/unlock submissions using backend API
-        const [submissionsLocked, setSubmissionsLocked] = useState(false);
-        const lockSubmissions = async (lock) => {
-          try {
-            await api.put('/submissions/lock', { locked: lock });
-            setSubmissionsLocked(lock);
-            alert(lock ? 'Submissions locked' : 'Submissions reopened');
-          } catch (err) {
-            alert('Failed to update submission lock');
-          }
-        };
-      // Remove student from team using backend API
-      const removeStudentFromTeam = async (teamId, studentId) => {
-        if (!studentId) return;
-        try {
-          await api.delete('/teams/remove-member', { data: { team_id: teamId, user_id: studentId } });
-          alert('Student removed from team');
-        } catch (err) {
-          alert('Failed to remove student');
-        }
-      };
-    // Force add student to team using backend API
-    const addStudentToTeam = async (teamId, studentId) => {
-      if (!studentId) return;
-      try {
-        await api.post('/teams/add-member', { team_id: teamId, user_id: studentId });
-        alert('Student added to team');
-      } catch (err) {
-        alert('Failed to add student');
-      }
-    };
-  // Assign judge to team using backend API
-  const assignJudge = async (teamId, judgeId) => {
-    if (!judgeId) return;
-    try {
-      await api.post('/teams/assign-judge', { judge_id: judgeId, team_id: teamId });
-      alert('Judge assigned successfully');
-    } catch (err) {
-      alert('Failed to assign judge');
-    }
-  };
-
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 
 export default function CoordinatorManagePage() {
+  // State hooks
   const [teams, setTeams] = useState([]);
   const [users, setUsers] = useState([]);
   const [submissions, setSubmissions] = useState([]);
   const [roleFilter, setRoleFilter] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [evaluations, setEvaluations] = useState([]);
+  const [submissionsLocked, setSubmissionsLocked] = useState(false);
 
+  // Initial data load
   useEffect(() => {
     let mounted = true;
     Promise.all([
@@ -91,6 +30,14 @@ export default function CoordinatorManagePage() {
     return () => { mounted = false; };
   }, []);
 
+  // Load evaluations for judge progress tracking
+  useEffect(() => {
+    let mounted = true;
+    api.get('/evaluations').then(res => {
+      if (mounted) setEvaluations(res.data || []);
+    }).catch(() => {});
+    return () => { mounted = false; };
+  }, []);
 
   // Filter users by role
   const filteredUsers = roleFilter === 'all' ? users : users.filter(u => u.role === roleFilter);
@@ -105,6 +52,55 @@ export default function CoordinatorManagePage() {
     } catch (err) {
       alert('Failed to assign mentor');
     }
+  };
+
+  // Assign judge to team using backend API
+  const assignJudge = async (teamId, judgeId) => {
+    if (!judgeId) return;
+    try {
+      await api.post('/teams/assign-judge', { judge_id: judgeId, team_id: teamId });
+      alert('Judge assigned successfully');
+    } catch (err) {
+      alert('Failed to assign judge');
+    }
+  };
+
+  // Force add student to team using backend API
+  const addStudentToTeam = async (teamId, studentId) => {
+    if (!studentId) return;
+    try {
+      await api.post('/teams/add-member', { team_id: teamId, user_id: studentId });
+      alert('Student added to team');
+    } catch (err) {
+      alert('Failed to add student');
+    }
+  };
+
+  // Remove student from team using backend API
+  const removeStudentFromTeam = async (teamId, studentId) => {
+    if (!studentId) return;
+    try {
+      await api.delete('/teams/remove-member', { data: { team_id: teamId, user_id: studentId } });
+      alert('Student removed from team');
+    } catch (err) {
+      alert('Failed to remove student');
+    }
+  };
+
+  // Lock/unlock submissions using backend API
+  const lockSubmissions = async (lock) => {
+    try {
+      await api.put('/submissions/lock', { locked: lock });
+      setSubmissionsLocked(lock);
+      alert(lock ? 'Submissions locked' : 'Submissions reopened');
+    } catch (err) {
+      alert('Failed to update submission lock');
+    }
+  };
+
+  // Helper: get judges who scored a submission
+  const getJudgesForSubmission = (submissionId) => {
+    return evaluations.filter(e => e.submission_id === submissionId).map(e => e.judge_name || e.judge_id);
   };
 
   if (loading) return <p>Loading…</p>;
@@ -202,6 +198,137 @@ export default function CoordinatorManagePage() {
               <tr>
                 <th style={{ border: '1px solid #ccc', padding: 4 }}>Team</th>
                 <th style={{ border: '1px solid #ccc', padding: 4 }}>Title</th>
+
+                import React, { useEffect, useState } from 'react';
+                import api from '../services/api';
+
+                export default function CoordinatorManagePage() {
+                  // State hooks
+                  const [teams, setTeams] = useState([]);
+                  const [users, setUsers] = useState([]);
+                  const [submissions, setSubmissions] = useState([]);
+                  const [roleFilter, setRoleFilter] = useState('all');
+                  const [loading, setLoading] = useState(true);
+                  const [evaluations, setEvaluations] = useState([]);
+                  const [submissionsLocked, setSubmissionsLocked] = useState(false);
+
+                  // Initial data load
+                  useEffect(() => {
+                    let mounted = true;
+                    Promise.all([
+                      api.get('/teams').catch(() => ({ data: [] })),
+                      api.get('/users').catch(() => ({ data: [] })),
+                      api.get('/submissions').catch(() => ({ data: [] }))
+                    ])
+                      .then(([t, u, s]) => {
+                        if (mounted) {
+                          setTeams(t.data || []);
+                          setUsers(u.data || []);
+                          setSubmissions(s.data || []);
+                        }
+                      })
+                      .finally(() => { if (mounted) setLoading(false); });
+                    return () => { mounted = false; };
+                  }, []);
+
+                  // Load evaluations for judge progress tracking
+                  useEffect(() => {
+                    let mounted = true;
+                    api.get('/evaluations').then(res => {
+                      if (mounted) setEvaluations(res.data || []);
+                    }).catch(() => {});
+                    return () => { mounted = false; };
+                  }, []);
+
+                  // Filter users by role
+                  const filteredUsers = roleFilter === 'all' ? users : users.filter(u => u.role === roleFilter);
+
+                  // Assign mentor to team using backend API
+                  const assignMentor = async (teamId, mentorId) => {
+                    if (!mentorId) return;
+                    try {
+                      await api.post('/coordinator/assign-mentor', { mentor_id: mentorId, team_id: teamId });
+                      setTeams(prev => prev.map(t => t.id === teamId ? { ...t, mentorId } : t));
+                      alert('Mentor assigned successfully');
+                    } catch (err) {
+                      alert('Failed to assign mentor');
+                    }
+                  };
+
+                  // Assign judge to team using backend API
+                  const assignJudge = async (teamId, judgeId) => {
+                    if (!judgeId) return;
+                    try {
+                      await api.post('/teams/assign-judge', { judge_id: judgeId, team_id: teamId });
+                      alert('Judge assigned successfully');
+                    } catch (err) {
+                      alert('Failed to assign judge');
+                    }
+                  };
+
+                  // Force add student to team using backend API
+                  const addStudentToTeam = async (teamId, studentId) => {
+                    if (!studentId) return;
+                    try {
+                      await api.post('/teams/add-member', { team_id: teamId, user_id: studentId });
+                      alert('Student added to team');
+                    } catch (err) {
+                      alert('Failed to add student');
+                    }
+                  };
+
+                  // Remove student from team using backend API
+                  const removeStudentFromTeam = async (teamId, studentId) => {
+                    if (!studentId) return;
+                    try {
+                      await api.delete('/teams/remove-member', { data: { team_id: teamId, user_id: studentId } });
+                      alert('Student removed from team');
+                    } catch (err) {
+                      alert('Failed to remove student');
+                    }
+                  };
+
+                  // Lock/unlock submissions using backend API
+                  const lockSubmissions = async (lock) => {
+                    try {
+                      await api.put('/submissions/lock', { locked: lock });
+                      setSubmissionsLocked(lock);
+                      alert(lock ? 'Submissions locked' : 'Submissions reopened');
+                    } catch (err) {
+                      alert('Failed to update submission lock');
+                    }
+                  };
+
+                  // Helper: get judges who scored a submission
+                  const getJudgesForSubmission = (submissionId) => {
+                    return evaluations.filter(e => e.submission_id === submissionId).map(e => e.judge_name || e.judge_id);
+                  };
+
+                  if (loading) return <p>Loading…</p>;
+
+                  return (
+                    <div>
+                      <h2>Coordinator — Manage Users & Teams</h2>
+                      <div style={{ marginBottom: 16 }}>
+                        <label>Filter by role: </label>
+                        <select value={roleFilter} onChange={e => setRoleFilter(e.target.value)}>
+                          <option value="all">All</option>
+                          <option value="student">Student</option>
+                          <option value="mentor">Mentor</option>
+                          <option value="judge">Judge</option>
+                          <option value="coordinator">Coordinator</option>
+                        </select>
+                      </div>
+                      <div style={{ marginBottom: 24 }}>
+                        <h3>Users</h3>
+                        {filteredUsers.length === 0 ? <p>No users found.</p> : (
+                          <ul>
+                            {filteredUsers.map(u => (
+                              <li key={u.id}>{u.full_name || u.email} <span style={{ color: '#888' }}>({u.role})</span></li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
                       <div>
                         <h3>Teams</h3>
                         {teams.length === 0 ? <p>No teams found.</p> : (
@@ -304,7 +431,6 @@ export default function CoordinatorManagePage() {
                         </div>
                       </div>
                     </div>
-                );
-}
-
+                  );
+                }
 
