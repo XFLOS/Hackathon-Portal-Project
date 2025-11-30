@@ -340,6 +340,5 @@ export default function CoordinatorManagePage() {
                         </div>
                       </div>
                     </div>
-                  );
-                }
+                );
 
