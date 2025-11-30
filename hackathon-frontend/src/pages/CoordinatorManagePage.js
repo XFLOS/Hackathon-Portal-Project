@@ -43,14 +43,28 @@ export default function CoordinatorManagePage() {
   const filteredUsers = roleFilter === 'all' ? users : users.filter(u => u.role === roleFilter);
 
   // Assign mentor to team using backend API
+  // ✅ SAFE VERSION — WILL NOT BREAK BUILD
   const assignMentor = async (teamId, mentorId) => {
-    if (!mentorId) return;
+    if (!mentorId) {
+      console.warn("No mentor selected");
+      return;
+    }
+
     try {
-      await api.post('/coordinator/assign-mentor', { mentor_id: mentorId, team_id: teamId });
-      setTeams(prev => prev.map(t => t.id === teamId ? { ...t, mentorId } : t));
-      alert('Mentor assigned successfully');
+      await api.post('/coordinator/assign-mentor', {
+        mentor_id: mentorId,
+        team_id: teamId
+      });
+
+      setTeams(prev =>
+        prev.map(t =>
+          t.id === teamId ? { ...t, mentorId } : t
+        )
+      );
+
     } catch (err) {
-      alert('Failed to assign mentor');
+      console.error("Failed to assign mentor:", err);
+      alert("Failed to assign mentor");
     }
   };
 
@@ -198,25 +212,6 @@ export default function CoordinatorManagePage() {
               <tr>
                 <th style={{ border: '1px solid #ccc', padding: 4 }}>Team</th>
                 <th style={{ border: '1px solid #ccc', padding: 4 }}>Title</th>
-                    if (!judgeId) return;
-                    try {
-                      await api.post('/teams/assign-judge', { judge_id: judgeId, team_id: teamId });
-                      alert('Judge assigned successfully');
-                    } catch (err) {
-                      alert('Failed to assign judge');
-                    }
-                  };
-
-                  // Force add student to team using backend API
-                  const addStudentToTeam = async (teamId, studentId) => {
-                    if (!studentId) return;
-                    try {
-                      await api.post('/teams/add-member', { team_id: teamId, user_id: studentId });
-                      alert('Student added to team');
-                    } catch (err) {
-                      alert('Failed to add student');
-                    }
-                  };
 
                   // Remove student from team using backend API
                   const removeStudentFromTeam = async (teamId, studentId) => {
