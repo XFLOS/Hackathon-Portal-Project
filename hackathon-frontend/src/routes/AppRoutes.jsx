@@ -33,6 +33,7 @@ import JudgeFeedbackHistoryPage from "../pages/JudgeFeedbackHistoryPage";
 import JudgeSchedulePage from "../pages/JudgeSchedulePage";
 import CoordinatorManagePage from "../pages/CoordinatorManagePage";
 import CoordinatorReportsPage from "../pages/CoordinatorReportsPage";
+import CoordinatorScheduleEditor from "../pages/CoordinatorScheduleEditor";
 import VerifyEmail from "../pages/VerifyEmail";
 import PresentationSchedulePage from "../pages/PresentationSchedulePage";
 import HackathonsListPage from "../pages/HackathonsListPage";
@@ -44,6 +45,14 @@ import RoleRoute from "./RoleRoute";
 import { useAuth } from "../context/AuthContext";
 
 function AppRoutesInner() {
+        <Route
+          path="/coordinator-schedule"
+          element={
+            <RoleRoute allow={["coordinator", "admin"]}>
+              <CoordinatorScheduleEditor />
+            </RoleRoute>
+          }
+        />
   const { user, loading } = useAuth();
 
   if (loading) {

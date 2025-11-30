@@ -5,7 +5,7 @@ import './sidebar.css';
 export default function CoordinatorSidebar() {
   const navItems = [
     { path: '/coordinator-dashboard', label: 'Dashboard', icon: '📊' },
-    { path: '/admin/schedule', label: 'Schedule Editor', icon: '📅' },
+    { path: '/coordinator-schedule', label: 'Schedule Editor', icon: '📅' },
     { path: '/post-hackathon', label: 'Reports', icon: '📈' },
     { path: '/leaderboard', label: 'Leaderboard', icon: '🏆' },
     { path: '/teams', label: 'All Teams', icon: '👥' },
