@@ -198,26 +198,6 @@ export default function CoordinatorManagePage() {
               <tr>
                 <th style={{ border: '1px solid #ccc', padding: 4 }}>Team</th>
                 <th style={{ border: '1px solid #ccc', padding: 4 }}>Title</th>
-
-                // ...existing code...
-
-                  // Filter users by role
-                  const filteredUsers = roleFilter === 'all' ? users : users.filter(u => u.role === roleFilter);
-
-                  // Assign mentor to team using backend API
-                  const assignMentor = async (teamId, mentorId) => {
-                    if (!mentorId) return;
-                    try {
-                      await api.post('/coordinator/assign-mentor', { mentor_id: mentorId, team_id: teamId });
-                      setTeams(prev => prev.map(t => t.id === teamId ? { ...t, mentorId } : t));
-                      alert('Mentor assigned successfully');
-                    } catch (err) {
-                      alert('Failed to assign mentor');
-                    }
-                  };
-
-                  // Assign judge to team using backend API
-                  const assignJudge = async (teamId, judgeId) => {
                     if (!judgeId) return;
                     try {
                       await api.post('/teams/assign-judge', { judge_id: judgeId, team_id: teamId });
