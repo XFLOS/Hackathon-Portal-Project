@@ -24,6 +24,10 @@ import Alert from '../components/ui/Alert';
   const [editError, setEditError] = useState(null);
   const [editSuccess, setEditSuccess] = useState(null);
   const [editSubmitting, setEditSubmitting] = useState(false);
+  // Delete state
+  const [deleteId, setDeleteId] = useState(null);
+  const [deleteError, setDeleteError] = useState(null);
+  const [deleteSubmitting, setDeleteSubmitting] = useState(false);
 
   // Fetch events
   useEffect(() => {
@@ -146,6 +150,7 @@ import Alert from '../components/ui/Alert';
       {loading && <p>Loading schedule...</p>}
       {error && <Alert type="error" message={error} />}
       {editSuccess && <Alert type="success" message={editSuccess} style={{ marginBottom: 12 }} />}
+      {deleteError && <Alert type="error" message={deleteError} style={{ marginBottom: 12 }} />}
       {!loading && !error && (
         <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 24 }}>
           <thead>
@@ -218,6 +223,33 @@ import Alert from '../components/ui/Alert';
                     </tr>
                   );
                 }
+                // Delete confirmation row
+                if (deleteId === ev.id) {
+                  return (
+                    <tr key={ev.id} style={{ background: '#fff3f3' }}>
+                      <td colSpan={7} style={{ textAlign: 'center' }}>
+                        <span>Are you sure you want to delete <b>{ev.event_name}</b>?</span>
+                        <Button type="button" variant="danger" size="sm" style={{ marginLeft: 16 }} disabled={deleteSubmitting}
+                          onClick={async () => {
+                            setDeleteSubmitting(true);
+                            setDeleteError(null);
+                            try {
+                              await api.delete(`/coordinator/schedule/${ev.id}`);
+                              setEvents(evts => evts.filter(e => e.id !== ev.id));
+                              setDeleteId(null);
+                            } catch (err) {
+                              setDeleteError(err?.response?.data?.message || 'Failed to delete event.');
+                            } finally {
+                              setDeleteSubmitting(false);
+                            }
+                          }}>
+                          {deleteSubmitting ? 'Deleting...' : 'Confirm Delete'}
+                        </Button>
+                        <Button type="button" variant="secondary" size="sm" style={{ marginLeft: 8 }} onClick={() => setDeleteId(null)}>Cancel</Button>
+                      </td>
+                    </tr>
+                  );
+                }
                 // Normal row
                 return (
                   <tr key={ev.id}>
@@ -241,6 +273,10 @@ import Alert from '../components/ui/Alert';
                           location: ev.location || ''
                         });
                       }}>Edit</Button>
+                      <Button type="button" variant="danger" size="sm" style={{ marginLeft: 8 }} onClick={() => {
+                        setDeleteId(ev.id);
+                        setDeleteError(null);
+                      }}>Delete</Button>
                     </td>
                   </tr>
                 );
