@@ -213,33 +213,6 @@ export default function CoordinatorManagePage() {
                 <th style={{ border: '1px solid #ccc', padding: 4 }}>Team</th>
                 <th style={{ border: '1px solid #ccc', padding: 4 }}>Title</th>
 
-                  // Remove student from team using backend API
-                  const removeStudentFromTeam = async (teamId, studentId) => {
-                    if (!studentId) return;
-                    try {
-                      await api.delete('/teams/remove-member', { data: { team_id: teamId, user_id: studentId } });
-                      alert('Student removed from team');
-                    } catch (err) {
-                      alert('Failed to remove student');
-                    }
-                  };
-
-                  // Lock/unlock submissions using backend API
-                  const lockSubmissions = async (lock) => {
-                    try {
-                      await api.put('/submissions/lock', { locked: lock });
-                      setSubmissionsLocked(lock);
-                      alert(lock ? 'Submissions locked' : 'Submissions reopened');
-                    } catch (err) {
-                      alert('Failed to update submission lock');
-                    }
-                  };
-
-                  // Helper: get judges who scored a submission
-                  const getJudgesForSubmission = (submissionId) => {
-                    return evaluations.filter(e => e.submission_id === submissionId).map(e => e.judge_name || e.judge_id);
-                  };
-
                   if (loading) return <p>Loading…</p>;
 
                   return (
