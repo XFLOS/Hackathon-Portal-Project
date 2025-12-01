@@ -45,6 +45,17 @@ export const createScheduleEvent = async (req, res) => {
   try {
     const { event_name, description, start_time, end_time, location } = req.body;
 
+    // Check for time/location conflict
+    const conflict = await db.query(
+      `SELECT * FROM schedule WHERE location = $1 AND (
+        (start_time, end_time) OVERLAPS ($2::timestamp, $3::timestamp)
+      )`,
+      [location, start_time, end_time]
+    );
+    if (conflict.rows.length > 0) {
+      return res.status(400).json({ message: 'There is already an event at this location and time.' });
+    }
+
     const result = await db.query(
       `INSERT INTO schedule (event_name, description, start_time, end_time, location)
        VALUES ($1, $2, $3, $4, $5)
@@ -81,6 +92,17 @@ export const updateScheduleEvent = async (req, res) => {
   try {
     const { id } = req.params;
     const { event_name, description, start_time, end_time, location } = req.body;
+
+    // Check for time/location conflict (exclude self)
+    const conflict = await db.query(
+      `SELECT * FROM schedule WHERE location = $1 AND id != $2 AND (
+        (start_time, end_time) OVERLAPS ($3::timestamp, $4::timestamp)
+      )`,
+      [location, id, start_time, end_time]
+    );
+    if (conflict.rows.length > 0) {
+      return res.status(400).json({ message: 'There is already an event at this location and time.' });
+    }
 
     const result = await db.query(
       `UPDATE schedule 
@@ -218,16 +240,66 @@ export const getAllUsers = async (req, res) => {
 // Get statistics
 export const getStats = async (req, res) => {
   try {
+    // Ensure at least one judge and one mentor exist for demo/testing
+    const judgeCheck = await db.query("SELECT id FROM users WHERE role = 'judge' LIMIT 1");
+    if (judgeCheck.rows.length === 0) {
+      await db.query("INSERT INTO users (full_name, email, password, role) VALUES ('Demo Judge', 'judge@demo.com', '$2b$10$iew2XFUt1bGzv43DyybZ5.dcshW.Rsq.VPB1UIaunPhpEM6vmvWJm', 'judge')");
+    }
+    const mentorCheck = await db.query("SELECT id FROM users WHERE role = 'mentor' LIMIT 1");
+    if (mentorCheck.rows.length === 0) {
+      await db.query("INSERT INTO users (full_name, email, password, role) VALUES ('Demo Mentor', 'mentor@demo.com', '$2b$10$iew2XFUt1bGzv43DyybZ5.dcshW.Rsq.VPB1UIaunPhpEM6vmvWJm', 'mentor')");
+    }
+
     const totalTeams = await db.query('SELECT COUNT(*) as count FROM teams');
     const totalSubmissions = await db.query('SELECT COUNT(*) as count FROM submissions');
     const totalUsers = await db.query('SELECT COUNT(*) as count FROM users WHERE role = $1', ['student']);
     const totalEvaluations = await db.query('SELECT COUNT(*) as count FROM evaluations');
+    const totalJudges = await db.query('SELECT COUNT(*) as count FROM users WHERE role = $1', ['judge']);
+    const totalMentors = await db.query('SELECT COUNT(*) as count FROM users WHERE role = $1', ['mentor']);
+
+    // Determine hackathon status: active if current date is within any event named like 'hackathon' in schedule
+    const now = new Date();
+    const hackathonEvent = await db.query(
+      `SELECT * FROM schedule WHERE event_name ILIKE '%hackathon%' AND start_time <= $1 AND end_time >= $1 LIMIT 1`,
+      [now]
+    );
+    const hackathon_status = hackathonEvent.rows.length > 0 ? 'active' : 'inactive';
+
+    // Find the latest submission deadline from schedule
+    const submissionDeadlineResult = await db.query(
+      `SELECT end_time FROM schedule WHERE (event_name ILIKE '%submission%' OR event_name ILIKE '%deadline%') ORDER BY end_time DESC LIMIT 1`
+    );
+    const submission_deadline = submissionDeadlineResult.rows.length > 0 ? submissionDeadlineResult.rows[0].end_time : null;
+
+    // Judging status logic
+    const judgingEventResult = await db.query(
+      `SELECT * FROM schedule WHERE event_name ILIKE '%judging%' ORDER BY start_time ASC LIMIT 1`
+    );
+    let judging_status = 'not scheduled';
+    if (judgingEventResult.rows.length > 0) {
+      const judgingEvent = judgingEventResult.rows[0];
+      const nowDate = new Date();
+      const start = new Date(judgingEvent.start_time);
+      const end = new Date(judgingEvent.end_time);
+      if (nowDate < start) {
+        judging_status = 'upcoming';
+      } else if (nowDate >= start && nowDate <= end) {
+        judging_status = 'active';
+      } else if (nowDate > end) {
+        judging_status = 'complete';
+      }
+    }
 
     res.json({
       total_teams: parseInt(totalTeams.rows[0].count),
       total_submissions: parseInt(totalSubmissions.rows[0].count),
       total_students: parseInt(totalUsers.rows[0].count),
-      total_evaluations: parseInt(totalEvaluations.rows[0].count)
+      total_evaluations: parseInt(totalEvaluations.rows[0].count),
+      total_judges: parseInt(totalJudges.rows[0].count),
+      total_mentors: parseInt(totalMentors.rows[0].count),
+      hackathon_status,
+      submission_deadline,
+      judging_status
     });
   } catch (error) {
     console.error('Get stats error:', error);
