@@ -149,13 +149,13 @@ function PresentationSchedulePageInner() {
         events.map(event => {
           const status = getEventStatus(event);
           return (
-            <div key={event.id} className={event-item ${status}}>
+            <div key={event.id} className={`event-item ${status}`}>
               <h3>{event.event_name}</h3>
               <p>{event.description}</p>
               <p>Time: {formatTime(event.start_time)}</p>
               <p>Duration: {formatDuration(event.start_time, event.end_time)}</p>
 
-              <span className={status-badge ${status}}>
+              <span className={`status-badge ${status}`}>
                 {status === 'ongoing' ? '🔴 Live Now' : status === 'past' ? '✓ Completed' : '⏰ Upcoming'}
               </span>
             </div>
