@@ -94,9 +94,7 @@ function PresentationSchedulePage() {
 
   const formatCountdown = (targetDate) => {
     const now = currentTime.getTime();
-      <PageErrorBoundary>
-        <div className="schedule-container">
-    const diff = target - now;
+    const diff = targetDate - now;
 
     if (diff <= 0) return null;
 
