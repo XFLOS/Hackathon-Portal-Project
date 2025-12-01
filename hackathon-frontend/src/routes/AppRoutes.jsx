@@ -48,9 +48,9 @@ function AppRoutesInner() {
         <Route
           path="/coordinator-schedule"
           element={
-            <ProtectedRoute roles={["coordinator"]}>
+            <RoleRoute allow={["coordinator", "admin"]}>
               <CoordinatorSchedulePage />
-            </ProtectedRoute>
+            </RoleRoute>
           }
         />
   const { user, loading } = useAuth();
