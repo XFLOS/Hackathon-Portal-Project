@@ -2,34 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import './PresentationSchedulePage.css';
 
-// Error Boundary for this page
-class PageErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
-
-  static getDerivedStateFromError(error) {
-    return { hasError: true, error };
-  }
-
-  componentDidCatch(error, info) {}
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div style={{ padding: 32, color: 'red', background: '#222', borderRadius: 8, margin: 32 }}>
-          <h2>Schedule Page Error</h2>
-          <p>Sorry, something went wrong while loading the schedule.</p>
-          <pre style={{ color: '#fff', fontSize: 12 }}>{String(this.state.error)}</pre>
-        </div>
-      );
-    }
-    return this.props.children;
-  }
-}
-
-function PresentationSchedulePageInner() {
+export default function PresentationSchedulePage() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -163,13 +136,5 @@ function PresentationSchedulePageInner() {
         })
       )}
     </div>
-  );
-}
-
-export default function PresentationSchedulePage() {
-  return (
-    <PageErrorBoundary>
-      <PresentationSchedulePageInner />
-    </PageErrorBoundary>
   );
 }

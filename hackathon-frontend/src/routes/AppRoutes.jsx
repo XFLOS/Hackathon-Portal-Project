@@ -33,7 +33,7 @@ import JudgeFeedbackHistoryPage from "../pages/JudgeFeedbackHistoryPage";
 import JudgeSchedulePage from "../pages/JudgeSchedulePage";
 import CoordinatorManagePage from "../pages/CoordinatorManagePage";
 import CoordinatorReportsPage from "../pages/CoordinatorReportsPage";
-import CoordinatorSchedulePage from "../pages/PresentationSchedulePage";
+import PresentationSchedulePage from "../pages/PresentationSchedulePage";
 import VerifyEmail from "../pages/VerifyEmail";
 import HackathonsListPage from "../pages/HackathonsListPage";
 import SurveysPage from "../pages/SurveysPage";
