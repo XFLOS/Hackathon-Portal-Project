@@ -101,20 +101,62 @@ export default function CoordinatorScheduleEditor() {
           {/* ...event creation form fields and submit button... */}
         </form>
       )}
-      <table /* ...table props... */>
+      <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 24 }}>
         <thead>
-          {/* ...table headers... */}
+          <tr>
+            <th style={{ textAlign: 'left', padding: 8 }}>Event Name</th>
+            <th style={{ textAlign: 'left', padding: 8 }}>Description</th>
+            <th style={{ textAlign: 'left', padding: 8 }}>Date</th>
+            <th style={{ textAlign: 'left', padding: 8 }}>Start</th>
+            <th style={{ textAlign: 'left', padding: 8 }}>End</th>
+            <th style={{ textAlign: 'left', padding: 8 }}>Location</th>
+            <th style={{ textAlign: 'left', padding: 8 }}>Phase</th>
+            <th style={{ textAlign: 'left', padding: 8 }}>Actions</th>
+          </tr>
         </thead>
         <tbody>
-          {events.map(ev => (
-            <tr key={ev.id}>
-              {/* ...event data cells... */}
-              <td>
-                {isCoordinator && <Button /* ...edit props... */>Edit</Button>}
-                {isCoordinator && <Button /* ...delete props... */>Delete</Button>}
-              </td>
-            </tr>
-          ))}
+          {events.map(ev => {
+            // Phase color map
+            const phaseColors = {
+              registration: '#1976d2',
+              hacking: '#43a047',
+              judging: '#fbc02d',
+              ceremony: '#8e24aa',
+              networking: '#00838f',
+              other: '#757575'
+            };
+            const phase = ev.phase || 'other';
+            const badgeColor = phaseColors[phase] || phaseColors.other;
+            return (
+              <tr key={ev.id} style={{ background: '#fff', borderBottom: '1px solid #eee' }}>
+                <td style={{ padding: 8 }}>{ev.event_name}</td>
+                <td style={{ padding: 8 }}>{ev.description}</td>
+                <td style={{ padding: 8 }}>{new Date(ev.start_time).toLocaleDateString()}</td>
+                <td style={{ padding: 8 }}>{new Date(ev.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                <td style={{ padding: 8 }}>{new Date(ev.end_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                <td style={{ padding: 8 }}>{ev.location}</td>
+                <td style={{ padding: 8 }}>
+                  <span style={{
+                    display: 'inline-block',
+                    padding: '2px 10px',
+                    borderRadius: 12,
+                    background: badgeColor,
+                    color: '#fff',
+                    fontSize: 12,
+                    fontWeight: 600,
+                    textTransform: 'capitalize',
+                    letterSpacing: 0.5
+                  }}
+                  aria-label={`Phase: ${phase}`}
+                  >{phase}</span>
+                </td>
+                <td style={{ padding: 8 }}>
+                  {isCoordinator && <Button /* ...edit props... */>Edit</Button>}
+                  {isCoordinator && <Button /* ...delete props... */>Delete</Button>}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
