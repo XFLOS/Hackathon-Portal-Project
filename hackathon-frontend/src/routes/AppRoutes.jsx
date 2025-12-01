@@ -44,15 +44,15 @@ import RoleRoute from "./RoleRoute";
 import { useAuth } from "../context/AuthContext";
 
 function AppRoutesInner() {
-        {/* ✅ FIXED SCHEDULE EDITOR ROUTE */}
-        <Route
-          path="/coordinator-schedule"
-          element={
-            <RoleRoute allow={["coordinator", "admin"]}>
-              <CoordinatorSchedulePage />
-            </RoleRoute>
-          }
-        />
+      {/* ✅ FIXED SCHEDULE EDITOR ROUTE */}
+      <Route
+        path="/coordinator-schedule"
+        element={
+          <RoleRoute allow={["coordinator", "admin"]}>
+            <PresentationSchedulePage />
+          </RoleRoute>
+        }
+      />
   const { user, loading } = useAuth();
 
   if (loading) {
