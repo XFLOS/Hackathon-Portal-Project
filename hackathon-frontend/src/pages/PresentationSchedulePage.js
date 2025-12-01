@@ -2,7 +2,35 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import './PresentationSchedulePage.css';
 
+// Error Boundary for this page
+class PageErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, info) {
+    // Optionally log error
+    // console.error(error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: 32, color: 'red', background: '#222', borderRadius: 8, margin: 32 }}>
+          <h2>Schedule Page Error</h2>
+          <p>Sorry, something went wrong while loading the schedule.</p>
+          <pre style={{ color: '#fff', fontSize: 12 }}>{String(this.state.error)}</pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function PresentationSchedulePage() {
+function PresentationSchedulePage() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -66,7 +94,8 @@ export default function PresentationSchedulePage() {
 
   const formatCountdown = (targetDate) => {
     const now = currentTime.getTime();
-    const target = new Date(targetDate).getTime();
+      <PageErrorBoundary>
+        <div className="schedule-container">
     const diff = target - now;
 
     if (diff <= 0) return null;
@@ -157,6 +186,7 @@ export default function PresentationSchedulePage() {
           <div className="empty-state">
             <div className="empty-icon">📅</div>
             <p>No events scheduled</p>
+      </PageErrorBoundary>
             <p className="empty-subtitle">Check back later for the event schedule</p>
           </div>
         ) : (
