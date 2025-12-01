@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import './PresentationSchedulePage.css';
 
-// ✅ Error Boundary for this page
+// Error Boundary for this page
 class PageErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -12,6 +12,8 @@ class PageErrorBoundary extends React.Component {
   static getDerivedStateFromError(error) {
     return { hasError: true, error };
   }
+
+  componentDidCatch(error, info) {}
 
   render() {
     if (this.state.hasError) {
@@ -27,7 +29,7 @@ class PageErrorBoundary extends React.Component {
   }
 }
 
-export default function PresentationSchedulePage() {
+function PresentationSchedulePageInner() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -45,6 +47,8 @@ export default function PresentationSchedulePage() {
   }, [events, currentTime]);
 
   const fetchSchedule = async () => {
+    setLoading(true);
+    setError('');
     try {
       const res = await api.get('/users/schedule');
       const sortedEvents = (res.data || []).sort(
@@ -52,29 +56,30 @@ export default function PresentationSchedulePage() {
       );
       setEvents(sortedEvents);
     } catch (err) {
-      setError(err.message || 'Failed to load schedule');
+      setError(err.response?.data?.message || err.message || 'Failed to load schedule');
     } finally {
       setLoading(false);
     }
   };
 
   const findNextEvent = () => {
-    const now = new Date().getTime();
-    const upcoming = events.find(e => new Date(e.start_time).getTime() > now);
+    const now = currentTime.getTime();
+    const upcoming = events.find(event => new Date(event.start_time).getTime() > now);
     setNextEvent(upcoming || null);
   };
 
-  const getEventStatus = (event) => {
+  const getEventStatus = event => {
     const now = currentTime.getTime();
-    const start = new Date(event.start_time).getTime();
-    const end = new Date(event.end_time).getTime();
-    if (now >= start && now <= end) return 'ongoing';
-    if (now > end) return 'past';
+    const startTime = new Date(event.start_time).getTime();
+    const endTime = new Date(event.end_time).getTime();
+
+    if (now >= startTime && now <= endTime) return 'ongoing';
+    if (now > endTime) return 'past';
     return 'upcoming';
   };
 
-  const formatCountdown = (target) => {
-    const diff = new Date(target).getTime() - currentTime.getTime();
+  const formatCountdown = targetDate => {
+    const diff = targetDate - currentTime.getTime();
     if (diff <= 0) return null;
 
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -88,7 +93,7 @@ export default function PresentationSchedulePage() {
     return ${seconds}s;
   };
 
-  const formatTime = (dateString) =>
+  const formatTime = dateString =>
     new Date(dateString).toLocaleString('en-US', {
       month: 'short',
       day: 'numeric',
@@ -101,48 +106,70 @@ export default function PresentationSchedulePage() {
     const diff = new Date(endTime) - new Date(startTime);
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff / (1000 * 60)) % 60);
+
     if (hours > 0 && minutes > 0) return ${hours}h ${minutes}m;
     if (hours > 0) return ${hours}h;
     return ${minutes}m;
   };
 
   if (loading) {
-    return <div className="schedule-container">Loading schedule...</div>;
+    return (
+      <div className="schedule-container">
+        <p>Loading schedule...</p>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="schedule-container">{error}</div>;
+    return (
+      <div className="schedule-container">
+        <p className="error-message">{error}</p>
+      </div>
+    );
   }
 
   return (
+    <div className="schedule-container">
+      <h1 className="schedule-title">Event Schedule</h1>
+
+      {nextEvent && (
+        <div className="next-event-banner">
+          <h3>{nextEvent.event_name}</h3>
+          <p>Starts in: {formatCountdown(new Date(nextEvent.start_time).getTime())}</p>
+        </div>
+      )}
+
+      {events.length === 0 ? (
+        <div className="empty-state">
+          <div className="empty-icon">📅</div>
+          <p>No events scheduled</p>
+          <p className="empty-subtitle">Check back later for the event schedule</p>
+        </div>
+      ) : (
+        events.map(event => {
+          const status = getEventStatus(event);
+          return (
+            <div key={event.id} className={event-item ${status}}>
+              <h3>{event.event_name}</h3>
+              <p>{event.description}</p>
+              <p>Time: {formatTime(event.start_time)}</p>
+              <p>Duration: {formatDuration(event.start_time, event.end_time)}</p>
+
+              <span className={status-badge ${status}}>
+                {status === 'ongoing' ? '🔴 Live Now' : status === 'past' ? '✓ Completed' : '⏰ Upcoming'}
+              </span>
+            </div>
+          );
+        })
+      )}
+    </div>
+  );
+}
+
+export default function PresentationSchedulePage() {
+  return (
     <PageErrorBoundary>
-      <div className="schedule-container">
-        {events.length === 0 ? (
-          <div className="empty-state">
-            <div className="empty-icon">📅</div>
-            <p>No events scheduled</p>
-            <p className="empty-subtitle">Check back later for the event schedule</p>
-          </div>
-        ) : (
-          <div className="events-timeline">
-            {events.map((event) => {
-              const status = getEventStatus(event);
-              return (
-                <div key={event.id} className={event-item ${status}}>
-                  <h3>{event.event_name}</h3>
-                  <p>{event.description}</p>
-                  <p>Start: {formatTime(event.start_time)}</p>
-                  <p>Duration: {formatDuration(event.start_time, event.end_time)}</p>
-                  <p>Status: {status}</p>
-                  {status === 'upcoming' && event === nextEvent && (
-                    <p>Next starts in {formatCountdown(event.start_time)}</p>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
+      <PresentationSchedulePageInner />
     </PageErrorBoundary>
   );
 }
