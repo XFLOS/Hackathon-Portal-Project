@@ -43,9 +43,26 @@ export default function CoordinatorScheduleEditor() {
       )}
       {/* Only show event creation form to coordinators */}
       {isCoordinator && (
-        // ...existing event creation form code...
+        <form /* ...form props and handlers here... */>
+          {/* ...event creation form fields and submit button... */}
+        </form>
       )}
-      {/* ...existing table rendering code, but only show edit/delete buttons if isCoordinator... */}
+      <table /* ...table props... */>
+        <thead>
+          {/* ...table headers... */}
+        </thead>
+        <tbody>
+          {events.map(ev => (
+            <tr key={ev.id}>
+              {/* ...event data cells... */}
+              <td>
+                {isCoordinator && <Button /* ...edit props... */>Edit</Button>}
+                {isCoordinator && <Button /* ...delete props... */>Delete</Button>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
