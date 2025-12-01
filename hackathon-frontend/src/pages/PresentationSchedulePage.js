@@ -87,10 +87,10 @@ function PresentationSchedulePageInner() {
     const minutes = Math.floor((diff / (1000 * 60)) % 60);
     const seconds = Math.floor((diff / 1000) % 60);
 
-    if (days > 0) return ${days}d ${hours}h ${minutes}m;
-    if (hours > 0) return ${hours}h ${minutes}m ${seconds}s;
-    if (minutes > 0) return ${minutes}m ${seconds}s;
-    return ${seconds}s;
+    if (days > 0) return `${days}d ${hours}h ${minutes}m`;
+    if (hours > 0) return `${hours}h ${minutes}m ${seconds}s`;
+    if (minutes > 0) return `${minutes}m ${seconds}s`;
+    return `${seconds}s`;
   };
 
   const formatTime = dateString =>
@@ -107,9 +107,9 @@ function PresentationSchedulePageInner() {
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff / (1000 * 60)) % 60);
 
-    if (hours > 0 && minutes > 0) return ${hours}h ${minutes}m;
-    if (hours > 0) return ${hours}h;
-    return ${minutes}m;
+    if (hours > 0 && minutes > 0) return `${hours}h ${minutes}m`;
+    if (hours > 0) return `${hours}h`;
+    return `${minutes}m`;
   };
 
   if (loading) {
