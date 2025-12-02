@@ -6,7 +6,7 @@ A full-stack hackathon management system with role-based dashboards for Students
 
 ## 🌐 Live Demo
 
-- **Frontend**: https://hackathonportalproject4g5.netlify.app
+- **Frontend**: https://hackathon-portal-project.netlify.app
 - **Backend API**: https://hackathon-portal-project-8737.onrender.com
 - **GitHub**: https://github.com/XFLOS/Hackathon-Portal-Project
 
