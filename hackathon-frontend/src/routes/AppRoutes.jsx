@@ -1,63 +1,55 @@
 // src/routes/AppRoutes.jsx
 
-import BaseRegister from "../pages/BaseRegister";
-import HomePage from "../pages/HomePage";
-import TeamPage from "../pages/TeamPage";
-// import TeamSelectionPage from "../pages/TeamSelectionPage";
-import LeaderboardPage from "../pages/LeaderboardPage";
-
-import StudentDashboard from "../pages/StudentDashboard";
-import MentorDashboard from "../pages/MentorDashboard";
-import MentorSubmissionView from "../pages/MentorSubmissionView";
-import JudgeDashboard from "../pages/JudgeDashboard";
-import CoordinatorDashboard from "../pages/CoordinatorDashboard";
-
-import SubmissionPage from "../pages/SubmissionPage";
-import CertificatePage from "../pages/CertificatePage";
-import ProfilePage from "../pages/ProfilePage";
-
-// src/routes/AppRoutes.jsx
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+
 import BaseHome from "../pages/BaseHome";
 import BaseLogin from "../pages/BaseLogin";
 import BaseRegister from "../pages/BaseRegister";
 import HomePage from "../pages/HomePage";
 import TeamPage from "../pages/TeamPage";
 import LeaderboardPage from "../pages/LeaderboardPage";
+
 import StudentDashboard from "../pages/StudentDashboard";
 import MentorDashboard from "../pages/MentorDashboard";
 import MentorSubmissionView from "../pages/MentorSubmissionView";
 import JudgeDashboard from "../pages/JudgeDashboard";
 import CoordinatorDashboard from "../pages/CoordinatorDashboard";
+
 import SubmissionPage from "../pages/SubmissionPage";
 import CertificatePage from "../pages/CertificatePage";
 import ProfilePage from "../pages/ProfilePage";
 import NotificationsPage from "../pages/NotificationsPage";
 import HelpPage from "../pages/HelpPage";
 import NotFoundPage from "../pages/NotFoundPage";
+
 import MentorTeamQA from "../pages/MentorTeamQA";
 import MentorFeedback from "../pages/MentorFeedback";
 import MentorChatPage from "../pages/MentorChatPage";
 import StudentChatPage from "../pages/StudentChatPage";
 import MentorResourcesPage from "../pages/MentorResourcesPage";
 import StudentResourcesPage from "../pages/StudentResourcesPage";
+
 import JudgeEvaluationPage from "../pages/JudgeEvaluationPage";
 import JudgeFeedbackHistoryPage from "../pages/JudgeFeedbackHistoryPage";
 import JudgeSchedulePage from "../pages/JudgeSchedulePage";
+
 import CoordinatorManagePage from "../pages/CoordinatorManagePage";
 import CoordinatorReportsPage from "../pages/CoordinatorReportsPage";
 import PresentationSchedulePage from "../pages/PresentationSchedulePage";
+
 import VerifyEmail from "../pages/VerifyEmail";
 import HackathonsListPage from "../pages/HackathonsListPage";
 import SurveysPage from "../pages/SurveysPage";
 import AnnouncementsPage from "../pages/AnnouncementsPage";
+
 import ProtectedRoute from "./ProtectedRoute";
 import RoleRoute from "./RoleRoute";
 import { useAuth } from "../context/AuthContext";
 
 function AppRoutesInner() {
   const { user, loading } = useAuth();
+
   if (loading) return <div>Loading...</div>;
 
   const getDashboardPath = () => {
@@ -66,14 +58,18 @@ function AppRoutesInner() {
     if (role === "student") return "/student-dashboard";
     if (role === "mentor") return "/mentor-dashboard";
     if (role === "judge") return "/judge-dashboard";
-    if (role === "coordinator" || role === "admin") return "/coordinator-dashboard";
+    if (role === "coordinator" || role === "admin")
+      return "/coordinator-dashboard";
     return "/";
   };
 
   return (
     <Routes>
-      {/* Root: if logged in go to dashboard, else public home */}
-      <Route path="/" element={user ? <Navigate to={getDashboardPath()} replace /> : <HomePage />} />
+      {/* Root */}
+      <Route
+        path="/"
+        element={user ? <Navigate to={getDashboardPath()} replace /> : <HomePage />}
+      />
 
       {/* Public */}
       <Route path="/hackathons" element={<HackathonsListPage />} />
@@ -94,7 +90,7 @@ function AppRoutesInner() {
       <Route path="/mentor/feedback" element={<RoleRoute allow={["mentor", "admin"]}><MentorFeedback /></RoleRoute>} />
       <Route path="/mentor/chat" element={<RoleRoute allow={["mentor", "admin"]}><MentorChatPage /></RoleRoute>} />
       <Route path="/mentor/resources" element={<RoleRoute allow={["mentor", "admin"]}><MentorResourcesPage /></RoleRoute>} />
-      <Route path="/mentor/submission" element={<RoleRoute allow={["mentor", "admin"]}><MentorSubmissionView /></RoleRoute>} />
+      <Route path="/mentor/submission/:teamId" element={<RoleRoute allow={["mentor", "admin"]}><MentorSubmissionView /></RoleRoute>} />
 
       {/* Judge */}
       <Route path="/judge-dashboard" element={<RoleRoute allow={["judge", "admin"]}><JudgeDashboard /></RoleRoute>} />
@@ -102,7 +98,7 @@ function AppRoutesInner() {
       <Route path="/judge/feedback" element={<RoleRoute allow={["judge", "admin"]}><JudgeFeedbackHistoryPage /></RoleRoute>} />
       <Route path="/judge/schedule" element={<RoleRoute allow={["judge", "admin"]}><JudgeSchedulePage /></RoleRoute>} />
 
-      {/* Coordinator/Admin */}
+      {/* Coordinator */}
       <Route path="/coordinator-dashboard" element={<RoleRoute allow={["coordinator", "admin"]}><CoordinatorDashboard /></RoleRoute>} />
       <Route path="/coordinator-manage" element={<RoleRoute allow={["coordinator", "admin"]}><CoordinatorManagePage /></RoleRoute>} />
       <Route path="/coordinator-reports" element={<RoleRoute allow={["coordinator", "admin"]}><CoordinatorReportsPage /></RoleRoute>} />
