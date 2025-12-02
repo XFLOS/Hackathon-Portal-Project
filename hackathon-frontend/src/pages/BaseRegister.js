@@ -12,6 +12,7 @@ function BaseRegister() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [role, setRole] = useState('student');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate();
   const { user, role: currentRole, loading: authLoading } = useAuth();
 
@@ -36,10 +37,10 @@ function BaseRegister() {
     setError(null);
     setLoading(true);
     // Basic client-side validation: college-ish email and password strength
-        const emailLower = (email || '').toLowerCase();
-        // Allow common academic domains and explicitly allow nctorontostudents.ca
-        const allowedExtraDomain = 'nctorontostudents.ca';
-        const isCollege = /\.edu$|\.ac\.|college|university/i.test(emailLower) || emailLower.endsWith(`@${allowedExtraDomain}`);
+    const emailLower = (email || '').toLowerCase();
+    // Allow common academic domains and explicitly allow nctorontostudents.ca
+    const allowedExtraDomain = 'nctorontostudents.ca';
+    const isCollege = /\.edu$|\.ac\.|college|university/i.test(emailLower) || emailLower.endsWith(`@${allowedExtraDomain}`);
     if (!isCollege) {
       setError('Please use your college/university email address');
       setLoading(false);
@@ -47,6 +48,11 @@ function BaseRegister() {
     }
     if (!password || password.length < 8 || !/\d/.test(password)) {
       setError('Password must be at least 8 characters and include a number');
+      setLoading(false);
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
       setLoading(false);
       return;
     }
@@ -77,17 +83,19 @@ function BaseRegister() {
           <input className="auth-input" value={name} onChange={e => setName(e.target.value)} placeholder="Your name" required />
 
           <label className="auth-label">Role</label>
-          <select className="auth-input" value={role} onChange={e => setRole(e.target.value)}>
+          <select className="auth-input" value={role} disabled>
             <option value="student">Student</option>
-            <option value="mentor">Mentor</option>
-            <option value="judge">Judge</option>
           </select>
 
           <label className="auth-label">Email</label>
           <input className="auth-input" value={email} onChange={e => setEmail(e.target.value)} type="email" placeholder="you@example.com" required />
 
+
           <label className="auth-label">Password</label>
           <input className="auth-input" value={password} onChange={e => setPassword(e.target.value)} type="password" placeholder="••••••••" required />
+
+          <label className="auth-label">Confirm Password</label>
+          <input className="auth-input" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} type="password" placeholder="••••••••" required />
 
           {error && <div className="auth-error">{error}</div>}
 
