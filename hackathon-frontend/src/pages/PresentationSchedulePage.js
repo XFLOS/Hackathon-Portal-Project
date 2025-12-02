@@ -107,8 +107,14 @@ export default function PresentationSchedulePage() {
 
       {nextEvent && (
         <div className="next-event-banner">
-          <h3>{nextEvent.event_name}</h3>
-          <p>Starts in: {formatCountdown(new Date(nextEvent.start_time).getTime())}</p>
+          <div className="next-event-label">Next Event</div>
+          <div className="next-event-info">
+            <h3>{nextEvent.event_name}</h3>
+            <div className="countdown-timer">
+              <span className="countdown-label">Starts in:</span>
+              <span className="countdown-value">{formatCountdown(new Date(nextEvent.start_time).getTime())}</span>
+            </div>
+          </div>
         </div>
       )}
 
@@ -119,21 +125,44 @@ export default function PresentationSchedulePage() {
           <p className="empty-subtitle">Check back later for the event schedule</p>
         </div>
       ) : (
-        events.map(event => {
-          const status = getEventStatus(event);
-          return (
-            <div key={event.id} className={`event-item ${status}`}>
-              <h3>{event.event_name}</h3>
-              <p>{event.description}</p>
-              <p>Time: {formatTime(event.start_time)}</p>
-              <p>Duration: {formatDuration(event.start_time, event.end_time)}</p>
+        <div className="events-timeline">
+          {events.map((event, idx) => {
+            const status = getEventStatus(event);
+            // Pick an icon based on event type or name (simple heuristic)
+            let icon = "🗓️";
+            if (/ceremony/i.test(event.event_name)) icon = "🎤";
+            else if (/workshop|ai|ml/i.test(event.event_name)) icon = "🧑‍💻";
+            else if (/snack|pizza|food/i.test(event.event_name)) icon = "🍕";
+            else if (/mentor/i.test(event.event_name)) icon = "🧑‍🏫";
+            else if (/submission/i.test(event.event_name)) icon = "📤";
+            else if (/presentation|judging/i.test(event.event_name)) icon = "🏆";
 
-              <span className={`status-badge ${status}`}>
-                {status === 'ongoing' ? '🔴 Live Now' : status === 'past' ? '✓ Completed' : '⏰ Upcoming'}
-              </span>
-            </div>
-          );
-        })
+            return (
+              <div key={event.id} className={`event-item ${status}`}>
+                <div className="event-timeline-marker">
+                  <div className="timeline-dot" />
+                  {idx < events.length - 1 && <div className="timeline-line" />}
+                </div>
+                <div className="event-content">
+                  <div className="event-header-row">
+                    <div className="event-title">{icon} {event.event_name}</div>
+                    <span className={`status-badge ${status}`}>
+                      {status === 'ongoing' ? '🔴 Live Now' : status === 'past' ? '✓ Completed' : '⏰ Upcoming'}
+                    </span>
+                  </div>
+                  <div className="event-description">{event.description}</div>
+                  <div className="event-meta">
+                    <div className="meta-item"><span className="meta-icon">🕒</span><span className="meta-label">Time:</span> <span className="meta-value">{formatTime(event.start_time)}</span></div>
+                    <div className="meta-item"><span className="meta-icon">⏳</span><span className="meta-label">Duration:</span> <span className="meta-value">{formatDuration(event.start_time, event.end_time)}</span></div>
+                  </div>
+                  {status === 'ongoing' && (
+                    <div className="ongoing-indicator"><span className="pulse-dot" /> Happening Now</div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       )}
     </div>
   );
