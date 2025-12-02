@@ -103,7 +103,7 @@ export default function MentorDashboard() {
   };
   
   const formatEventTime = (dateString) => {
-    return new Date(dateString).toLocaleString('en-US', {
+    return new Date(dateString).toLocaleString(undefined, {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
