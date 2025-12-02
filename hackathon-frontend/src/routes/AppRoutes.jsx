@@ -76,6 +76,7 @@ function AppRoutesInner() {
       <Route path="/login" element={<BaseLogin />} />
       <Route path="/register" element={<BaseRegister />} />
       <Route path="/base" element={<BaseHome />} />
+      <Route path="/help" element={<HelpPage />} />
 
       {/* Student */}
       <Route path="/student-dashboard" element={<RoleRoute allow={["student", "admin"]}><StudentDashboard /></RoleRoute>} />
