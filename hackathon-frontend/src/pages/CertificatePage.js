@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
+import logo from '../images/Niagara-college_vectorized.svg';
 
 export default function CertificatePage() {
   const [user, setUser] = useState(null);
@@ -44,12 +45,19 @@ export default function CertificatePage() {
       teamStatus = teamRank === 1 ? 'WINNER OF THE S-2025' : 'RUNNER UP OF THE S-2025';
     }
   });
-
-  // Fallback if not found
   if (!teamStatus) teamStatus = 'PARTICIPANT OF THE S-2025';
 
-  // Download certificate as HTML file
-  const downloadCertificate = (memberName) => {
+  // Find the logged-in user's member object
+  const member = team?.members?.find(
+    m => (m.id && user.id && m.id === user.id) ||
+         (m.email && user.email && m.email === user.email) ||
+         (m.full_name && user.full_name && m.full_name === user.full_name) ||
+         (m.name && user.name && m.name === user.name)
+  );
+  const memberName = member?.full_name || member?.name || user.full_name || user.name || 'Student';
+
+  // Download certificate as HTML file (only for self)
+  const downloadCertificate = () => {
     const html = `<!DOCTYPE html>
 <html lang=\"en\">
 <head>
@@ -66,7 +74,7 @@ export default function CertificatePage() {
     <div class=\"circle-logo\">NCT<br>CODING</div>
   </div>
   <div class=\"top-logos\">
-    <img src=\"Niagara-college_vectorized.svg\">
+    <img src=\"${window.location.origin + logo.replace(/^\./, '')}\">
   </div>
   <div class=\"subtitle\">${teamStatus}</div>
   <div class=\"main-title\">HACKATHON</div>
@@ -108,20 +116,33 @@ export default function CertificatePage() {
           <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>{team?.project_name || 'Project'}</div>
           <div style={{ fontSize: 16, marginBottom: 4 }}>Team: <strong>{team?.name}</strong></div>
           <div style={{ fontSize: 16, marginBottom: 4 }}>Status: <strong>{teamStatus}</strong></div>
-          <div style={{ fontSize: 16, marginBottom: 4 }}>Members:</div>
-          <ul style={{ marginBottom: 12 }}>
-            {team?.members?.map((m, idx) => (
-              <li key={idx} style={{ marginBottom: 8 }}>
-                <span style={{ fontWeight: 500 }}>{m.full_name || m.name}</span>
-                <button
-                  style={{ marginLeft: 16, padding: '4px 14px', borderRadius: 6, border: 'none', background: 'linear-gradient(90deg,#1a73e8,#003d8a)', color: '#fff', fontWeight: 600, cursor: 'pointer' }}
-                  onClick={() => downloadCertificate(m.full_name || m.name)}
-                >
-                  Download Certificate
-                </button>
-              </li>
-            ))}
-          </ul>
+          <div style={{ fontSize: 16, marginBottom: 4 }}>Student: <strong>{memberName}</strong></div>
+          <div style={{ fontSize: 15, marginBottom: 4 }}>Rank: <strong>{teamRank ? (teamRank === 1 ? '1st' : '2nd') : 'N/A'}</strong></div>
+          <div style={{ fontSize: 15, marginBottom: 4 }}>Project: <strong>{team?.project_name || 'N/A'}</strong></div>
+          <div style={{ fontSize: 15, marginBottom: 8 }}>Download your official certificate below:</div>
+          <div style={{ textAlign: 'center' }}>
+            <button
+              className="certificate-download-btn"
+              style={{
+                display: 'inline-block',
+                background: 'linear-gradient(90deg,#1a73e8,#003d8a)',
+                color: '#fff',
+                fontWeight: 700,
+                fontSize: 16,
+                border: 'none',
+                borderRadius: 8,
+                padding: '10px 28px',
+                marginTop: 8,
+                textDecoration: 'none',
+                boxShadow: '0 2px 8px #003d8a33',
+                transition: 'background 0.2s',
+                cursor: 'pointer'
+              }}
+              onClick={downloadCertificate}
+            >
+              Download Certificate
+            </button>
+          </div>
         </div>
       </div>
     </div>
