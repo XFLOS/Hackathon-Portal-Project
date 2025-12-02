@@ -1,6 +1,5 @@
 // src/routes/AppRoutes.jsx
 
-import BaseLogin from "../pages/BaseLogin";
 import BaseRegister from "../pages/BaseRegister";
 import HomePage from "../pages/HomePage";
 import TeamPage from "../pages/TeamPage";
