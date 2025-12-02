@@ -61,7 +61,7 @@ export default function CoordinatorDashboard() {
                   <li>Total Judges <span>{stats.total_judges ?? 0}</span></li>
                   <li>Total Mentors <span>{stats.total_mentors ?? 0}</span></li>
                   <li>Hackathon Status <span>{stats.hackathon_status ? stats.hackathon_status.charAt(0).toUpperCase() + stats.hackathon_status.slice(1) : 'N/A'}</span></li>
-                  <li>Submission Deadline <span>{stats.submission_deadline ? new Date(stats.submission_deadline).toLocaleString() : 'N/A'}</span></li>
+                  <li>Submission Deadline <span>N/A</span></li>
                   <li>Judging Status <span>{stats.judging_status ? stats.judging_status.charAt(0).toUpperCase() + stats.judging_status.slice(1) : 'N/A'}</span></li>
                 </ul>
               ) : <p className="muted">No stats available.</p>
