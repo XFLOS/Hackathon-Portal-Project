@@ -90,11 +90,9 @@ export default function MentorEventSchedulePage() {
                       <div className="event-title">{event.event_name}</div>
                       <span className={`status-badge ${status}`}>{status === 'ongoing' ? 'Ongoing' : status === 'past' ? 'Past' : 'Upcoming'}</span>
                     </div>
-                    <div className="event-meta">
-                      <span className="meta-item">
-                        <span className="meta-icon">🕒</span>
-                        <span className="meta-label">Time:</span>
-                        <span className="meta-value">{formatEventTime(event.start_time)} – {formatEventTime(event.end_time)}</span>
+                    <div className="event-meta" style={{display: 'flex', flexWrap: 'wrap', gap: '18px', marginTop: '10px'}}>
+                      <span className="judge-badge judge-badge-soft" style={{marginRight: '8px', fontSize: '15px', fontWeight: 600, background: 'rgba(0, 217, 255, 0.3)', color: '#00d9ff', border: '1px solid rgba(0, 217, 255, 0.5)', borderRadius: '8px', padding: '6px 16px', display: 'inline-block'}}>
+                        {formatEventTime(event.start_time)} – {formatEventTime(event.end_time)}
                       </span>
                       {event.location && (
                         <span className="meta-item">
