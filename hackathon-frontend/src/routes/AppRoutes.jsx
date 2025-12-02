@@ -120,64 +120,6 @@ function AppRoutesInner() {
         path="/team-selection"
         element={
           <RoleRoute allow={["student", "admin"]}>
-
-              import React from "react";
-              import { Routes, Route, Navigate } from "react-router-dom";
-              import { useAuth } from "../context/AuthContext";
-
-              import BaseHome from "../pages/BaseHome";
-              import BaseLogin from "../pages/BaseLogin";
-              import BaseRegister from "../pages/BaseRegister";
-              import HomePage from "../pages/HomePage";
-              import TeamPage from "../pages/TeamPage";
-              import LeaderboardPage from "../pages/LeaderboardPage";
-
-              import StudentDashboard from "../pages/StudentDashboard";
-              import MentorDashboard from "../pages/MentorDashboard";
-              import MentorSubmissionView from "../pages/MentorSubmissionView";
-              import JudgeDashboard from "../pages/JudgeDashboard";
-              import CoordinatorDashboard from "../pages/CoordinatorDashboard";
-
-              import SubmissionPage from "../pages/SubmissionPage";
-              import CertificatePage from "../pages/CertificatePage";
-              import ProfilePage from "../pages/ProfilePage";
-              import NotificationsPage from "../pages/NotificationsPage";
-              import HelpPage from "../pages/HelpPage";
-              import NotFoundPage from "../pages/NotFoundPage";
-
-              import MentorTeamQA from "../pages/MentorTeamQA";
-              import MentorFeedback from "../pages/MentorFeedback";
-              import MentorChatPage from "../pages/MentorChatPage";
-              import StudentChatPage from "../pages/StudentChatPage";
-              import MentorResourcesPage from "../pages/MentorResourcesPage";
-              import StudentResourcesPage from "../pages/StudentResourcesPage";
-
-              import JudgeEvaluationPage from "../pages/JudgeEvaluationPage";
-              import JudgeFeedbackHistoryPage from "../pages/JudgeFeedbackHistoryPage";
-              import JudgeSchedulePage from "../pages/JudgeSchedulePage";
-
-              import CoordinatorManagePage from "../pages/CoordinatorManagePage";
-              import CoordinatorReportsPage from "../pages/CoordinatorReportsPage";
-
-              import PresentationSchedulePage from "../pages/PresentationSchedulePage";
-
-              import VerifyEmail from "../pages/VerifyEmail";
-              import HackathonsListPage from "../pages/HackathonsListPage";
-              import SurveysPage from "../pages/SurveysPage";
-              import AnnouncementsPage from "../pages/AnnouncementsPage";
-
-              import ProtectedRoute from "./ProtectedRoute";
-              import RoleRoute from "./RoleRoute";
-
-              function AppRoutesInner() {
-                const { user, loading } = useAuth();
-
-                if (loading) {
-                  return (
-                    <div style={{ minHeight: "60vh", display: "flex", justifyContent: "center", alignItems: "center", color: "white" }}>
-                      Loading...
-                    </div>
-                  );
                 }
 
                 const getDashboardPath = () => {
