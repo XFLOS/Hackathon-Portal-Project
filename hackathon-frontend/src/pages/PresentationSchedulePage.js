@@ -67,13 +67,7 @@ export default function PresentationSchedulePage() {
   };
 
   const formatTime = dateString =>
-    new Date(dateString).toLocaleString(undefined, {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
+    new Date(dateString).toLocaleString();
 
   const formatDuration = (startTime, endTime) => {
     const diff = new Date(endTime) - new Date(startTime);
