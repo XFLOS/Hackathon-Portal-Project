@@ -295,7 +295,7 @@ INSERT INTO team_members (team_id, user_id, role) VALUES
 INSERT INTO submissions (team_id, title, description, file_url, github_url, demo_url, submitted_by) VALUES
 (1, 'AI Study Assistant - Final Submission', 
 'Our AI Study Assistant uses natural language processing to create personalized study materials and quizzes based on uploaded course content. Features include: adaptive learning paths, progress tracking, and collaborative study groups.',
-'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+'https://res.cloudinary.com/dxjum86lp/raw/upload/demo/team-phoenix-presentation.pdf',
 'https://github.com/demo/ai-study-assistant',
 'https://ai-study-demo.netlify.app',
 1);
@@ -304,10 +304,19 @@ INSERT INTO submissions (team_id, title, description, file_url, github_url, demo
 INSERT INTO submissions (team_id, title, description, file_url, github_url, demo_url, submitted_by) VALUES
 (2, 'Campus Event Manager - Final Project',
 'A full-stack event management platform built with React and Node.js. Key features: event creation, RSVP management, email notifications, QR code check-ins, and analytics dashboard.',
-'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+'https://res.cloudinary.com/dxjum86lp/raw/upload/demo/team-dragons-slides.pdf',
 'https://github.com/demo/campus-events',
 'https://campus-events-demo.herokuapp.com',
 9);
+
+-- Submission from Team Nova (NOT EVALUATED YET - for judge demo)
+INSERT INTO submissions (team_id, title, description, file_url, github_url, demo_url, submitted_by) VALUES
+(3, 'Fitness Tracker Pro - Final Submission',
+'A mobile-first gamified fitness app with social challenges, personalized workout plans, and achievement badges. Built with React Native and Firebase. Features: real-time workout tracking, friend leaderboards, and AI-powered form correction.',
+'https://res.cloudinary.com/dxjum86lp/raw/upload/demo/team-nova-presentation.pdf',
+'https://github.com/demo/fitness-tracker-pro',
+'https://fitness-tracker-demo.vercel.app',
+14);
 
 -- =====================================================================
 -- CREATE JUDGE EVALUATIONS

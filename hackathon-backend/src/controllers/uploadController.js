@@ -43,18 +43,13 @@ export const handleFileUpload = async (req, res) => {
       filename: req.file.filename
     });
 
-    // For memoryStorage fallback, req.file.path may be undefined. Provide a safe URL.
-    const url = req.file.path || `memory://${req.file.originalname}`;
-    const filename = req.file.filename || req.file.originalname;
-    const format = req.file.format || (req.file.mimetype ? req.file.mimetype.split('/').pop() : undefined);
-
     res.json({
       message: 'File uploaded successfully',
       file: {
-        url,
-        filename,
+        url: req.file.path,
+        filename: req.file.filename,
         size: req.file.size,
-        format
+        format: req.file.format
       }
     });
     console.log('=== UPLOAD REQUEST END ===');

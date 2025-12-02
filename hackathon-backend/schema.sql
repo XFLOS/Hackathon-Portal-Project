@@ -103,6 +103,15 @@ CREATE TABLE mentor_assignments (
   UNIQUE(mentor_id, team_id)
 );
 
+-- Create surveys table for event feedback
+CREATE TABLE IF NOT EXISTS surveys (
+  id SERIAL PRIMARY KEY,
+  experience INTEGER CHECK (experience BETWEEN 1 AND 5) NOT NULL,
+  comments TEXT,
+  user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+  submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Create indexes for better performance
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_role ON users(role);

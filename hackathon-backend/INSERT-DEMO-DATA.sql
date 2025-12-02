@@ -71,13 +71,13 @@ INSERT INTO mentor_feedback (mentor_id, team_id, feedback) VALUES
 -- SCHEDULE EVENTS
 INSERT INTO schedule (event_name, description, start_time, end_time, location) VALUES
 ('Opening Ceremony', 'Welcome address and hackathon kickoff', '2025-11-20 09:00:00', '2025-11-20 10:00:00', 'Main Auditorium'),
-('Team Formation', 'Form teams and register your project ideas', '2025-11-20 10:30:00', '2025-11-20 12:00:00', 'Registration Hall'),
-('Workshop: Intro to AI/ML', 'Learn the basics of machine learning', '2025-11-20 13:00:00', '2025-11-20 15:00:00', 'Lab 101'),
-('Mentor Check-in #1', 'First progress check with mentors', '2025-11-20 16:00:00', '2025-11-20 17:30:00', 'Various Rooms'),
-('Midnight Snacks', 'Pizza and energy drinks provided', '2025-11-21 00:00:00', '2025-11-21 01:00:00', 'Cafeteria'),
-('Submission Deadline', 'Final project submissions due', '2025-11-21 08:00:00', '2025-11-21 09:00:00', 'Online Portal'),
-('Presentations & Judging', 'Teams present to judges (10 min each)', '2025-11-21 10:00:00', '2025-11-21 14:00:00', 'Main Auditorium'),
-('Awards Ceremony', 'Winner announcements and prizes', '2025-11-21 15:00:00', '2025-11-21 16:30:00', 'Main Auditorium');
+('Team Formation', 'Form teams and register your project ideas', '2025-11-20 10:00:00', '2025-11-20 11:00:00', 'Registration Hall'),
+('Workshop: Intro to AI/ML', 'Learn the basics of machine learning', '2025-11-20 11:15:00', '2025-11-20 13:15:00', 'Lab 101'),
+('Mentor Check-in #1', 'First progress check with mentors', '2025-11-20 13:30:00', '2025-11-20 14:30:00', 'Various Rooms'),
+('Midnight Snacks', 'Pizza and energy drinks provided', '2025-11-20 22:00:00', '2025-11-20 23:00:00', 'Cafeteria'),
+('Submission Deadline', 'Final project submissions due', '2025-11-21 09:00:00', '2025-11-21 10:00:00', 'Online Portal'),
+('Presentations & Judging', 'Teams present to judges (10 min each)', '2025-11-21 10:30:00', '2025-11-21 13:30:00', 'Main Auditorium'),
+('Awards Ceremony', 'Winner announcements and prizes', '2025-11-21 14:00:00', '2025-11-21 15:00:00', 'Main Auditorium');
 
 -- ANNOUNCEMENTS
 INSERT INTO announcements (title, content, created_by, is_active) VALUES
