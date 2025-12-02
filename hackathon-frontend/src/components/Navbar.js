@@ -136,7 +136,6 @@ export default function Navbar() {
                 
                 {(role === 'admin' || role === 'coordinator') && (
                   <>
-                    <Link to="/coordinator-dashboard">Coordinator</Link>
                     <Link to="/admin/manage">Manage</Link>
                     <Link to="/admin/reports">Reports</Link>
                     <Link to="/admin/schedule">Schedule</Link>
