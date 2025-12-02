@@ -67,7 +67,14 @@ export default function PresentationSchedulePage() {
   };
 
   const formatTime = dateString =>
-    new Date(dateString).toLocaleString();
+    new Date(dateString).toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+      timeZone: 'America/New_York'
+    });
 
   const formatDuration = (startTime, endTime) => {
     const diff = new Date(endTime) - new Date(startTime);
