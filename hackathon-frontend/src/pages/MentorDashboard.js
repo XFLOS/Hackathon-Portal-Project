@@ -240,6 +240,57 @@ export default function MentorDashboard() {
             </div>
           )}
 
+          {/* Full Event Schedule Timeline */}
+          {schedule.length > 0 && (
+            <div className="schedule-container" style={{padding: 0, background: 'none', minHeight: 0, marginBottom: '2.5rem'}}>
+              <div className="schedule-card" style={{background: 'rgba(20, 30, 50, 0.95)', boxShadow: '0 12px 32px rgba(0, 217, 255, 0.15)', padding: '2.5rem 2rem', maxWidth: 900, margin: '0 auto', color: '#f0f4f8'}}>
+                <div className="schedule-header" style={{marginBottom: 24, paddingBottom: 12, borderBottom: '2px solid rgba(0, 217, 255, 0.15)'}}>
+                  <h2 className="schedule-title" style={{fontFamily: 'BebasNeue, sans-serif', fontSize: 32, color: '#00e5ff', letterSpacing: 2, marginBottom: 4, textShadow: '0 0 10px rgba(0,229,255,0.4)'}}>Event Schedule</h2>
+                  <div className="schedule-subtitle" style={{fontFamily: 'OpenSans, sans-serif', fontSize: 15, color: '#e2e8f0'}}>All times shown in EST (Eastern Time)</div>
+                </div>
+                <ul className="events-timeline" style={{display: 'flex', flexDirection: 'column', gap: 0, marginTop: 10}}>
+                  {schedule.map((event, idx) => {
+                    const now = new Date();
+                    const start = new Date(event.start_time);
+                    const end = new Date(event.end_time);
+                    let status = 'upcoming';
+                    if (now >= start && now <= end) status = 'ongoing';
+                    else if (now > end) status = 'past';
+                    return (
+                      <li key={event.id} className={`event-item ${status}`} style={{display: 'flex', gap: 22, position: 'relative'}}>
+                        <div className="event-timeline-marker" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', paddingTop: 8}}>
+                          <span className="timeline-dot" style={{width: 14, height: 14, borderRadius: '50%', border: '3px solid #00d9ff', background: status==='ongoing' ? '#ff4444' : status==='past' ? '#64748b' : '#00d9ff', boxShadow: status==='ongoing' ? '0 0 12px #ff4444' : status==='past' ? 'none' : '0 0 8px #00d9ff44', zIndex: 2}}></span>
+                          {idx < schedule.length - 1 && <span className="timeline-line" style={{width: 2, flex: 1, background: status==='past' ? 'linear-gradient(180deg, #64748b4c, #64748b1a)' : 'linear-gradient(180deg, #00d9ff4c, #00d9ff1a)', marginTop: 4}}></span>}
+                        </div>
+                        <div className="event-content" style={{flex: 1, background: status==='ongoing' ? 'rgba(255,68,68,0.10)' : status==='past' ? 'rgba(100,116,139,0.06)' : 'rgba(0,217,255,0.08)', border: '1px solid ' + (status==='ongoing' ? 'rgba(255,68,68,0.4)' : status==='past' ? 'rgba(100,116,139,0.2)' : 'rgba(0,217,255,0.35)'), borderRadius: 12, padding: '1.5rem', marginBottom: 18, transition: 'all 0.3s'}}>
+                          <div className="event-header-row" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10, gap: 12, flexWrap: 'wrap'}}>
+                            <div className="event-title" style={{fontFamily: 'BebasNeue, sans-serif', fontSize: 22, color: '#fff', margin: 0, letterSpacing: 1.2, minWidth: 180, fontWeight: 700, textShadow: '0 0 8px #fff3'}}>{event.event_name}</div>
+                            <span className={`status-badge ${status}`} style={{display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 16, fontSize: 12, fontWeight: 'bold', letterSpacing: 0.5, textTransform: 'uppercase', fontFamily: 'OpenSans, sans-serif', background: status==='ongoing' ? 'rgba(255,68,68,0.25)' : status==='past' ? 'rgba(100,116,139,0.3)' : 'rgba(0,217,255,0.3)', color: status==='ongoing' ? '#ffa3a3' : status==='past' ? '#cbd5e1' : '#7df3ff', border: '1px solid ' + (status==='ongoing' ? 'rgba(255,68,68,0.5)' : status==='past' ? 'rgba(100,116,139,0.5)' : 'rgba(0,217,255,0.5)')}}>{status === 'ongoing' ? 'Ongoing' : status === 'past' ? 'Past' : 'Upcoming'}</span>
+                          </div>
+                          <div className="event-meta" style={{display: 'flex', flexWrap: 'wrap', gap: 18, marginTop: 10}}>
+                            <span className="meta-item" style={{display: 'flex', alignItems: 'center', gap: 7, fontFamily: 'OpenSans, sans-serif', fontSize: 13}}>
+                              <span className="meta-icon" style={{fontSize: 16}}>🕒</span>
+                              <span className="meta-label" style={{color: '#a0aec0', fontWeight: 600}}>Time:</span>
+                              <span className="meta-value" style={{color: '#f1f5f9', fontWeight: 600}}>{formatEventTime(event.start_time)} – {formatEventTime(event.end_time)}</span>
+                            </span>
+                            {event.location && (
+                              <span className="meta-item" style={{display: 'flex', alignItems: 'center', gap: 7, fontFamily: 'OpenSans, sans-serif', fontSize: 13}}>
+                                <span className="meta-icon" style={{fontSize: 16}}>📍</span>
+                                <span className="meta-label" style={{color: '#a0aec0', fontWeight: 600}}>Location:</span>
+                                <span className="meta-value" style={{color: '#f1f5f9', fontWeight: 600}}>{event.location}</span>
+                              </span>
+                            )}
+                          </div>
+                          {event.description && <div className="event-description" style={{fontFamily: 'OpenSans, sans-serif', fontSize: 14, color: '#f8fafc', lineHeight: 1.6, margin: '10px 0 0 0', opacity: 0.95}}>{event.description}</div>}
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            </div>
+          )}
+
           {/* Teams List */}
           <div className="teams-section">
             <h3>Your Assigned Teams</h3>
