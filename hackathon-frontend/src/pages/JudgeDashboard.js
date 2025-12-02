@@ -91,82 +91,113 @@ export default function JudgeDashboard() {
 
   return (
     <AppShell>
-      <div className="judge-page">
-        <header className="judge-page-header">
-          <h1 className="judge-title">Judge Dashboard</h1>
-          <p className="judge-subtitle">Evaluate submissions, monitor progress, and review feedback history.</p>
-        </header>
-        <div className="judge-row-actions" style={{ flexWrap:'wrap', marginBottom:'1rem' }}>
-          <Link to="/judge/evaluation" className="judge-btn judge-btn-primary">Evaluation</Link>
-          <Link to="/judge/feedback" className="judge-btn judge-btn-secondary">Feedback History</Link>
-          <Link to="/judge/schedule" className="judge-btn judge-btn-outline">Presentation Schedule</Link>
-        </div>
-        {/* Debug panel removed for production */}
-        {loading && <LoadingSpinner />}
-        {error && !loading && <p style={{ color: 'var(--judge-danger)', fontSize:'var(--judge-font-sm)' }}>{error}</p>}
-        <section className="judge-card" aria-label="Assigned Teams">
-          <div className="judge-card-header">
-            <div>
-              <div className="judge-card-title">Assigned Teams</div>
-              <div className="judge-card-meta">{stats.evaluated} evaluated • {stats.pending} pending • {stats.total} total</div>
+      <div className="mentor-dashboard-bg">
+        <div className="mentor-dashboard glass">
+          {/* Header */}
+          <div className="mentor-dashboard-header">
+            <div className="mentor-dashboard-icon">
+              <svg width="44" height="44" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="24" cy="24" r="24" fill="#00e0ff33"/>
+                <path d="M12 36V20H36V36" stroke="#00e0ff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <rect x="20" y="24" width="8" height="8" rx="2" fill="#00e0ff"/>
+              </svg>
             </div>
-            <div style={{ display:'flex', gap:'.5rem', flexWrap:'wrap', alignItems:'center' }}>
-              <input
-                className="judge-input"
-                type="text"
-                placeholder="Search team..."
-                value={search}
-                onChange={e=>setSearch(e.target.value)}
-                aria-label="Search team by name"
-                style={{ flex:'1 1 180px', minWidth:160 }}
-              />
-              <select className="judge-select" value={statusFilter} onChange={e=>setStatusFilter(e.target.value)} aria-label="Filter by submission status" style={{ flex:'0 0 140px' }}>
-                <option value="all">All</option>
-                <option value="submitted">Submitted</option>
-                <option value="not-submitted">Not Submitted</option>
-              </select>
-              <select className="judge-select" value={sortBy} onChange={e=>setSortBy(e.target.value)} aria-label="Sort list" style={{ flex:'0 0 140px' }}>
-                <option value="team">Team</option>
-                <option value="time">Time</option>
-                <option value="score">Score</option>
-              </select>
+            <div>
+              <div className="mentor-dashboard-title">Judge Dashboard</div>
+              <div className="mentor-dashboard-subtitle">Evaluate submissions, monitor progress, and review feedback history.</div>
             </div>
           </div>
-          {loading ? <p style={{ color:'var(--judge-text-muted)', fontSize:'var(--judge-font-sm)' }}>Loading…</p> : (
-            filtered.length === 0 ? <p style={{ color:'var(--judge-text-muted)', fontSize:'var(--judge-font-sm)' }}>No teams match current filters.</p> : (
-              <ul className="judge-list" aria-label="Teams list">
-                {filtered.map(row => {
-                  // Treat any team with a submission (including demo/evaluated) as 'Submitted'
+
+          {/* Stat Widgets */}
+          <div className="mentor-dashboard-stats-row">
+            <StatWidget label="Assigned" value={stats.total} icon="📝" color="#00e0ff" />
+            <StatWidget label="Evaluated" value={stats.evaluated} icon="✅" color="#7cffb2" />
+            <StatWidget label="Pending" value={stats.pending} icon="⏳" color="#ffd966" />
+          </div>
+
+          {/* Quick Actions */}
+          <div className="quick-actions">
+            <Link to="/judge/evaluation" className="action-btn">
+              <span className="action-icon">📝</span>
+              <div>
+                <div className="action-title">Evaluation</div>
+                <div className="action-desc">Score and review submissions</div>
+              </div>
+            </Link>
+            <Link to="/judge/feedback" className="action-btn">
+              <span className="action-icon">📋</span>
+              <div>
+                <div className="action-title">Feedback History</div>
+                <div className="action-desc">See your past feedback</div>
+              </div>
+            </Link>
+            <Link to="/judge/schedule" className="action-btn">
+              <span className="action-icon">📅</span>
+              <div>
+                <div className="action-title">Presentation Schedule</div>
+                <div className="action-desc">View judging slots</div>
+              </div>
+            </Link>
+          </div>
+
+          {/* Assigned Teams Section */}
+          <div className="teams-section">
+            <h3>Assigned Teams</h3>
+            <div className="teams-grid">
+              {loading ? (
+                <div className="empty-state"><p>Loading…</p></div>
+              ) : filtered.length === 0 ? (
+                <div className="empty-state">
+                  <p className="empty-icon">📋</p>
+                  <p className="empty-title">No Teams Assigned Yet</p>
+                  <p className="empty-desc">You'll see your assigned teams here once they're allocated or match your filters.</p>
+                </div>
+              ) : (
+                filtered.map(row => {
                   const hasSubmission = !!row.submission_id || !!row.evaluation_id || !!row.submitted_at;
                   const evaluated = !!row.evaluation_id;
                   return (
-                    <li key={row.team_id} className="judge-list-item">
-                      <div className="judge-row-top">
-                        <div style={{ flex:1 }}>
-                          <strong style={{ fontSize:'var(--judge-font-md)' }}>{row.team_name || `Team #${row.team_id}`}</strong>
-                          <div style={{ fontSize:'var(--judge-font-xs)', color:'var(--judge-text-muted)', marginTop:4 }}>
+                    <div key={row.team_id} className="team-card">
+                      <div className="team-card-header">
+                        <div className="team-info">
+                          <h4 className="team-name">{row.team_name || `Team #${row.team_id}`}</h4>
+                          <p className="team-meta">
                             {hasSubmission ? `Submitted${row.submitted_at ? ' ' + new Date(row.submitted_at).toLocaleDateString() : ''}` : 'Not Submitted'}
-                          </div>
+                          </p>
                         </div>
-                        <div className="judge-row-actions">
+                      </div>
+                      <div className="team-card-body">
+                        <div className="detail-section">
+                          <h5>Submission Status</h5>
                           {renderScoreBadge(row)}
+                        </div>
+                        <div className="team-actions">
                           <Link
                             to="/judge/evaluation"
-                            className={`judge-btn ${evaluated ? 'judge-btn-outline' : hasSubmission ? 'judge-btn-primary' : 'judge-btn-secondary'}`}
-                            style={{ fontSize:'var(--judge-font-xs)' }}
+                            className={`btn-primary`}
                           >{evaluated ? 'Update' : hasSubmission ? 'Evaluate' : 'Awaiting'}</Link>
                         </div>
                       </div>
-                    </li>
+                    </div>
                   );
-                })}
-              </ul>
-            )
-          )}
-        </section>
+                })
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </AppShell>
   );
+
+  function StatWidget({ label, value, icon, color }) {
+    return (
+      <div className="mentor-dashboard-stat-widget glass" style={{ borderColor: color }}>
+        <div className="stat-icon" style={{ color }}>{icon}</div>
+        <div className="stat-value">{value}</div>
+        <div className="stat-label">{label}</div>
+      </div>
+    );
+  }
 }
 
 // Removed inline filter styles in favor of shared judge-input / judge-select classes
