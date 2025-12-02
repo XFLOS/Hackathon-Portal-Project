@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/static/css/main.2fad6f9a.css",
+    "main.js": "/static/js/main.cbf72b3b.js",
+    "static/js/488.5f3c41fc.chunk.js": "/static/js/488.5f3c41fc.chunk.js",
+    "static/media/OpenSans-Regular.ttf": "/static/media/OpenSans-Regular.b5742f857779c0562634.ttf",
+    "static/media/BebasNeue-Regular.ttf": "/static/media/BebasNeue-Regular.12e3683f9192436a7be8.ttf",
+    "static/media/1.png": "/static/media/1.8b6946facd6f1ee1d974.png",
+    "static/media/Niagara-college_vectorized.svg": "/static/media/Niagara-college_vectorized.0b8e202c587a5dc3dee4484e9187621d.svg",
+    "index.html": "/index.html",
+    "main.2fad6f9a.css.map": "/static/css/main.2fad6f9a.css.map",
+    "main.cbf72b3b.js.map": "/static/js/main.cbf72b3b.js.map",
+    "488.5f3c41fc.chunk.js.map": "/static/js/488.5f3c41fc.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2fad6f9a.css",
+    "static/js/main.cbf72b3b.js"
+  ]
+}
